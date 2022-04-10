@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!-- ======= Header ======= -->
+<header th:fragment="header" class="d-flex align-items-center">
+    <div class="container d-flex align-items-center justify-content-between">
+        <a th:href="@{~/}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+            <span class="fs-4">Rekiny Finansjery</span>
+        </a>
+
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a th:href="@{~/}" class="nav-link active" aria-current="page">Home</a></li>
+            <li class="nav-item"><a th:href="@{~/}" class="nav-link">Features</a></li>
+            <li class="nav-item"><a th:href="@{~/}" class="nav-link">About</a></li>
+            <li class="nav-item"><a th:href="@{~/}" class="nav-link">Contact</a></li>
+        </ul>
+
+        <div class="col-md-3 text-end">
+            <button type="button" class="btn btn-outline-primary me-2">Login</button>
+            <button type="button" class="btn btn-primary">Sign-up</button>
+        </div>
+    </div>
+</header>
+
+<!-- ======= Hero ======= -->
+<div th:fragment="hero" id="hero" class="px-4 pt-3 my-5 border-bottom">
+    <div class="col-lg-6 mx-auto">
+        <img th:src="@{~/assets/img/rekin.png}" alt="Rekiny Finansjery" class="img-fluid mb-5" width="800" height="319">
+    </div>
+</div>
+
+<!-- ======= Footer ======= -->
+<footer th:fragment="footer"
+        class="container d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+    <div class="col-md-4 d-flex align-items-center">
+        <span class="text-muted">Rekiny Finansjery © 2021 InfoShare Academy</span>
+    </div>
+
+    <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+        <li class="ms-3"><a class="text-muted" href="#">
+            <svg class="bi" width="24" height="24">
+                <use xlink:href="#github"></use>
+            </svg>
+        </a></li>
+    </ul>
+</footer>
+
+</html>
