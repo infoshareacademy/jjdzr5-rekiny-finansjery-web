@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <ul>
+        <li th:each="exchangeRate : ${collectionsOfExchangeRates}">
+            <p th:text="${exchangeRate.getNo()}"></p>
+            <p th:text="${exchangeRate.getEffectiveDate()}"></p>
+            <p th:text="${exchangeRate.getTable()}"></p>
+        </li>
+    </ul>
+</body>
+</html>
