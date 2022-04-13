@@ -1,0 +1,26 @@
+<div th:fragment="filtration_tool">
+    <form name="filtration_settings_form" class="form-group" th:object="${filtrationSettings}">
+        <label for="effectiveDateMin">Min effective date</label>
+        <input class="form-control" id="effectiveDateMin" name="effectiveDateMin" type="date" th:value="${filtrationSettings.effectiveDateMin}"/>
+        <label for="effectiveDateMax">Max effective date</label>
+        <input class="form-control" id="effectiveDateMax" name="effectiveDateMax" type="date" th:value="${filtrationSettings.effectiveDateMax}"/>
+        <label for="tradingDateMin">Min trading date</label>
+        <input class="form-control" id="tradingDateMin" name="tradingDateMin" type="date" th:value="${filtrationSettings.tradingDateMin}"/>
+        <label for="tradingDateMax">Max trading date</label>
+        <input class="form-control" id="tradingDateMax" name="tradingDateMax" type="date" th:value="${filtrationSettings.tradingDateMax}"/>
+        <label for="bidPriceMin">Min bid price</label>
+        <input class="form-control" id="bidPriceMin" name="bidPriceMin" type="number" step="any" th:value="${filtrationSettings.bidPriceMin}"/>
+        <label for="bidPriceMax">Max bid price</label>
+        <input class="form-control" id="bidPriceMax" name="bidPriceMax" type="number" step="any" th:value="${filtrationSettings.bidPriceMax}"/>
+        <label for="askPriceMin">Min ask price</label>
+        <input class="form-control" id="askPriceMin" name="askPriceMin" type="number" step="any" th:value="${filtrationSettings.askPriceMin}"/>
+        <label for="askPriceMax">Max ask price</label>
+        <input class="form-control" id="askPriceMax" name="askPriceMax" type="number" step="any" th:value="${filtrationSettings.askPriceMax}"/>
+        <span th:each="currency : ${possibleCurrencies}">
+            <input type="checkbox" class="btn-check" name="currency" th:id="'currency_' + ${currency.code}" th:value="${currency.code}"  th:checked="${currency.checked}">
+            <label class="btn btn-outline-secondary m-1" th:for="'currency_' + ${currency.code}" th:text="${currency.code}"></label>
+        </span>
+        <input class="form-control mt-3" type="submit" value="Filter"/>
+    </form>
+    <button class="form-control mt-3" onclick="clearForm('filtration_settings_form'); this.blur();">Clear</button>
+</div>
