@@ -1,0 +1,51 @@
+<div th:fragment="collection_view">
+
+    <div class="text-center">
+        <a th:each="button : ${buttons}" th:href="${button.url}" th:text="${button.text}" th:class="'btn btn-sm m-1 '+${button.present ? 'btn-primary' : 'btn-secondary'}"></a>
+    </div>
+    <div class="text-end">
+        Elements found: <span th:text="${numberOfElements}"></span>
+    </div>
+    <div th:each="exchangeRates : ${collectionsOfExchangeRates}">
+        <div th:insert="fragments/collectionView :: element_view"></div>
+    </div>
+</div>
+<div th:fragment="element_view">
+    <hr/>
+    <div class="row">
+        <div class="col-4">
+            <h4 th:text="${exchangeRates.getNo()}" class="font-weight-bold"></h4>
+        </div>
+        <div class="col-2">
+            Effective date:
+        </div>
+        <div class="col-2">
+            <span class="font-weight-bold" th:text="${exchangeRates.getEffectiveDate()}"></span>
+        </div>
+        <div class="col-2">
+            Trading date:
+        </div>
+        <div class="col-2">
+            <span class="font-weight-bold" th:text="${exchangeRates.getTradingDate()}"></span>
+        </div>
+
+    </div>
+    <table class="table table-striped table-sm">
+        <thead>
+            <tr>
+                <th scope="col">Code</th>
+                <th scope="col">Currency</th>
+                <th scope="col">Bid</th>
+                <th scope="col">Ask</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="rate : ${exchangeRates.getRates()}">
+                <th scope="row"  th:text="${rate.code}"></th>
+                <td th:text="${rate.currency}"></td>
+                <td th:text="${rate.bid}"></td>
+                <td th:text="${rate.ask}"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
