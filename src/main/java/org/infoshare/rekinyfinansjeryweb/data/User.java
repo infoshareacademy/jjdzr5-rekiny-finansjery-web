@@ -11,7 +11,7 @@ public class User {
     private String name;
     private String lastname;
     private double billingCurrency;
-    private Map<String,Currency> myCurrencies;
+    private Map<String,UserCurrency> myCurrencies;
     private LocalDateTime created;
     private LocalDateTime lastLogin;
 
@@ -74,11 +74,11 @@ public class User {
         this.billingCurrency = billingCurrency;
     }
 
-    public Map<String, Currency> getMyCurrencies() {
+    public Map<String, UserCurrency> getMyCurrencies() {
         return myCurrencies;
     }
 
-    public void setMyCurrencies(Map<String, Currency> myCurrencies) {
+    public void setMyCurrencies(Map<String, UserCurrency> myCurrencies) {
         this.myCurrencies = myCurrencies;
     }
 

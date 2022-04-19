@@ -2,14 +2,14 @@ package org.infoshare.rekinyfinansjeryweb.data;
 
 import java.util.List;
 
-public class Currency {
+public class UserCurrency {
     private double amount;
     private List<OperationHistory> historyList;
 
-    public Currency() {
+    public UserCurrency() {
     }
 
-    public Currency(double amount, List<OperationHistory> historyList) {
+    public UserCurrency(double amount, List<OperationHistory> historyList) {
         this.amount = amount;
         this.historyList = historyList;
     }
@@ -35,7 +35,7 @@ public class Currency {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Currency currency = (Currency) o;
+        UserCurrency currency = (UserCurrency) o;
 
         if (Double.compare(currency.amount, amount) != 0) return false;
         return historyList != null ? historyList.equals(currency.historyList) : currency.historyList == null;
