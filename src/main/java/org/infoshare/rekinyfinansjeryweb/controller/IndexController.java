@@ -5,12 +5,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/template")
-public class TemplateController {
+@RequestMapping("/")
+public class IndexController {
 
     @GetMapping
-    public String getTemplate() {
-        return "template";
+    public String getIndex() {
+        return "index";
     }
-
 }

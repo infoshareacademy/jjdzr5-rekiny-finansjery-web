@@ -1,0 +1,11 @@
+body::before {
+    display: block;
+    content: "";
+    height: 75px;
+}
+
+@media (min-width: 768px) {
+    .currency-input {
+        width: 50%;
+    }
+}
