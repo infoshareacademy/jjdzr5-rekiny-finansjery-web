@@ -1,12 +1,8 @@
 <div th:fragment="collection_view">
-
-    <div class="text-center">
-        <a th:each="button : ${buttons}" th:href="${button.url}" th:text="${button.text}" th:class="'btn btn-sm m-1 '+${button.present ? 'btn-primary' : 'btn-secondary'}"></a>
-    </div>
     <div class="text-end">
         Elements found: <span th:text="${numberOfElements}"></span>
     </div>
-    <div th:each="exchangeRates : ${collectionsOfExchangeRates}">
+    <div th:each="exchangeRates : ${pageContent}">
         <div th:insert="fragments/collectionView :: element_view"></div>
     </div>
 </div>
@@ -16,16 +12,16 @@
         <div class="col-4">
             <h4 th:text="${exchangeRates.getNo()}" class="font-weight-bold"></h4>
         </div>
-        <div class="col-2">
+        <div class="col-2 text-end">
             Effective date:
         </div>
-        <div class="col-2">
+        <div class="col-2 text-start">
             <span class="font-weight-bold" th:text="${exchangeRates.getEffectiveDate()}"></span>
         </div>
-        <div class="col-2">
+        <div class="col-2 text-end">
             Trading date:
         </div>
-        <div class="col-2">
+        <div class="col-2 text-start">
             <span class="font-weight-bold" th:text="${exchangeRates.getTradingDate()}"></span>
         </div>
 

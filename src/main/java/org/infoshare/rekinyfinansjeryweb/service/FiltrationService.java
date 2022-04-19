@@ -5,14 +5,23 @@ import com.infoshareacademy.services.DailyExchangeRatesFiltrationService;
 import com.infoshareacademy.services.ExchangeRatesFiltrationService;
 import com.infoshareacademy.services.NBPApiManager;
 import org.infoshare.rekinyfinansjeryweb.controller.FiltrationController;
+import org.infoshare.rekinyfinansjeryweb.form.FiltrationSettings;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 @Component
-public class CollectionFiltrationService {
-    public List<DailyExchangeRates> getFilteredCollection(FiltrationController.FiltrationSettings settings){
+public class FiltrationService {
+    public List<DailyExchangeRates> getFilteredCollection(FiltrationSettings settings){
         DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService = NBPApiManager.getInstance().getDailyExchangeRatesService();
+        return filterCollection(dailyExchangeRatesFiltrationService, settings);
+    }
 
+    public List<DailyExchangeRates> getFilteredCollectionFromList(List<DailyExchangeRates> dailyExchangeRates, FiltrationSettings settings){
+        DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService = new DailyExchangeRatesFiltrationService(dailyExchangeRates);
+        return filterCollection(dailyExchangeRatesFiltrationService, settings);
+    }
+
+    public List<DailyExchangeRates> filterCollection(DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService, FiltrationSettings settings){
         filterByEffectiveDateFrom(dailyExchangeRatesFiltrationService, settings);
         filterByEffectiveDateTo(dailyExchangeRatesFiltrationService, settings);
         filterByTradingDateFrom(dailyExchangeRatesFiltrationService, settings);
@@ -28,35 +37,35 @@ public class CollectionFiltrationService {
         return dailyExchangeRates;
     }
 
-    private DailyExchangeRatesFiltrationService filterByEffectiveDateFrom(DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService, FiltrationController.FiltrationSettings settings){
+    private DailyExchangeRatesFiltrationService filterByEffectiveDateFrom(DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService, FiltrationSettings settings){
         if(settings.getEffectiveDateMin()==null){
             return dailyExchangeRatesFiltrationService;
         }
         return dailyExchangeRatesFiltrationService.filterByEffectiveDateFrom(settings.getEffectiveDateMin());
     }
 
-    private DailyExchangeRatesFiltrationService filterByEffectiveDateTo(DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService, FiltrationController.FiltrationSettings settings){
+    private DailyExchangeRatesFiltrationService filterByEffectiveDateTo(DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService, FiltrationSettings settings){
         if(settings.getEffectiveDateMax()==null){
             return dailyExchangeRatesFiltrationService;
         }
         return dailyExchangeRatesFiltrationService.filterByEffectiveDateTo(settings.getEffectiveDateMax());
     }
 
-    private DailyExchangeRatesFiltrationService filterByTradingDateFrom(DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService, FiltrationController.FiltrationSettings settings){
+    private DailyExchangeRatesFiltrationService filterByTradingDateFrom(DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService, FiltrationSettings settings){
         if(settings.getTradingDateMin()==null){
             return dailyExchangeRatesFiltrationService;
         }
         return dailyExchangeRatesFiltrationService.filterByTradingDateFrom(settings.getTradingDateMin());
     }
 
-    private DailyExchangeRatesFiltrationService filterByTradingDateTo(DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService, FiltrationController.FiltrationSettings settings){
+    private DailyExchangeRatesFiltrationService filterByTradingDateTo(DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService, FiltrationSettings settings){
         if(settings.getTradingDateMax()==null){
             return dailyExchangeRatesFiltrationService;
         }
         return dailyExchangeRatesFiltrationService.filterByTradingDateTo(settings.getTradingDateMax());
     }
 
-    private DailyExchangeRatesFiltrationService filterByAskPriceFrom(DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService, FiltrationController.FiltrationSettings settings) {
+    private DailyExchangeRatesFiltrationService filterByAskPriceFrom(DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService, FiltrationSettings settings) {
         if (settings.getAskPriceMin() == null) {
             return dailyExchangeRatesFiltrationService;
         }
@@ -65,7 +74,7 @@ public class CollectionFiltrationService {
                 filterBySellPriceFrom(settings.getAskPriceMin()));
     }
 
-    private DailyExchangeRatesFiltrationService filterByAskPriceTo(DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService, FiltrationController.FiltrationSettings settings) {
+    private DailyExchangeRatesFiltrationService filterByAskPriceTo(DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService, FiltrationSettings settings) {
         if (settings.getAskPriceMax() == null) {
             return dailyExchangeRatesFiltrationService;
         }
@@ -74,7 +83,7 @@ public class CollectionFiltrationService {
                 filterBySellPriceTo(settings.getAskPriceMax()));
     }
 
-    private DailyExchangeRatesFiltrationService filterByBidPriceFrom(DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService, FiltrationController.FiltrationSettings settings) {
+    private DailyExchangeRatesFiltrationService filterByBidPriceFrom(DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService, FiltrationSettings settings) {
         if (settings.getBidPriceMin() == null) {
             return dailyExchangeRatesFiltrationService;
         }
@@ -83,7 +92,7 @@ public class CollectionFiltrationService {
                 filterByBuyPriceFrom(settings.getBidPriceMin()));
     }
 
-    private DailyExchangeRatesFiltrationService filterByBidPriceTo(DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService, FiltrationController.FiltrationSettings settings) {
+    private DailyExchangeRatesFiltrationService filterByBidPriceTo(DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService, FiltrationSettings settings) {
         if (settings.getBidPriceMax() == null) {
             return dailyExchangeRatesFiltrationService;
         }
@@ -92,7 +101,7 @@ public class CollectionFiltrationService {
                 filterByBuyPriceTo(settings.getBidPriceMax()));
     }
 
-    private DailyExchangeRatesFiltrationService filterByCode(DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService, FiltrationController.FiltrationSettings settings){
+    private DailyExchangeRatesFiltrationService filterByCode(DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService, FiltrationSettings settings){
         List<String> selectedCurrencies = settings.getCurrency();
         if(settings.getCurrency().isEmpty()) {
             return dailyExchangeRatesFiltrationService;

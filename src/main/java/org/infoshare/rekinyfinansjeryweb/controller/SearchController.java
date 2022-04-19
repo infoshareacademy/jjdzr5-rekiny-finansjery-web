@@ -3,11 +3,14 @@ package org.infoshare.rekinyfinansjeryweb.controller;
 import com.infoshareacademy.domain.DailyExchangeRates;
 import com.infoshareacademy.services.NBPApiManager;
 import org.infoshare.rekinyfinansjeryweb.controller.controllerComponents.ListToPagesSplitter;
-import org.infoshare.rekinyfinansjeryweb.form.FiltrationSettings;
 import org.infoshare.rekinyfinansjeryweb.form.SearchSettings;
-import org.infoshare.rekinyfinansjeryweb.service.FiltrationService;
+import org.infoshare.rekinyfinansjeryweb.service.SearchService;
 import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.PagedListHolder;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
@@ -21,15 +24,13 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
-@RequestMapping("/tables")
-public class FiltrationController{
-
+@RequestMapping("/search")
+public class SearchController {
 
     public final static int ELEMENTS_PER_PAGE = 5;
 
     @Autowired
-    FiltrationService collectionFiltrationService;
-
+    SearchService searchService;
     @Autowired
     UsedCurrenciesService usedCurrenciesService;
 
@@ -37,12 +38,13 @@ public class FiltrationController{
     public String displayTables(@ModelAttribute SearchSettings settings,
                                 Pageable pageable,
                                 Model model){
-        List<DailyExchangeRates> collection = collectionFiltrationService.getFilteredCollection(settings);
+
+        List<DailyExchangeRates> collection = searchService
+                .searchInCollection(settings);
 
         ListToPagesSplitter.splitIntoPages(collection, model, pageable);
         model.addAttribute("filtrationSettings", settings);
         model.addAttribute("possibleCurrencies", usedCurrenciesService.getShortNamesOfCurrencies(NBPApiManager.getInstance(), settings.getCurrency()));
-        return "filtration";
+        return "search";
     }
-
 }
