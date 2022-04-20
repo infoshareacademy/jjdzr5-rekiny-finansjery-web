@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Template</title>
+    <link rel="stylesheet" th:href="@{/styles/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/styles/styles.css}">
+</head>
+<body>
+
+<header th:insert="fragments/general :: header"></header>
+<div th:insert="fragments/general :: hero"></div>
+
+<!-- ======= Main ======= -->
+<main>
+    <div class="container mt-3">
+
+        <h1>Hello World</h1>
+
+        <!-- tabela -->
+        <table class="table table-striped table-sm">
+            <thead>
+            <tr>
+                <th>Code</th>
+                <th>Currency</th>
+                <th>Bid</th>
+                <th>Ask</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th>2</th>
+                <td>2</td>
+                <td>2</td>
+                <td>2</td>
+            </tr>
+            </tbody>
+        </table>
+        <!-- inputs -->
+            <!-- większość z nich tak jak poniżej -->
+            <input class="form-control" id="input_field" type="text"/>
+            <label for="input_field">input field</label>
+            <!-- checkbox w stylu przycisku -->
+            <input type="checkbox" class="btn-check" id="checkbox_input" >
+            <label for="checkbox_input">checkbox</label>
+        <!-- buttons -->
+            <!-- ważniejsze -->
+            <a href="#" class="btn btn-sm m-1 btn-primary">tekst</a>
+            <!-- drugorzędne -->
+            <a href="#" class="btn btn-sm m-1 btn-secondary">tekst</a>
+    </div>
+</main>
+
+<footer th:insert="fragments/general :: footer"></footer>
+
+<script th:src="@{~/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

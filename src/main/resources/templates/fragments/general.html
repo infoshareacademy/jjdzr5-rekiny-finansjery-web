@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!-- ======= Header ======= -->
+<nav th:fragment="menu" class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top py-3">
+    <div class="container">
+        <a th:href="@{/}" class="navbar-brand">
+            <i class="bi bi-coin h3"></i> Rekiny Finansjery
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navmenu">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a href="#features" class="nav-link">Features</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#about" class="nav-link">About</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#contact" class="nav-link">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#account" class="nav-link">Account</a>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-outline-primary mx-lg-2" th:href="@{/}">Sign in</button>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-primary mt-2 mt-lg-0" th:href="@{/}">Sign up</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- ======= Footer ======= -->
+<div th:fragment="footer" class="p-5 bg-dark text-white text-center position-relative">
+    <div class="container">
+        <p class="lead">Rekiny Finansjery &copy; 2022 InfoShare Academy</p>
+        <a href="#" class="position-absolute top-0 end-0 p-5">
+            <i class="bi bi-arrow-up-circle h1"></i>
+        </a>
+        <a href="https://github.com/infoshareacademy/jjdzr5-rekiny-finansjery-web" class="text-white">
+            <i class="bi bi-github h2"></i>
+        </a>
+    </div>
+</div>
+
+</html>
