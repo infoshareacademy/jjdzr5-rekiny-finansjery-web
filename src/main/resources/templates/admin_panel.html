@@ -21,9 +21,10 @@
 
 <!-- ======= Main ======= -->
 <main>
-    <div class="container">
-
-
+    <div class="container p-5">
+        <div th:each="exchangeRates : ${dailyExchangeRates}">
+            <div th:insert="fragments/collectionView :: element_view"></div>
+        </div>
     </div>
 </main>
 
