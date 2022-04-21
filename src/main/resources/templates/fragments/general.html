@@ -26,11 +26,18 @@
                 <li class="nav-item">
                     <a href="#account" class="nav-link">Account</a>
                 </li>
-                <li class="nav-item">
-                    <button type="button" class="btn btn-outline-primary mx-lg-2" th:href="@{/}">Sign in</button>
+                <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.data.User"*/-->
+                <li class="nav-item" th:if="${user == null}">
+                    <a class="btn btn-outline-primary mx-lg-2" type="button" th:href="@{/}">Sign in</a>
                 </li>
-                <li class="nav-item">
-                    <button type="button" class="btn btn-primary mt-2 mt-lg-0" th:href="@{/}">Sign up</button>
+                <li class="nav-item" th:unless="${user == null}">
+                    <a class="btn btn-outline-primary mx-lg-2" type="button" th:href="@{/user}">Profil</a>
+                </li>
+                <li class="nav-item" th:if="${user == null}">
+                    <a class="btn btn-primary mt-2 mt-lg-0" type="button" th:href="@{/}">Sign up</a>
+                </li>
+                <li class="nav-item" th:unless="${user == null}">
+                    <a class="btn btn-primary mt-2 mt-lg-0" type="button" th:href="@{/}">Sign out</a>
                 </li>
             </ul>
         </div>
