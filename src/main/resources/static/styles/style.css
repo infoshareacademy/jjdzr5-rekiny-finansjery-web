@@ -9,3 +9,7 @@ body::before {
         width: 50%;
     }
 }
+
+#filtration_input label {
+    margin-top: 8px;
+}
