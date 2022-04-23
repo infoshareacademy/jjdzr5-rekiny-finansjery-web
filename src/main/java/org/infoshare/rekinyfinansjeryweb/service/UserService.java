@@ -38,11 +38,15 @@ public class UserService {
 
     public boolean loginUser(String email, String password) {
         User user = UserRepository.findByEmailAddress(email);
-        if (!user.equals(null) && user.getPassword().equals(password)) {
+        if (user.getId() != 0 && user.getPassword().equals(password)) {
             UserRepository.setUser(user);
             return true;
         }
         return false;
+    }
+
+    public void signoutUser(){
+        UserRepository.singOut();
     }
 
     public boolean bidCurrency(String currency, double amount){

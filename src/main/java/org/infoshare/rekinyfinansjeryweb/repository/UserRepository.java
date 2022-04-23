@@ -13,7 +13,7 @@ import java.util.Map;
 @Repository
 public class UserRepository {
 
-    private static User user;
+    private static User user = new User();
     private static List<User> usersRepository = new ArrayList<>();
     
     public static List<User> getUserRepository() {
@@ -28,7 +28,7 @@ public class UserRepository {
     }
 
     public static void singOut(){
-        user = null;
+        user = new User();
     }
 
     public static void setUser(User setUser){

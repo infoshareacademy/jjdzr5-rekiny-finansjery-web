@@ -9,12 +9,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @ControllerAdvice
 public class ComponentController {
     @Autowired
-    UserService usersRepositoryService;
+    UserService userService;
 
     @ModelAttribute
     public void addAttribute(Model model){
-        usersRepositoryService.loginUser("admin@admin.pl", "admin");
-        model.addAttribute("user", usersRepositoryService.getUser());
+        model.addAttribute("user", userService.getUser());
     }
 
 

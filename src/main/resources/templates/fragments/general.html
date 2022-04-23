@@ -27,17 +27,17 @@
                     <a href="#account" class="nav-link">Account</a>
                 </li>
                 <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.data.User"*/-->
-                <li class="nav-item" th:if="${user == null}">
-                    <a class="btn btn-outline-primary mx-lg-2" type="button" th:href="@{/}">Sign in</a>
+                <li class="nav-item" th:if="${user.getId() == 0}">
+                    <a class="btn btn-outline-primary mx-lg-2" type="button" th:href="@{/login}">Sign in</a>
                 </li>
-                <li class="nav-item" th:unless="${user == null}">
+                <li class="nav-item" th:unless="${user.getId() == 0}">
                     <a class="btn btn-outline-primary mx-lg-2" type="button" th:href="@{/user}">Profil</a>
                 </li>
-                <li class="nav-item" th:if="${user == null}">
-                    <a class="btn btn-primary mt-2 mt-lg-0" type="button" th:href="@{/}">Sign up</a>
+                <li class="nav-item" th:if="${user.getId() == 0}">
+                    <a class="btn btn-primary mt-2 mt-lg-0" type="button" th:href="@{/signup}">Sign up</a>
                 </li>
-                <li class="nav-item" th:unless="${user == null}">
-                    <a class="btn btn-primary mt-2 mt-lg-0" type="button" th:href="@{/}">Sign out</a>
+                <li class="nav-item" th:unless="${user.getId() == 0}">
+                    <a class="btn btn-primary mt-2 mt-lg-0" type="button" th:href="@{/signout}">Sign out</a>
                 </li>
             </ul>
         </div>

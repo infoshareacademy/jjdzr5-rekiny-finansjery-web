@@ -15,7 +15,7 @@ public class UserController {
     UserService usersService;
     @GetMapping
     public String getUser() {
-        if (usersService.getUser() == null) {
+        if (usersService.getUser().getId() == 0) {
             return "login";
         }
         return "user";
