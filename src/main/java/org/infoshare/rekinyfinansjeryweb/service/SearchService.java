@@ -35,6 +35,7 @@ public class SearchService {
 
         List<DailyExchangeRates> dailyExchangeRates = collectionFiltrationService.getFilteredCollectionFromList(result, settings);
         dailyExchangeRates.sort((t1, t2)-> t1.getEffectiveDate().compareTo(t2.getEffectiveDate())*-1);
+
         return dailyExchangeRates;
     }
 

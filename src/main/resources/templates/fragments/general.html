@@ -2,47 +2,53 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <!-- ======= Header ======= -->
-<header th:fragment="header" class="d-flex align-items-center">
-    <div class="container d-flex align-items-center justify-content-between">
-        <a th:href="@{~/}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-            <span class="fs-4">Rekiny Finansjery</span>
+<nav th:fragment="menu" class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top py-3">
+    <div class="container">
+        <a th:href="@{/}" class="navbar-brand">
+            <i class="bi bi-coin h3"></i> Rekiny Finansjery
         </a>
 
-        <ul class="nav nav-pills">
-            <li class="nav-item"><a th:href="@{~/}" class="nav-link active" aria-current="page">Home</a></li>
-            <li class="nav-item"><a th:href="@{~/}" class="nav-link">Features</a></li>
-            <li class="nav-item"><a th:href="@{~/}" class="nav-link">About</a></li>
-            <li class="nav-item"><a th:href="@{~/}" class="nav-link">Contact</a></li>
-        </ul>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-        <div class="col-md-3 text-end">
-            <button type="button" class="btn btn-outline-primary me-2">Login</button>
-            <button type="button" class="btn btn-primary">Sign-up</button>
+        <div th:insert="fragments/languageSelector :: language_tool"></div>
+        <div class="collapse navbar-collapse" id="navmenu">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a th:href="@{/tables}" class="nav-link">Tables</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#about" class="nav-link">About</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#contact" class="nav-link">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#account" class="nav-link">Account</a>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-outline-primary mx-lg-2" th:href="@{/}">Sign in</button>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-primary mt-2 mt-lg-0" th:href="@{/}">Sign up</button>
+                </li>
+            </ul>
         </div>
     </div>
-</header>
-
-<!-- ======= Hero ======= -->
-<div th:fragment="hero" id="hero" class="px-4 pt-3 my-5 border-bottom">
-    <div class="col-lg-6 mx-auto">
-        <img th:src="@{~/assets/img/rekin.png}" alt="Rekiny Finansjery" class="img-fluid mb-5" width="800" height="319">
-    </div>
-</div>
+</nav>
 
 <!-- ======= Footer ======= -->
-<footer th:fragment="footer"
-        class="container d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-    <div class="col-md-4 d-flex align-items-center">
-        <span class="text-muted">Rekiny Finansjery © 2021 InfoShare Academy</span>
+<div th:fragment="footer" class="p-5 bg-dark text-white text-center position-relative">
+    <div class="container">
+        <p class="lead">Rekiny Finansjery &copy; 2022 InfoShare Academy</p>
+        <a href="#" class="position-absolute top-0 end-0 p-5">
+            <i class="bi bi-arrow-up-circle h1"></i>
+        </a>
+        <a href="https://github.com/infoshareacademy/jjdzr5-rekiny-finansjery-web" class="text-white">
+            <i class="bi bi-github h2"></i>
+        </a>
     </div>
-
-    <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
-        <li class="ms-3"><a class="text-muted" href="#">
-            <svg class="bi" width="24" height="24">
-                <use xlink:href="#github"></use>
-            </svg>
-        </a></li>
-    </ul>
-</footer>
+</div>
 
 </html>

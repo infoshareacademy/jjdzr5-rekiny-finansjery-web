@@ -38,7 +38,7 @@
         <tbody>
             <tr th:each="rate : ${exchangeRates.getRates()}">
                 <th scope="row"  th:text="${rate.code}"></th>
-                <td th:text="${rate.currency}"></td>
+                <td th:text="#{'currency.'+${rate.code}}"></td>
                 <td th:text="${rate.bid}"></td>
                 <td th:text="${rate.ask}"></td>
             </tr>
