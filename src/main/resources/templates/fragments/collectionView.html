@@ -6,7 +6,7 @@
                     th:text="${numberOfElements}"></span> elements found
             </div>
         </div>
-        <div class="col-3" th:insert="fragments/admin :: new_table"></div>
+        <div class="col-3" th:insert="fragments/admin :: add_table"></div>
     </div>
     <div th:each="exchangeRates : ${pageContent}">
         <div th:insert="fragments/collectionView :: element_view"></div>
