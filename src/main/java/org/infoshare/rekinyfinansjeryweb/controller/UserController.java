@@ -19,12 +19,7 @@ public class UserController {
     @GetMapping
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public String getUser(Model model) {
-        usersService.loginUser("admin@admin.pl","admin");
         model.addAttribute("user", usersService.getUser());
-
-//        if (usersService.getUser().getId() == 0) {
-//            return "login";
-//        }
         return "user";
     }
 }

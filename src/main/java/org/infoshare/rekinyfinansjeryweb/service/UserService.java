@@ -1,52 +1,62 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
+import org.infoshare.rekinyfinansjeryweb.data.MyUserPrincipal;
 import org.infoshare.rekinyfinansjeryweb.data.User;
 import org.infoshare.rekinyfinansjeryweb.repository.UserRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-@Component
-public class UserService {
+//@Component
+@Service
+public class UserService implements UserDetailsService {
 
-    public void addUser(User user){
-        List<User> users = UserRepository.getUserRepository();
-        Optional<User> max = users.stream().max(Comparator.comparingLong(User::getId));
-        user.setId(max.orElse(new User()).getId()+1);
-        user.setCreated(LocalDateTime.now());
-        UserRepository.save(user);
+    @Autowired
+    private UserRepository userRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        User user = userRepository.findByEmailAddress(username);
+        if (user == null) {
+            throw new UsernameNotFoundException(username);
+        }
+        return new MyUserPrincipal(user);
     }
 
     public User getUser(){
-        return UserRepository.getUser();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        return userRepository.findByEmailAddress(userDetails.getUsername());
     }
 
     public List<User> getUsers(){
-        return UserRepository.getUserRepository();
+        return userRepository.getUserRepository();
+    }
+
+    public void addUser(User user){
+        List<User> users = userRepository.getUserRepository();
+        Optional<User> max = users.stream().max(Comparator.comparingLong(User::getId));
+        user.setId(max.orElse(new User()).getId()+1);
+        user.setCreated(LocalDateTime.now());
+        user.setEnabled(true);
+        userRepository.save(user);
     }
 
     public void updateUser(User user){
-        UserRepository.update(user);
+        userRepository.update(user);
     }
 
     public void deleteUser(long id) {
-        UserRepository.delete(id);
-    }
-
-    public boolean loginUser(String email, String password) {
-        User user = UserRepository.findByEmailAddress(email);
-        if (user.getId() != 0 && user.getPassword().equals(password)) {
-            UserRepository.setUser(user);
-            return true;
-        }
-        return false;
-    }
-
-    public void signoutUser(){
-        UserRepository.singOut();
+        userRepository.delete(id);
     }
 
     public boolean bidCurrency(String currency, double amount){

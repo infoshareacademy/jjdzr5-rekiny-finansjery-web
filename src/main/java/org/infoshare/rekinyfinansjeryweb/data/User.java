@@ -2,14 +2,16 @@ package org.infoshare.rekinyfinansjeryweb.data;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Set;
 
 public class User {
     private long id;
     private String email;
     private String password;
-    private UserEnum role;
+    private Set<UserEnum> role;
     private String name;
     private String lastname;
+    private boolean enabled;
     private double billingCurrency;
     private Map<String,UserCurrency> myCurrencies;
     private LocalDateTime created;
@@ -42,11 +44,11 @@ public class User {
         this.password = password;
     }
 
-    public UserEnum getRole() {
+    public Set<UserEnum> getRole() {
         return role;
     }
 
-    public void setRole(UserEnum role) {
+    public void setRole(Set<UserEnum> role) {
         this.role = role;
     }
 
@@ -64,6 +66,14 @@ public class User {
 
     public void setLastname(String lastname) {
         this.lastname = lastname;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public double getBillingCurrency() {
@@ -106,10 +116,11 @@ public class User {
         User user = (User) o;
 
         if (id != user.id) return false;
+        if (enabled != user.enabled) return false;
         if (Double.compare(user.billingCurrency, billingCurrency) != 0) return false;
         if (email != null ? !email.equals(user.email) : user.email != null) return false;
         if (password != null ? !password.equals(user.password) : user.password != null) return false;
-        if (role != user.role) return false;
+        if (role != null ? !role.equals(user.role) : user.role != null) return false;
         if (name != null ? !name.equals(user.name) : user.name != null) return false;
         if (lastname != null ? !lastname.equals(user.lastname) : user.lastname != null) return false;
         if (myCurrencies != null ? !myCurrencies.equals(user.myCurrencies) : user.myCurrencies != null) return false;
@@ -127,6 +138,7 @@ public class User {
         result = 31 * result + (role != null ? role.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (lastname != null ? lastname.hashCode() : 0);
+        result = 31 * result + (enabled ? 1 : 0);
         temp = Double.doubleToLongBits(billingCurrency);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (myCurrencies != null ? myCurrencies.hashCode() : 0);
@@ -144,6 +156,7 @@ public class User {
                 ", role=" + role +
                 ", name='" + name + '\'' +
                 ", lastname='" + lastname + '\'' +
+                ", enabled=" + enabled +
                 ", billingCurrency=" + billingCurrency +
                 ", myCurrencies=" + myCurrencies +
                 ", created=" + created +

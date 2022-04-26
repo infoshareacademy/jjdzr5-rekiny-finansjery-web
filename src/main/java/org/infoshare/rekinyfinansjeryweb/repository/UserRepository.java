@@ -2,72 +2,68 @@ package org.infoshare.rekinyfinansjeryweb.repository;
 
 import org.infoshare.rekinyfinansjeryweb.data.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class UserRepository {
 
-    private static User user = new User();
-    private static List<User> usersRepository = new ArrayList<>();
+    @Autowired
+    private PasswordEncoder encoder;
+
+    private List<User> usersRepository = new ArrayList<>();
     
-    public static List<User> getUserRepository() {
+    public List<User> getUserRepository() {
         if (usersRepository.size() == 0) {
             fillRepositoryWithDefaults();
         }
         return usersRepository;
     }
 
-    public static User getUser(){
-        return user;
-    }
-
-    public static void singOut(){
-        user = new User();
-    }
-
-    public static void setUser(User setUser){
-        user = setUser;
-    }
-
-    public static User findUserById(long id){
-        return UserRepository.getUserRepository().stream()
+    public User findUserById(long id){
+        return getUserRepository().stream()
                 .filter( e -> e.getId() == id)
                 .findFirst().orElse(new User());
     }
 
-    public static User findByEmailAddress(String email){
-        return UserRepository.getUserRepository().stream()
+    public User findByEmailAddress(String email){
+        return getUserRepository().stream()
                 .filter( e -> e.getEmail().equalsIgnoreCase(email))
                 .findFirst().orElse(new User());
     }
 
-    public static void save(User user){
+    public User findByUsername(String username){
+        return getUserRepository().stream()
+                .filter( e -> e.getEmail().equalsIgnoreCase(username))
+                .findFirst().orElse(new User());
+    }
+
+    public void save(User user){
         usersRepository.add(user);
     }
 
-    public static void update(User user){
-        User oldUser = UserRepository.findUserById(user.getId());
-        UserRepository.getUserRepository().remove(oldUser);
-        UserRepository.getUserRepository().add(user);
+    public void update(User user){
+        User oldUser = findUserById(user.getId());
+        usersRepository.remove(oldUser);
+        usersRepository.add(user);
     }
 
-    public static void delete(long id){
+    public void delete(long id){
         usersRepository.removeIf(user -> user.getId() == id);
     }
 
-
-    private static void fillRepositoryWithDefaults() {
+    private void fillRepositoryWithDefaults() {
         User user1 = new User();
         user1.setId(1);
         user1.setEmail("admin@admin.pl");
-        user1.setPassword("admin");
-        user1.setRole(UserEnum.ADMIN);
+        user1.setPassword(encoder.encode("admin"));
+        Set<UserEnum> roleSet = new HashSet<>();
+        roleSet.add(UserEnum.ROLE_ADMIN);
+        roleSet.add(UserEnum.ROLE_USER);
+        user1.setRole(roleSet);
         user1.setName("Maciej");
         user1.setLastname("Chyła");
         user1.setBillingCurrency(155222.86);
@@ -84,7 +80,25 @@ public class UserRepository {
         UserCurrency currency2 = new UserCurrency(500.50,operationHistoryList2);
         currencyMap.put("EUR", currency2);
         user1.setMyCurrencies(currencyMap);
+        user1.setEnabled(true);
         user1.setCreated(LocalDateTime.now());
         usersRepository.add(user1);
+
+        User user2 = new User();
+        user2.setId(2);
+        user2.setEmail("user@user.pl");
+        user2.setPassword(encoder.encode("user"));
+        Set<UserEnum> roleSet2 = new HashSet<>();
+        roleSet2.add(UserEnum.ROLE_USER);
+        user2.setRole(roleSet2);
+        user2.setName("Jan");
+        user2.setLastname("Kowalski");
+        user2.setBillingCurrency(1000);
+        Map<String, UserCurrency> currencyMap2 = new HashMap<>();
+        user2.setMyCurrencies(currencyMap2);
+        user2.setEnabled(true);
+        user2.setCreated(LocalDateTime.now());
+        usersRepository.add(user2);
+
     }
 }
