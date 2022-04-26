@@ -66,22 +66,31 @@
     </div>
 </div>
 <!-- ======= Pagination ======= -->
-<div th:fragment="pagination" class="d-flex justify-content-center">
-    <ul class="pagination">
-        <li th:if="${pageActive - 3 > 0}" th:class="page-item">
+<div th:fragment="pagination" class="d-flex justify-content-center" th:with="offset=3">
+    <ul class="pagination" th:with="start=${pageActive - offset},end=${pageActive + offset},last=${pagesAmount-1}">
+        <li th:if="${start > 0}" th:class="page-item">
             <a th:class="page-link"
                th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
-               th:href="${urlBuilder.replaceQueryParam('page', '0').toUriString()}">First</a>
+               th:href="${urlBuilder.replaceQueryParam('page', '0').toUriString()}">1</a>
         </li>
-        <li th:each="counter : ${#numbers.sequence(pageActive - 3 < 0 ? 0 : pageActive - 3, pageActive + 3 > pagesAmount - 1 ? pagesAmount - 1 : pageActive + 3)}" th:class="'page-item '+${counter eq pageActive ? 'active' : ''}">
+        <li th:if="${start > 1}" th:class="page-item">
+            <a th:class="page-link">...</a>
+        </li>
+        <li th:each="counter : ${#numbers.sequence(start < 0 ? 0 : (end > last ? (start - (end - last) < 0 ? 0 : start - (end - last)) : start),
+            end > last ? last : (start < 0 ? end - start : end))}"
+            th:class="'page-item '+${counter eq pageActive ? 'active' : ''}">
             <a th:class="page-link"  th:text="${counter+1}"
                th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
                th:href="${urlBuilder.replaceQueryParam('page', counter).toUriString()}">#</a>
         </li>
-        <li th:if="${pageActive + 3 < pagesAmount - 1}" th:class="page-item">
+        <li th:if="${end < last - 1}" th:class="page-item">
+            <a th:class="page-link">...</a>
+        </li>
+        <li th:if="${end < last}" th:class="page-item">
             <a th:class="page-link"
                th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
-               th:href="${urlBuilder.replaceQueryParam('page', pagesAmount - 1).toUriString()}">Last</a>
+               th:href="${urlBuilder.replaceQueryParam('page', last).toUriString()}"
+               th:text="${last+1}">Last</a>
         </li>
     </ul>
 </div>
