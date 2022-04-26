@@ -66,8 +66,11 @@
     </div>
 </div>
 <!-- ======= Pagination ======= -->
-<div th:fragment="pagination" class="d-flex justify-content-center" th:with="offset=3">
-    <ul class="pagination" th:with="start=${pageActive - offset},end=${pageActive + offset},last=${pagesAmount-1}">
+<div th:fragment="pagination" class="d-flex justify-content-center"
+     th:with="offset=3,bottom_offset=${pageActive - offset},upper_offset=${pageActive + offset},last=${pagesAmount-1}">
+    <ul th:class="pagination"
+        th:with="start=${bottom_offset < 0 ? 0 : (upper_offset > last ? (bottom_offset - (upper_offset - last) < 0 ? 0 : bottom_offset - (upper_offset - last)) : bottom_offset)},
+        end=${upper_offset > last ? last : (bottom_offset < 0 ? upper_offset - bottom_offset : upper_offset)}">
         <li th:if="${start > 0}" th:class="page-item">
             <a th:class="page-link"
                th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
@@ -76,8 +79,7 @@
         <li th:if="${start > 1}" th:class="page-item">
             <a th:class="page-link">...</a>
         </li>
-        <li th:each="counter : ${#numbers.sequence(start < 0 ? 0 : (end > last ? (start - (end - last) < 0 ? 0 : start - (end - last)) : start),
-            end > last ? last : (start < 0 ? end - start : end))}"
+        <li th:each="counter : ${#numbers.sequence(start,end)}"
             th:class="'page-item '+${counter eq pageActive ? 'active' : ''}">
             <a th:class="page-link"  th:text="${counter+1}"
                th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"

@@ -1,7 +1,12 @@
-<div th:fragment="collection_view">
+<div th:fragment="page_wraper">
     <div class="text-end">
         Elements found: <span th:text="${numberOfElements}"></span>
     </div>
+    <div th:if="${numberOfElements>0}" th:insert="fragments/general :: pagination"></div>
+    <div th:if="${numberOfElements>0}" th:insert="fragments/collectionView :: collection_view"></div>
+    <div th:if="${numberOfElements>0}" th:insert="fragments/general :: pagination"></div>
+</div>
+<div th:fragment="collection_view">
     <div th:each="exchangeRates : ${pageContent}">
         <div th:insert="fragments/collectionView :: element_view"></div>
     </div>
