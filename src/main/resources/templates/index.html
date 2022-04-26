@@ -34,20 +34,23 @@
 </section>
 
 <!-- ======= Search ======= -->
-<section id="search" class="bg-primary text-light p-5">
-    <div class="container">
-        <div class="d-md-flex align-items-center justify-content-between">
-            <h3 class="mb-3 mb-md-0">Search Currency</h3>
-            <div class="input-group currency-input">
-                <input type="text" class="form-control" placeholder="Enter Currency">
-                <div class="input-group-append">
-                    <button class="btn btn-dark btn-lg" type="button">Search</button>
-                </div>
+    <section id="search" class="bg-primary text-light p-5">
+        <div class="container">
+            <form th:action="@{/search}" th:object="${searchSettings}">
+            <div class="d-md-flex align-items-center justify-content-between" >
+                <h3 class="mb-3 mb-md-0">Search Currency</h3>
+                    <div class="input-group currency-input">
+                    <input class="form-control form-control w-50" type="text" th:placeholder="#{search.placeholder}" name="searchPhrase"/>
+                    <select class="form-select w-25" id="inputGroupSelect01"  name="searchType">
+                        <option th:value="'table'" th:text="#{search.option.tables}"></option>
+                        <option th:value="'currency'" th:text="#{search.option.currencies}"></option>
+                    </select>
+                    <input class="form-control form-control-sm w-25" type="submit" th:value="#{search.button}"/>
+                    </div>
             </div>
+            </form>
         </div>
-    </div>
-</section>
-
+    </section>
 <!-- ======= About ======= -->
 <section id="about" class="p-5 pb-lg-0">
     <div class="container">
