@@ -9,6 +9,10 @@ body::before {
         width: 50%;
     }
 }
-.language_flag_selector_icon{
+
+.language_flag_selector_icon {
     width: 20px;
+}
+#filtration_input label {
+    margin-top: 8px;
 }
