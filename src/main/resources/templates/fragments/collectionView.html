@@ -1,6 +1,6 @@
 <div th:fragment="page_wraper">
     <div class="text-end">
-        Elements found: <span th:text="${numberOfElements}"></span>
+        <span th:text="#{collection.view.elements.found}"></span>: <span th:text="${numberOfElements}"></span>
     </div>
     <div th:if="${numberOfElements>0}" th:insert="fragments/general :: pagination"></div>
     <div th:if="${numberOfElements>0}" th:insert="fragments/collectionView :: collection_view"></div>
@@ -18,13 +18,13 @@
             <h4 th:text="${exchangeRates.getNo()}" class="font-weight-bold"></h4>
         </div>
         <div class="col-2 text-end">
-            Effective date:
+            <span th:text="#{collection.view.effective.date}"></span>:
         </div>
         <div class="col-2 text-start">
             <span class="font-weight-bold" th:text="${exchangeRates.getEffectiveDate()}"></span>
         </div>
         <div class="col-2 text-end">
-            Trading date:
+            <span th:text="#{collection.view.trading.date}"></span>:
         </div>
         <div class="col-2 text-start">
             <span class="font-weight-bold" th:text="${exchangeRates.getTradingDate()}"></span>
@@ -34,10 +34,10 @@
     <table class="table table-striped table-sm">
         <thead>
             <tr>
-                <th scope="col">Code</th>
-                <th scope="col">Currency</th>
-                <th scope="col">Bid</th>
-                <th scope="col">Ask</th>
+                <th scope="col" th:text="#{collection.view.code}"></th>
+                <th scope="col" th:text="#{collection.view.currency.name}"></th>
+                <th scope="col" th:text="#{collection.view.bid}"></th>
+                <th scope="col" th:text="#{collection.view.ask}"></th>
             </tr>
         </thead>
         <tbody>
