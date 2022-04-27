@@ -1,5 +1,5 @@
 <div th:fragment="filtration_tool">
-    <div class="bg-secondary mt-5 p-3 border border-2 border-secondary rounded-3">
+    <div class="bg-secondary mt-1 p-3 border border-2 border-secondary rounded-3">
         <div class="h4 text-light">Filter by:</div>
         <form id="filtration_settings_form" name="filtration_settings_form" class="form-group" th:object="${filtrationSettings}" th:insert="fragments/filtration :: filtration_input"></form>
     </div>
