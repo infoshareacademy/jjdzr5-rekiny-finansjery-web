@@ -23,4 +23,13 @@ public class CollectionService {
         }
     }
 
+    public void deleteTable(String tableNo) {
+        if (NBPApiManager.getInstance().removeDailyTable(tableNo)) {
+            NBPApiManager.getInstance().saveCollection();
+            //TODO Add logger
+        } else {
+            //TODO Add logger
+        }
+    }
+
 }
