@@ -6,7 +6,7 @@ import org.infoshare.rekinyfinansjeryweb.form.TableSettings;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CollectionService {
+public class AdminService {
 
     public void addTable(TableSettings settings) {
         DailyExchangeRates newDailyTable = new DailyExchangeRates();
@@ -31,5 +31,4 @@ public class CollectionService {
             //TODO Add logger
         }
     }
-
 }

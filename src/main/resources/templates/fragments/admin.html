@@ -13,7 +13,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-5 pt-0 text-start">
-                    <form th:action="@{/tables}" th:object="${newDailyTable}" method="post">
+                    <form th:action="@{/admin/add-table}" th:object="${newDailyTable}" method="post">
                         <div class="form-group mb-3">
                             <label for="tableNo" class="col-form-label">Table Number</label>
                             <input type="text" class="form-control rounded-4" id="tableNo" th:field="*{no}">
@@ -64,7 +64,7 @@
                             Cancel
                         </button>
                         <form th:with="no=${exchangeRates.getNo()}"
-                              th:action="@{tables/delete-table/{table}(table=${#strings.replace(no,'/','_')})}"
+                              th:action="@{admin/delete-table/{table}(table=${#strings.replace(no,'/','_')})}"
                               th:method="post">
                             <input type="hidden" th:value="post">
                             <button class="btn btn-lg my-2 rounded-4 btn-danger " style="width: 150px" type="submit">
