@@ -6,16 +6,15 @@
     <title>Template</title>
     <link rel="stylesheet" th:href="@{/styles/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/styles/styles.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 </head>
 <body>
 
-<header th:insert="fragments/general :: header"></header>
-<div th:insert="fragments/general :: hero"></div>
+<header th:insert="fragments/general :: menu"></header>
 
 <!-- ======= Main ======= -->
 <main>
     <div class="container mt-3">
-
         <h1>Hello World</h1>
 
         <!-- tabela -->
@@ -37,6 +36,7 @@
             </tr>
             </tbody>
         </table>
+
         <!-- inputs -->
             <!-- większość z nich tak jak poniżej -->
             <input class="form-control" id="input_field" type="text"/>
@@ -44,16 +44,116 @@
             <!-- checkbox w stylu przycisku -->
             <input type="checkbox" class="btn-check" id="checkbox_input" >
             <label for="checkbox_input">checkbox</label>
-        <!-- buttons -->
+
+        <!-- ======= Buttons ======= -->
             <!-- ważniejsze -->
             <a href="#" class="btn btn-sm m-1 btn-primary">tekst</a>
             <!-- drugorzędne -->
             <a href="#" class="btn btn-sm m-1 btn-secondary">tekst</a>
+
+        <!-- modal/form buttons -->
+        <button class="btn btn-lg my-2 rounded-4 btn-secondary" style="width: 150px" type="button">Cancel</button>
+        <button class="btn btn-lg my-2 rounded-4 btn-warning" style="width: 150px" type="button">Save</button>
+        <button class="btn btn-lg my-2 rounded-4 btn-danger" style="width: 150px" type="button">Delete</button>
+
+        <button class="btn btn-lg my-2 rounded-4 btn-secondary" style="width: 150px" type="button"
+                th:data-bs-toggle="modal"
+                th:data-bs-target="'#modalWithForm'">
+            Modal with form
+        </button>
+        <button class="btn btn-lg my-2 rounded-4 btn-secondary" style="width: 150px" type="button"
+                th:data-bs-toggle="modal"
+                th:data-bs-target="'#confirmationModal'">
+            Confirmation Modal
+        </button>
+
+        <!-- ======= Modals ======= -->
+        <!-- modal with form -->
+        <div class="modal fade py-5" tabindex="-1" role="dialog" th:id="'modalWithForm'">
+            <div class="modal-dialog">
+                <div class="modal-content rounded-5 shadow">
+                    <div class="modal-header border-bottom-0">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body pb-4 pt-0 text-center">
+                        <!-- modal body -->
+                        <div class="d-flex justify-content-around align-items-center px-5">
+                            <!-- You can choose icon from https://icons.getbootstrap.com/ -->
+                            <!-- Usage: bi-iconName -->
+                            <i class="bi bi-plus-circle text-primary" style="font-size: 85px"></i>
+                            <h2 th:text="'Modal'" class="fw-bold mb-0">Modal</h2>
+                        </div>
+                        <!-- add th:object and th:fields -->
+                        <form th:action="@{/}"
+                              th:method="post"
+                              class="px-5 my-3">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <label for="input1" class="col-form-label w-50">Input 1</label>
+                                <input type="text" class="form-control rounded-4" id="input1">
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <label for="input2" class="col-form-label w-50">Input 2</label>
+                                <input type="text" class="form-control rounded-4" id="input2"
+                                       placeholder="Input 2">
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <label for="input3" class="col-form-label w-50">Input 3</label>
+                                <input type="date" class="form-control rounded-4" id="input3"
+                                       placeholder="Input 3">
+                            </div>
+                            <button class="btn btn-lg my-2 rounded-4 btn-secondary" style="width: 150px" type="button"
+                                    data-bs-dismiss="modal">
+                                Cancel
+                            </button>
+                            <button class="btn btn-lg my-2 rounded-4 btn-primary" style="width: 150px" type="submit">
+                                Submit
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end of modal with form -->
+
+        <!-- confirmation modal -->
+        <div class="modal modal-alert fade py-5" tabindex="-1" role="dialog" th:id="'confirmationModal'">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content rounded-5 shadow">
+                    <div class="modal-header border-bottom-0">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <!-- modal body -->
+                    <div class="modal-body pb-5 pt-0 text-center">
+                        <!-- You can choose icon from https://icons.getbootstrap.com/ -->
+                        <!-- Usage: bi-iconName -->
+                        <i class="bi bi-x-circle text-primary" style="font-size: 85px"></i>
+                        <h3 th:text="'Information'" class="mt-3">Information</h3>
+                        <h5 class="mb-0 mt-4">Lorem ipsum dolor sit amet, consectetur adipisicing?</h5>
+                        <p class="mb-0">Lorem ipsum dolor sit amet.</p>
+                    </div>
+                    <!-- modal footer -->
+                    <div class="modal-footer d-flex p-3 align-items-center justify-content-center">
+                        <button class="btn btn-lg my-2 rounded-4 btn-secondary" style="width: 150px" type="button"
+                                data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+                        <form th:action="@{/}"
+                              th:method="post">
+                            <input type="hidden" th:value="post">
+                            <button class="btn btn-lg my-2 rounded-4 btn-primary" style="width: 150px" type="submit">
+                                Confirm
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end of confirmation modal -->
+
     </div>
 </main>
 
 <footer th:insert="fragments/general :: footer"></footer>
-
-<script th:src="@{~/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>
