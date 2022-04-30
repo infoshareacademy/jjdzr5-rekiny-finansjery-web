@@ -13,7 +13,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-5 pt-0 text-start">
-                    <form th:action="@{/admin/add-table}" th:object="${newDailyTable}" method="post">
+                    <form th:action="@{/admin/add-table}" th:object="${newDailyTable}" th:method="post">
                         <div class="form-group mb-3">
                             <label for="tableNo" class="col-form-label">Table Number</label>
                             <input type="text" class="form-control rounded-4" id="tableNo" th:field="*{no}">
@@ -39,14 +39,67 @@
 <!-- ======= Edit/Delete Table ======= -->
 <div th:fragment="edit_table" id="edit_table">
     <div class="text-end">
-        <button class="btn btn-warning text-light"><i class="bi bi-pencil"></i> Edit Table</button>
 
+        <!-- Edit Table -->
+        <button th:with="no=${exchangeRates.getNo()}" class="btn btn-warning text-light" data-bs-toggle="modal"
+                th:data-bs-target="'#edit' + ${#strings.replace(no,'/','_')}">
+            <i class="bi bi-pencil"></i> Edit Table
+        </button>
+        <div th:with="no=${exchangeRates.getNo()}" class="modal fade py-5" tabindex="-1" role="dialog"
+             th:id="'edit' + ${#strings.replace(no,'/','_')}">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content rounded-5 shadow">
+                    <div class="modal-header border-bottom-0">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body pb-4 pt-0 text-center">
+                        <!--Edycja-->
+                        <div class="d-flex justify-content-between align-items-center px-5">
+                            <i class="bi bi-pencil-square text-warning" style="font-size: 85px"></i>
+                            <h2 th:text="'Edit Table: ' + ${exchangeRates.getNo()}" class="fw-bold mb-0">Edit Table</h2>
+                        </div>
+                        <form th:with="no=${exchangeRates.getNo()}"
+                              th:action="@{admin/edit-table/{table}(table=${#strings.replace(no,'/','_')})}"
+                              th:object="${newDailyTable}"
+                              th:method="post"
+                                class="px-5 my-3">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <label for="editNo" class="col-form-label w-50">Table Number</label>
+                                <input type="text" class="form-control rounded-4" id="editNo"
+                                       th:value="${exchangeRates.getNo()}" name="no">
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <label for="editEffectiveDate" class="col-form-label w-50">Effective Date</label>
+                                <input type="date" class="form-control rounded-4" id="editEffectiveDate"
+                                       placeholder="Effective Date" th:value="${exchangeRates.getEffectiveDate()}"
+                                       name="effectiveDate">
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <label for="editTradingDate" class="col-form-label w-50">Trading Date</label>
+                                <input type="date" class="form-control rounded-4" id="editTradingDate"
+                                       placeholder="Trading Date" th:value="${exchangeRates.getTradingDate()}"
+                                       name="tradingDate">
+                            </div>
+                            <button class="btn btn-lg my-2 rounded-4 btn-secondary" style="width: 150px" type="button"
+                                    data-bs-dismiss="modal">
+                                Cancel
+                            </button>
+                            <button class="btn btn-lg my-2 rounded-4 btn-warning" style="width: 150px" type="submit">
+                                Save
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Table -->
         <button th:with="no=${exchangeRates.getNo()}" class="btn btn-danger text-light" data-bs-toggle="modal"
-                th:data-bs-target="'#' + ${#strings.replace(#strings.prepend(no,'_'),'/','_')}">
+                th:data-bs-target="'#delete' + ${#strings.replace(no,'/','_')}">
             <i class="bi bi-x-lg"></i> Delete Table
         </button>
         <div th:with="no=${exchangeRates.getNo()}" class="modal modal-alert fade py-5" tabindex="-1" role="dialog"
-             th:id="${#strings.replace(#strings.prepend(no,'_'),'/','_')}">
+             th:id="'delete' + ${#strings.replace(no,'/','_')}">
             <div class="modal-dialog" role="document">
                 <div class="modal-content rounded-5 shadow">
                     <div class="modal-header border-bottom-0">

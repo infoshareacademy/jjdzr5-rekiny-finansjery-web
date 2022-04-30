@@ -28,4 +28,10 @@ public class AdminController {
         adminService.deleteTable(no.replace('_', '/'));
         return new RedirectView("/tables");
     }
+
+    @PostMapping("/edit-table/{no}")
+    public RedirectView editTable(@PathVariable("no") String no, @ModelAttribute TableSettings settings) {
+        adminService.editTable(no, settings);
+        return new RedirectView("/tables");
+    }
 }
