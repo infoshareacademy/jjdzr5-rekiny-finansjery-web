@@ -33,7 +33,7 @@ public class FiltrationService {
         filterByCode(dailyExchangeRatesFiltrationService, settings);
 
         List<DailyExchangeRates> dailyExchangeRates = dailyExchangeRatesFiltrationService.getDailyExchangeRates();
-        dailyExchangeRates.sort((t1, t2) -> t1.getEffectiveDate().compareTo(t2.getEffectiveDate()) * -1);
+        dailyExchangeRates.sort((t1, t2)-> t1.getEffectiveDate().compareTo(t2.getEffectiveDate())*-1);
         return dailyExchangeRates;
     }
 
