@@ -1,5 +1,6 @@
 package org.infoshare.rekinyfinansjeryweb.controller;
 
+import com.infoshareacademy.domain.ExchangeRate;
 import org.infoshare.rekinyfinansjeryweb.form.TableSettings;
 import org.infoshare.rekinyfinansjeryweb.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,25 @@ public class AdminController {
 
     @PostMapping("/edit-table/{no}")
     public RedirectView editTable(@PathVariable("no") String no, @ModelAttribute TableSettings settings) {
-        adminService.editTable(no, settings);
+        adminService.editTable(no.replace('_', '/'), settings);
+        return new RedirectView("/tables");
+    }
+
+    @PostMapping("/add-currency/{no}")
+    public RedirectView postNewTable(@PathVariable("no") String no, @ModelAttribute ExchangeRate newExchangeRate) {
+        adminService.addCurrency(no.replace('_', '/'), newExchangeRate);
+        return new RedirectView("/tables");
+    }
+
+    @PostMapping("/delete-currency/{no}/{code}")
+    public RedirectView deleteCurrency(@PathVariable("no") String no, @PathVariable("code") String code) {
+        adminService.deleteCurrency(no.replace('_', '/'), code);
+        return new RedirectView("/tables");
+    }
+
+    @PostMapping("/edit-currency/{no}/{code}")
+    public RedirectView editCurrency(@PathVariable("no") String no, @PathVariable("code") String code, @ModelAttribute ExchangeRate newExchangeRate) {
+        adminService.editCurrency(no.replace('_', '/'), code, newExchangeRate);
         return new RedirectView("/tables");
     }
 }

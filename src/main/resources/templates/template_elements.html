@@ -51,11 +51,16 @@
             <!-- drugorzędne -->
             <a href="#" class="btn btn-sm m-1 btn-secondary">tekst</a>
 
-        <!-- modal/form buttons -->
-        <button class="btn btn-lg my-2 rounded-4 btn-secondary" style="width: 150px" type="button">Cancel</button>
-        <button class="btn btn-lg my-2 rounded-4 btn-warning" style="width: 150px" type="button">Save</button>
-        <button class="btn btn-lg my-2 rounded-4 btn-danger" style="width: 150px" type="button">Delete</button>
-
+        <!-- Modal/Form Buttons -->
+        <!-- Large -->
+        <button class="btn btn-lg my-2 mx-1 rounded-4 btn-secondary" style="width: 150px" type="button">Cancel</button>
+        <button class="btn btn-lg my-2 mx-1 rounded-4 btn-warning" style="width: 150px" type="button">Save</button>
+        <button class="btn btn-lg my-2 mx-1 rounded-4 btn-danger" style="width: 150px" type="button">Delete</button>
+        <!-- Small -->
+        <button class="btn mx-1 btn-primary"><i class="bi bi-eye"></i></button>
+        <button class="btn mx-1 btn-warning"><i class="bi bi-pencil"></i></button>
+        <button class="btn mx-1 btn-danger"><i class="bi bi-x-lg"></i></button>
+        <!-- With attached modals -->
         <button class="btn btn-lg my-2 rounded-4 btn-secondary" style="width: 150px" type="button"
                 th:data-bs-toggle="modal"
                 th:data-bs-target="'#modalWithForm'">

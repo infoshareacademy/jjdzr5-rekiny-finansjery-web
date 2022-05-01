@@ -1,6 +1,7 @@
 package org.infoshare.rekinyfinansjeryweb.controller;
 
 import com.infoshareacademy.domain.DailyExchangeRates;
+import com.infoshareacademy.domain.ExchangeRate;
 import com.infoshareacademy.services.NBPApiManager;
 import org.infoshare.rekinyfinansjeryweb.controller.controllerComponents.ListToPagesSplitter;
 import org.infoshare.rekinyfinansjeryweb.form.SearchSettings;
@@ -38,6 +39,7 @@ public class FiltrationController {
         model.addAttribute("filtrationSettings", settings);
         model.addAttribute("possibleCurrencies", usedCurrenciesService.getShortNamesOfCurrencies(NBPApiManager.getInstance(), settings.getCurrency()));
         model.addAttribute("newDailyTable", new TableSettings());
+        model.addAttribute("newCurrency", new ExchangeRate());
         return "filtration";
     }
 }
