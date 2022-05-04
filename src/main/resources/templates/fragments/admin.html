@@ -23,17 +23,22 @@
                           class="px-5 my-3">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <label for="tableNo" class="col-form-label w-50">Table Number</label>
-                            <input type="text" class="form-control rounded-4" id="tableNo" th:field="*{no}">
+                            <input type="text" class="form-control rounded-4" id="tableNo" th:field="*{no}"
+                                   required minlength="3" maxlength="14" pattern="^[a-zA-Z0-9/]+$">
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <label for="effectiveDate" class="col-form-label w-50">Effective Date</label>
                             <input type="date" class="form-control rounded-4" id="effectiveDate"
-                                   placeholder="Effective Date" th:field="*{effectiveDate}">
+                                   placeholder="Effective Date" th:field="*{effectiveDate}" required
+                                   th:min="${#dates.format(#dates.create(2022,1,1), 'yyyy-MM-dd')}"
+                                   th:max="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <label for="tradingDate" class="col-form-label w-50">Trading Date</label>
                             <input type="date" class="form-control rounded-4" id="tradingDate"
-                                   placeholder="Trading Date" th:field="*{tradingDate}">
+                                   placeholder="Trading Date" th:field="*{tradingDate}" required
+                                   th:min="${#dates.format(#dates.create(2022,1,1), 'yyyy-MM-dd')}"
+                                   th:max="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
                         </div>
                         <button class="btn btn-lg my-2 mx-1 rounded-4 btn-secondary" style="width: 150px" type="button"
                                 data-bs-dismiss="modal">
@@ -80,19 +85,24 @@
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <label for="editNo" class="col-form-label w-50">Table Number</label>
                                 <input type="text" class="form-control rounded-4" id="editNo"
-                                       th:value="${exchangeRates.getNo()}" name="no">
+                                       th:value="${exchangeRates.getNo()}" name="no" required
+                                       minlength="3" maxlength="14" pattern="^[a-zA-Z0-9/]+$">
                             </div>
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <label for="editEffectiveDate" class="col-form-label w-50">Effective Date</label>
                                 <input type="date" class="form-control rounded-4" id="editEffectiveDate"
                                        placeholder="Effective Date" th:value="${exchangeRates.getEffectiveDate()}"
-                                       name="effectiveDate">
+                                       name="effectiveDate" required
+                                       th:min="${#dates.format(#dates.create(2022,1,1), 'yyyy-MM-dd')}"
+                                       th:max="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
                             </div>
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <label for="editTradingDate" class="col-form-label w-50">Trading Date</label>
                                 <input type="date" class="form-control rounded-4" id="editTradingDate"
                                        placeholder="Trading Date" th:value="${exchangeRates.getTradingDate()}"
-                                       name="tradingDate">
+                                       name="tradingDate" required
+                                       th:min="${#dates.format(#dates.create(2022,1,1), 'yyyy-MM-dd')}"
+                                       th:max="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
                             </div>
                             <button class="btn btn-lg my-2 mx-1 rounded-4 btn-secondary" style="width: 150px"
                                     type="button"
@@ -177,22 +187,26 @@
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <label for="currencyName" class="col-form-label w-50">Currency Name</label>
                             <input type="text" class="form-control rounded-4" id="currencyName"
-                                   placeholder="Currency Name" th:field="*{currency}">
+                                   th:field="*{currency}" required
+                                   minlength="3" maxlength="20" pattern="^[a-zA-Z() ]+$">
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <label for="code" class="col-form-label w-50">Currnecy Code</label>
                             <input type="text" class="form-control rounded-4" id="code"
-                                   placeholder="Currency Code" th:field="*{code}">
+                                   th:field="*{code}" required
+                                   minlength="3" maxlength="3" pattern="^[a-zA-Z]+$">
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <label for="bid" class="col-form-label w-50">Currency Bid</label>
                             <input type="number" class="form-control rounded-4" id="bid"
-                                   placeholder="Currency Bid" th:field="*{bid}">
+                                   value="0" step="any" th:field="*{bid}" required
+                                   min="0" max="100">
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <label for="ask" class="col-form-label w-50">Currency Ask</label>
                             <input type="number" class="form-control rounded-4" id="ask"
-                                   placeholder="Currency Ask" th:field="*{ask}">
+                                   value="0" step="any" th:field="*{ask}" required
+                                   min="0" max="100">
                         </div>
                         <button class="btn btn-lg my-2 mx-1 rounded-4 btn-secondary" style="width: 170px" type="button"
                                 data-bs-dismiss="modal">
@@ -239,25 +253,26 @@
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <label for="editCurrencyName" class="col-form-label w-50">Currency Name</label>
                             <input type="text" class="form-control rounded-4" id="editCurrencyName"
-                                   th:value="${rate.currency}" name="currency">
+                                   th:value="${rate.currency}" name="currency" required
+                                   minlength="3" maxlength="20" pattern="^[a-zA-Z() ]+$">
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <label for="editCurrencyCode" class="col-form-label w-50">Currency Code</label>
                             <input type="text" class="form-control rounded-4" id="editCurrencyCode"
-                                   placeholder="Currency Code" th:value="${rate.code}"
-                                   name="code">
+                                   th:value="${rate.code}" name="code" required
+                                   minlength="3" maxlength="3" pattern="^[a-zA-Z]+$">
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <label for="editCurrencyBid" class="col-form-label w-50">Currency Bid</label>
                             <input type="number" class="form-control rounded-4" id="editCurrencyBid"
-                                   placeholder="Currency Bid" th:value="${rate.bid}"
-                                   name="bid">
+                                   th:value="${rate.bid}" step="any" name="bid" required
+                                   min="0" max="100">
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <label for="editCurrencyAsk" class="col-form-label w-50">Currency Ask</label>
                             <input type="number" class="form-control rounded-4" id="editCurrencyAsk"
-                                   placeholder="Currency Ask" th:value="${rate.ask}"
-                                   name="ask">
+                                   th:value="${rate.ask}" step="any" name="ask" required
+                                   min="0" max="100">
                         </div>
                         <button class="btn btn-lg my-2 mx-1 rounded-4 btn-secondary" style="width: 150px" type="button"
                                 data-bs-dismiss="modal">
