@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class SearchService {
@@ -35,6 +36,7 @@ public class SearchService {
 
         List<DailyExchangeRates> dailyExchangeRates = collectionFiltrationService.getFilteredCollectionFromList(result, settings);
         dailyExchangeRates.sort((t1, t2)-> t1.getEffectiveDate().compareTo(t2.getEffectiveDate())*-1);
+
         return dailyExchangeRates;
     }
 
@@ -45,6 +47,9 @@ public class SearchService {
     private List<DailyExchangeRates> searchCurrencies(DailyExchangeRatesSearchService dailyExchangeRatesSearchService, SearchSettings settings) {
         return dailyExchangeRatesSearchService.forEachDay(exchangeRates -> exchangeRates.setRates(new ExchangeRatesSearchService(exchangeRates
                 .getRates())
-                .searchWidely(settings.getSearchPhrase())));
+                .searchWidely(settings.getSearchPhrase())))
+                .stream()
+                .filter(table -> table.getRates().size() > 0)
+                .collect(Collectors.toList());
     }
 }

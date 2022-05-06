@@ -1,0 +1,56 @@
+<!-- ======= Add New Table ======= -->
+<div th:fragment="add_table" id="add_table" class="text-end pe-3">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add_table_modal">
+        <i class="bi bi-plus-lg"></i> New Table
+    </button>
+
+    <div class="modal fade py-5" tabindex="-1" role="dialog" id="add_table_modal">
+        <div class="modal-dialog">
+            <div class="modal-content rounded-5 shadow">
+
+                <div class="modal-header p-5 pb-4 border-bottom-0">
+                    <h2 class="fw-bold mb-0">Add New Table</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-5 pt-0 text-start">
+                    <form th:action="@{/tables}" th:object="${newDailyTable}" method="post">
+                        <div class="form-group mb-3">
+                            <label for="tableNo" class="col-form-label">Table Number</label>
+                            <input type="text" class="form-control rounded-4" id="tableNo" th:field="*{no}">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="effectiveDate" class="col-form-label">Effective Date</label>
+                            <input type="date" class="form-control rounded-4" id="effectiveDate"
+                                   placeholder="Effective Date" th:field="*{effectiveDate}">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="tradingDate" class="col-form-label">Trading Date</label>
+                            <input type="date" class="form-control rounded-4" id="tradingDate"
+                                   placeholder="Trading Date" th:field="*{tradingDate}">
+                        </div>
+                        <button class="w-100 my-2 btn btn-lg rounded-4 btn-primary" type="submit">Add Table</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======= Edit Table ======= -->
+<div th:fragment="edit_table" id="edit_table">
+    <div class="text-end">
+        <button class="btn btn-warning text-light"><i class="bi bi-pencil"></i> Edit Table</button>
+        <button class="btn btn-danger text-light"><i class="bi bi-x-lg"></i> Delete Table</button>
+    </div>
+</div>
+
+<!-- ======= Add New Currency ======= -->
+<div th:fragment="add_currency" id="add_currency" class="text-center">
+    <button class="btn btn-secondary text-light mt-0 px-2"><i class="bi bi-plus-lg h4"></i></button>
+</div>
+
+<!-- ======= Edit Currency ======= -->
+<div th:fragment="edit_currency" id="edit_currency" class="d-inline">
+    <button class="btn btn-warning text-light mx-1"><i class="bi bi-pencil"></i></button>
+    <button class="btn btn-danger text-light mx-1"><i class="bi bi-x-lg"></i></button>
+</div>

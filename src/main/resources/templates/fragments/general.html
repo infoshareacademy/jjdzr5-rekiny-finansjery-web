@@ -12,13 +12,14 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
+        <div th:insert="fragments/general :: language_tool"></div>
         <div class="collapse navbar-collapse" id="navmenu">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
                     <a href="/admin-panel" class="nav-link">Admin</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#features" class="nav-link">Features</a>
+                    <a th:href="@{/tables}" class="nav-link">Tables</a>
                 </li>
                 <li class="nav-item">
                     <a href="#about" class="nav-link">About</a>
@@ -61,5 +62,50 @@
         </a>
     </div>
 </div>
-
+<!-- ======= Language selector ======= -->
+<div th:fragment="language_tool">
+    <div class="btn-group">
+        <a th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
+           th:href="${urlBuilder.replaceQueryParam('lang', 'pl').toUriString()}"
+           th:class="'btn btn-outline-secondary'+${#strings.equals(#locale, 'pl') ? ' active' : ''}">
+            <img th:src="@{assets/img/flags/pl.png}" alt="Polski" class="language_flag_selector_icon">
+        </a>
+        <a th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
+           th:href="${urlBuilder.replaceQueryParam('lang', 'en').toUriString()}"
+           th:class="'btn btn-outline-secondary'+${#strings.equals(#locale, 'en') ? ' active' : '' }">
+            <img th:src="@{assets/img/flags/gb.png}" alt="Angielski" class="language_flag_selector_icon">
+        </a>
+    </div>
+</div>
+<!-- ======= Pagination ======= -->
+<div th:fragment="pagination" class="d-flex justify-content-center"
+     th:with="offset=3,bottom_offset=${pageActive - offset},upper_offset=${pageActive + offset},last=${pagesAmount-1}">
+    <ul th:class="pagination"
+        th:with="start=${bottom_offset < 0 ? 0 : (upper_offset > last ? (bottom_offset - (upper_offset - last) < 0 ? 0 : bottom_offset - (upper_offset - last)) : bottom_offset)},
+        end=${upper_offset >= last ? last : (bottom_offset < 0 ? (upper_offset - bottom_offset >= last ? last : upper_offset - bottom_offset) : upper_offset)}">
+        <li th:if="${start > 0}" th:class="page-item">
+            <a th:class="page-link"
+               th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
+               th:href="${urlBuilder.replaceQueryParam('page', '0').toUriString()}">1</a>
+        </li>
+        <li th:if="${start > 1}" th:class="page-item">
+            <a th:class="page-link">...</a>
+        </li>
+        <li th:each="counter : ${#numbers.sequence(start,end)}"
+            th:class="'page-item '+${counter eq pageActive ? 'active' : ''}">
+            <a th:class="page-link"  th:text="${counter+1}"
+               th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
+               th:href="${urlBuilder.replaceQueryParam('page', counter).toUriString()}">#</a>
+        </li>
+        <li th:if="${end < last - 1}" th:class="page-item">
+            <a th:class="page-link">...</a>
+        </li>
+        <li th:if="${end < last}" th:class="page-item">
+            <a th:class="page-link"
+               th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
+               th:href="${urlBuilder.replaceQueryParam('page', last).toUriString()}"
+               th:text="${last+1}">Last</a>
+        </li>
+    </ul>
+</div>
 </html>
