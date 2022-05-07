@@ -19,11 +19,11 @@
             <div class="col-3" style="height: 70%;margin-top: 20%;margin-bottom: 20%;">
                 <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.data.User"*/-->
                 <form th:action="@{/login}" method="post">
-                    <label for="email">email adress</label>
+                    <label for="email" th:text="#{login.email}"></label>
                     <input class="form-control" id="email" type="text" name="username"/>
-                    <label for="password">password</label>
+                    <label for="password" th:text="#{login.password}"></label>
                     <input class="form-control" id="password" type="password" name="password"/>
-                    <div class="position-relative " th:text="${msg}"></div>
+                    <div class="position-relative" th:if="${param.error}" th:text="#{login.error}"></div>
                     <div class="d-grid gap-2">
                         <input class="btn btn-sm m-1 btn-primary" type="submit" value="Sign in"/>
                     </div>
