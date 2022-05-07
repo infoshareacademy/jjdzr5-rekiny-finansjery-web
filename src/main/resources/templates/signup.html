@@ -19,21 +19,21 @@
             <div class="col-3" style="height: 70%;margin-top: 20%;margin-bottom: 20%;">
                 <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.data.User"*/-->
                 <form th:action="@{/signup}" th:object="${user}" method="post">
-                    <label for="name">name</label>
+                    <label for="name" th:text="#{signup.name}"></label>
                     <input class="form-control" id="name" type="text" th:field="${user.name}"/>
-                    <label for="name">lastname</label>
+                    <label for="name" th:text="#{signup.lastname}"></label>
                     <input class="form-control" id="lastname" type="text" th:field="${user.lastname}"/>
 
-                    <label for="email">email adress</label>
+                    <label for="email" th:text="#{signup.email}"></label>
                     <input class="form-control" id="email" type="text" th:field="*{email}"/>
-                    <label for="password">password</label>
+                    <label for="password" th:text="#{signup.password}"></label>
                     <input class="form-control" id="password" type="password" th:field="*{password}"/>
 
 <!--                    <label for="password">password</label>-->
 <!--                    <input class="form-control" id="password" type="password" th:field="*{password}"/>-->
 
                     <div class="d-grid gap-2">
-                        <input class="btn btn-sm m-1 btn-primary" type="submit" value="Sign up"/>
+                        <input class="btn btn-sm m-1 btn-primary" type="submit" th:value="#{signup}"/>
                     </div>
                 </form>
             </div>
