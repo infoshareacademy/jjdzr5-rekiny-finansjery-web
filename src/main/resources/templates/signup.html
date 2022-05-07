@@ -21,17 +21,16 @@
                 <form th:action="@{/signup}" th:object="${user}" method="post">
                     <label for="name" th:text="#{signup.name}"></label>
                     <input class="form-control" id="name" type="text" th:field="${user.name}"/>
+                    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
                     <label for="name" th:text="#{signup.lastname}"></label>
                     <input class="form-control" id="lastname" type="text" th:field="${user.lastname}"/>
-
+                    <div th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></div>
                     <label for="email" th:text="#{signup.email}"></label>
                     <input class="form-control" id="email" type="text" th:field="*{email}"/>
+                    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                     <label for="password" th:text="#{signup.password}"></label>
                     <input class="form-control" id="password" type="password" th:field="*{password}"/>
-
-<!--                    <label for="password">password</label>-->
-<!--                    <input class="form-control" id="password" type="password" th:field="*{password}"/>-->
-
+                    <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
                     <div class="d-grid gap-2">
                         <input class="btn btn-sm m-1 btn-primary" type="submit" th:value="#{signup}"/>
                     </div>

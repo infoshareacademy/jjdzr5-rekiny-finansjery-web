@@ -1,15 +1,23 @@
 package org.infoshare.rekinyfinansjeryweb.data;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Set;
 
 public class User {
     private long id;
+    @Email(message = "{validation.email}")
+    @NotBlank(message = "{validation.email.blank}")
     private String email;
+    @Size(min = 8, max = 32, message = "{validation.password}")
     private String password;
     private Set<UserEnum> role;
+    @Size(min = 3, max = 30, message = "{validation.name}")
     private String name;
+    @Size(min = 3, max = 30, message = "{validation.lastname}")
     private String lastname;
     private boolean enabled;
     private double billingCurrency;
