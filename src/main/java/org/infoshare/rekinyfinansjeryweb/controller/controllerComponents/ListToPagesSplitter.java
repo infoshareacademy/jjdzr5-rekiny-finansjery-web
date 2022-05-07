@@ -1,7 +1,6 @@
 package org.infoshare.rekinyfinansjeryweb.controller.controllerComponents;
 
 import com.infoshareacademy.domain.DailyExchangeRates;
-import com.infoshareacademy.services.NBPApiManager;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.ui.Model;
