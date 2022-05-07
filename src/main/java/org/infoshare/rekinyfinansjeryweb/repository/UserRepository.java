@@ -64,8 +64,8 @@ public class UserRepository {
         roleSet.add(UserEnum.ROLE_ADMIN);
         roleSet.add(UserEnum.ROLE_USER);
         user1.setRole(roleSet);
-        user1.setName("Maciej");
-        user1.setLastname("Chyła");
+        user1.setName("REKINY");
+        user1.setLastname("FINANSJERY");
         user1.setBillingCurrency(155222.86);
         Map<String, UserCurrency> currencyMap = new HashMap<>();
         List<OperationHistory> operationHistoryList1 = new ArrayList<>();
