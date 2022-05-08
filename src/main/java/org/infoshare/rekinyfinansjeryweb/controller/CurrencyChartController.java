@@ -4,6 +4,7 @@ import com.infoshareacademy.domain.DailyExchangeRates;
 import com.infoshareacademy.services.DailyExchangeRatesFiltrationService;
 import com.infoshareacademy.services.ExchangeRatesFiltrationService;
 import com.infoshareacademy.services.NBPApiManager;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +25,7 @@ public class CurrencyChartController {
     public String showChart(@PathVariable("code") String code) {
 
        List<ChartData> chartData = getChartData(code);
-       chartData.forEach(System.out::println);
+//       chartData.forEach(System.out::println);
 
         return "chart";
     }
@@ -33,9 +34,11 @@ public class CurrencyChartController {
     public String showHistory(@PathVariable("code") String code) {
 
         List<ChartData> chartData = getChartData(code);
+        System.out.println(chartData.get(0).effectiveDate);
         chartData.forEach(System.out::println);
 
-        return "history";}
+        return "history";
+    }
 
     public List<ChartData> getChartData(String code){
         DailyExchangeRatesFiltrationService ratesCollectionProvider = NBPApiManager.getInstance().getDailyExchangeRatesService();
