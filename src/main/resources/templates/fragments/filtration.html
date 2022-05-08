@@ -1,72 +1,32 @@
 <div th:fragment="filtration_tool">
-    <form id="filtration_settings_form" name="filtration_settings_form" class="form-group" th:object="${filtrationSettings}" th:insert="fragments/filtration :: filtration_input"></form>
+    <div class="bg-secondary mt-1 p-3 border border-2 border-secondary rounded-3">
+        <div class="h4 text-light">Filter by:</div>
+        <form id="filtration_settings_form" name="filtration_settings_form" class="form-group" th:object="${filtrationSettings}" th:insert="fragments/filtration :: filtration_input"></form>
+    </div>
 </div>
-<div th:fragment="filtration_input">
-    <label for="effectiveDateMin">Min effective date</label>
+<div th:fragment="filtration_input" id="filtration_input">
+    <label for="effectiveDateMin" th:text="#{filtration.option.min.effective.date}">Min effective date</label>
     <input class="form-control" id="effectiveDateMin" name="effectiveDateMin" type="date" th:value="${filtrationSettings.effectiveDateMin}"/>
-    <label for="effectiveDateMax">Max effective date</label>
+    <label for="effectiveDateMax" th:text="#{filtration.option.max.effective.date}">Max effective date</label>
     <input class="form-control" id="effectiveDateMax" name="effectiveDateMax" type="date" th:value="${filtrationSettings.effectiveDateMax}"/>
-    <label for="tradingDateMin">Min trading date</label>
+    <label for="tradingDateMin" th:text="#{filtration.option.min.trading.date}">Min trading date</label>
     <input class="form-control" id="tradingDateMin" name="tradingDateMin" type="date" th:value="${filtrationSettings.tradingDateMin}"/>
-    <label for="tradingDateMax">Max trading date</label>
+    <label for="tradingDateMax" th:text="#{filtration.option.max.trading.date}">Max trading date</label>
     <input class="form-control" id="tradingDateMax" name="tradingDateMax" type="date" th:value="${filtrationSettings.tradingDateMax}"/>
-    <label for="bidPriceMin">Min bid price</label>
+    <label for="bidPriceMin" th:text="#{filtration.option.min.bid.price}">Min bid price</label>
     <input class="form-control" id="bidPriceMin" name="bidPriceMin" type="number" step="any" th:value="${filtrationSettings.bidPriceMin}"/>
-    <label for="bidPriceMax">Max bid price</label>
+    <label for="bidPriceMax" th:text="#{filtration.option.max.bid.price}">Max bid price</label>
     <input class="form-control" id="bidPriceMax" name="bidPriceMax" type="number" step="any" th:value="${filtrationSettings.bidPriceMax}"/>
-    <label for="askPriceMin">Min ask price</label>
+    <label for="askPriceMin" th:text="#{filtration.option.min.ask.price}">Min ask price</label>
     <input class="form-control" id="askPriceMin" name="askPriceMin" type="number" step="any" th:value="${filtrationSettings.askPriceMin}"/>
-    <label for="askPriceMax">Max ask price</label>
+    <label for="askPriceMax" th:text="#{filtration.option.max.ask.price}">Max ask price</label>
     <input class="form-control" id="askPriceMax" name="askPriceMax" type="number" step="any" th:value="${filtrationSettings.askPriceMax}"/>
     <div class="mt-2 text-center">
         <span th:each="currency : ${possibleCurrencies}">
             <input type="checkbox" class="btn-check" name="currency" th:id="'currency_' + ${currency.code}" th:value="${currency.code}"  th:checked="${currency.checked}">
-            <label class="btn btn-outline-secondary m-1" th:for="'currency_' + ${currency.code}" th:text="${currency.code}"></label>
+            <label class="btn btn-outline-light m-1" th:for="'currency_' + ${currency.code}" th:text="${currency.code}"></label>
         </span>
     </div>
-    <input class="form-control mt-3" type="submit" value="Filter"/>
-    <button type="button" class="form-control mt-3" onclick="clearForm('filtration_settings_form'); this.blur();">Clear</button>
-</div>
-<div th:fragment="filtration_pagination" class="d-flex justify-content-center">
-    <ul class="pagination">
-        <li th:if="${pageActive - 3 > 0}" th:class="page-item">
-            <a th:class="page-link"  th:href="@{/tables(page=${0},
-                    size=${pageSize},
-                    effectiveDateMin=${filtrationSettings.effectiveDateMin},
-                    effectiveDateMax=${filtrationSettings.effectiveDateMax},
-                    tradingDateMin=${filtrationSettings.tradingDateMin},
-                    tradingDateMax=${filtrationSettings.tradingDateMax},
-                    bidPriceMin=${filtrationSettings.bidPriceMin},
-                    bidPriceMax=${filtrationSettings.bidPriceMax},
-                    askPriceMin=${filtrationSettings.askPriceMin},
-                    askPriceMax=${filtrationSettings.askPriceMax},
-                    currency=${filtrationSettings.currency})}">First</a>
-        </li>
-        <li th:each="counter : ${#numbers.sequence(pageActive - 3 < 0 ? 0 : pageActive - 3, pageActive + 3 > pagesAmount - 1 ? pagesAmount - 1 : pageActive + 3)}" th:class="'page-item '+${counter eq pageActive ? 'active' : ''}">
-            <a th:class="page-link"  th:text="${counter+1}" th:href="@{/tables(page=${counter},
-                    size=${pageSize},
-                    effectiveDateMin=${filtrationSettings.effectiveDateMin},
-                    effectiveDateMax=${filtrationSettings.effectiveDateMax},
-                    tradingDateMin=${filtrationSettings.tradingDateMin},
-                    tradingDateMax=${filtrationSettings.tradingDateMax},
-                    bidPriceMin=${filtrationSettings.bidPriceMin},
-                    bidPriceMax=${filtrationSettings.bidPriceMax},
-                    askPriceMin=${filtrationSettings.askPriceMin},
-                    askPriceMax=${filtrationSettings.askPriceMax},
-                    currency=${filtrationSettings.currency})}">#</a>
-        </li>
-        <li th:if="${pageActive + 3 < pagesAmount - 1}" th:class="page-item">
-            <a th:class="page-link"  th:href="@{/tables(page=${pagesAmount - 1},
-                    size=${pageSize},
-                    effectiveDateMin=${filtrationSettings.effectiveDateMin},
-                    effectiveDateMax=${filtrationSettings.effectiveDateMax},
-                    tradingDateMin=${filtrationSettings.tradingDateMin},
-                    tradingDateMax=${filtrationSettings.tradingDateMax},
-                    bidPriceMin=${filtrationSettings.bidPriceMin},
-                    bidPriceMax=${filtrationSettings.bidPriceMax},
-                    askPriceMin=${filtrationSettings.askPriceMin},
-                    askPriceMax=${filtrationSettings.askPriceMax},
-                    currency=${filtrationSettings.currency})}">Last</a>
-        </li>
-    </ul>
+    <input class="form-control mt-3 bg-primary text-light border-primary" type="submit" th:value="#{filtration.button.filter}"/>
+    <button type="button" class="form-control mt-3" onclick="clearForm('filtration_settings_form'); this.blur();" th:text="#{filtration.button.clear}">Clear</button>
 </div>
