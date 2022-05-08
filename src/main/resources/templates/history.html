@@ -16,24 +16,30 @@
 <main>
     <div class="container">
 
-        <h1>Currency History</h1>
+        <h1 th:text="${code} + ' Currency History'"></h1>
 
 
-        <table>
+        <table class="table table-striped table-sm">
+
+            <thead>
             <tr>
-                <th>
-                    Header
-                </th>
+                <th scope="col">Trading Date</th>
+                <th scope="col">Effective Date</th>
+                <th scope="col">Ask Price</th>
+                <th scope="col">Bid Price</th>
             </tr>
-            <tr th:each="someData : ${@currencyChartController.getChartData(code)}">
-                <td th:text="${@currencyChartController.getChartData(code)}"></td>
-            </tr>
-        </table>
+            </thead>
 
-<!--        <li th:each="exchangeRate : ${collectionsOfExchangeRates}">-->
-<!--            <p th:text="${exchangeRate.getNo()}"></p>-->
-<!--            <p th:text="${exchangeRate.getEffectiveDate()}"></p>-->
-<!--            <p th:text="${exchangeRate.getTable()}"></p>-->
+           <tbody>
+           <tr th:each="data : ${@currencyChartController.getChartData(code)}">
+               <td th:text="${data.tradingDate()}"></td>
+               <td th:text="${data.effectiveDate()}"></td>
+               <td th:text="${data.askPrice()}"></td>
+               <td th:text="${data.bidPrice()}"></td>
+           </tr>
+           </tbody>
+
+        </table>
 
     </div>
 </main>
