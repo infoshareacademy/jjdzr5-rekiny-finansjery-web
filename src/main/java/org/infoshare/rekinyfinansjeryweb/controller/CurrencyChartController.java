@@ -6,6 +6,9 @@ import com.infoshareacademy.services.ExchangeRatesFiltrationService;
 import com.infoshareacademy.services.NBPApiManager;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.infoshare.rekinyfinansjeryweb.controller.controllerComponents.ListToPagesSplitter;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,10 +43,10 @@ public class CurrencyChartController {
     }
 
     @GetMapping("/history/{code}")
-    public String showHistory(@PathVariable("code") String code, Model model) {
+    public String showHistory(@PathVariable("code") String code, Model model, @PageableDefault(size=25) Pageable pageable) {
 
         List<ChartData> chartData = getChartData(code);
-        model.addAttribute("chartData", chartData);
+        ListToPagesSplitter.splitIntoPages(chartData, model, pageable);
         return "history";
     }
 
