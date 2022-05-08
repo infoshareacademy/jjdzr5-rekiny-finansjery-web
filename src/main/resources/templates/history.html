@@ -31,11 +31,11 @@
             </thead>
 
            <tbody>
-           <tr th:each="data : ${@currencyChartController.getChartData(code)}">
-               <td th:text="${data.tradingDate()}"></td>
-               <td th:text="${data.effectiveDate()}"></td>
-               <td th:text="${data.askPrice()}"></td>
-               <td th:text="${data.bidPrice()}"></td>
+           <tr th:each="data : ${chartData}">
+               <td th:text="${data.tradingDate}"></td>
+               <td th:text="${data.effectiveDate}"></td>
+               <td th:text="${data.askPrice}"></td>
+               <td th:text="${data.bidPrice}"></td>
            </tr>
            </tbody>
 

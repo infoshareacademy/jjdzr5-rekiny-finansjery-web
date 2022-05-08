@@ -23,8 +23,8 @@
         <script th:inline="javascript">
 
 
-            let currencies = /*[[${@currencyChartController.getChartData(code)}]]*/;
-            var xValues = currencies.map(currency => currency.effectiveDate);
+            let currencies = /*[[${chartData}]]*/;
+            var xValues = currencies.map(currency => currency.tradingDate);
 
             new Chart("myChart", {
                 type: "line",
