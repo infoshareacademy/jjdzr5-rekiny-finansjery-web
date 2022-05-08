@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.*;
 
-//@Component
 @Service
 public class UserService implements UserDetailsService {
 
@@ -37,8 +36,8 @@ public class UserService implements UserDetailsService {
 
     public User getUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return userRepository.findByEmailAddress(userDetails.getUsername());
+        MyUserPrincipal userDetails = (MyUserPrincipal) authentication.getPrincipal();
+        return userDetails.getUser();
     }
 
     public List<User> getUsers(){
