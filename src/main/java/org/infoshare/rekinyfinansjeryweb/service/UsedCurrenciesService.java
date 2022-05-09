@@ -14,9 +14,7 @@ import java.util.stream.Collectors;
 @Service
 public class UsedCurrenciesService {
     public List<PossibleCurrency> getShortNamesOfCurrencies(NBPApiManager nbpApiManager, List<String> selectedCurrencies){
-        return nbpApiManager.getCollectionsOfExchangeRates()
-                .stream()
-                .findFirst()
+        return nbpApiManager.getDailyExchangeRatesService().getLatestEffectiveDate()
                 .map(exchangeRates -> exchangeRates
                         .getRates()
                         .stream()
