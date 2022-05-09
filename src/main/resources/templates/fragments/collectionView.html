@@ -40,10 +40,10 @@
         </thead>
         <tbody>
         <tr th:each="rate : ${exchangeRates.getRates()}">
-            <th scope="row" th:text="${rate.code}"></th>
-            <td th:text="${#messages.msgOrNull('currency.' + #strings.toString(rate.code)) != null} ? #{'currency.'+${rate.code}} : ${rate.currency}"></td>
-            <td th:text="${rate.bid}"></td>
-            <td th:text="${rate.ask}"></td>
+            <th class="align-middle" scope="row" th:text="${rate.code}"></th>
+            <td class="align-middle" th:text="${#messages.msgOrNull('currency.' + #strings.toString(rate.code)) != null} ? #{'currency.'+${rate.code}} : ${rate.currency}"></td>
+            <td class="align-middle" th:text="${rate.bid}"></td>
+            <td class="align-middle" th:text="${rate.ask}"></td>
             <td class="text-end">
                 <button class="btn mx-1 btn-primary"><i class="bi bi-eye"></i></button>
                 <div th:replace="fragments/admin :: edit_currency"></div>
