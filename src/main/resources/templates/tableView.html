@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Reliable and most up-to-date currency information">
+    <title>Currency Tables</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/styles/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/styles/style.css}">
+</head>
+<body>
+
+<header th:insert="fragments/general :: menu"></header>
+
+<!-- ======= Main ======= -->
+<main>
+    <div class="container mt-3">
+        <a th:href="@{/tables}" class="btn m-3 btn-primary" th:text="#{table.return.to.list}"></a>
+        <div th:if="${exchangeRates != null}" th:insert="fragments/collectionView :: element_view"></div>
+        <h3 th:if="${exchangeRates == null}" class="m-3 text-center" th:text="#{table.not.found}"></h3>
+    </div>
+</main>
+
+<footer th:insert="fragments/general :: footer"></footer>
+<script th:src="@{/js/filtrationForm.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
