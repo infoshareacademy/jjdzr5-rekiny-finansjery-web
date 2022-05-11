@@ -78,7 +78,7 @@
     </div>
 </div>
 <!-- ======= Pagination ======= -->
-<div th:fragment="pagination" class="d-flex justify-content-center"
+<div th:fragment="pagination" class="d-flex p-2 justify-content-center"
      th:with="offset=3,bottom_offset=${pageActive - offset},upper_offset=${pageActive + offset},last=${pagesAmount-1}">
     <ul th:class="pagination"
         th:with="start=${bottom_offset < 0 ? 0 : (upper_offset > last ? (bottom_offset - (upper_offset - last) < 0 ? 0 : bottom_offset - (upper_offset - last)) : bottom_offset)},

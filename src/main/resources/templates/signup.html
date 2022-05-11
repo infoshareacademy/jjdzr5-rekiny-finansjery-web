@@ -16,21 +16,33 @@
 <main>
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-3" style="height: 70%;margin-top: 20%;margin-bottom: 20%;">
+            <div class="col-10 col-sm-8 col-md-6 col-lg-4 col-xl-3" style="margin-top: 15%;margin-bottom: 16%;">
                 <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.data.User"*/-->
-                <form th:action="@{/signup}" th:object="${user}" method="post">
+                <form id="form" th:action="@{/signup}" th:object="${user}" method="post">
                     <label for="name" th:text="#{signup.name}"></label>
                     <input class="form-control" id="name" type="text" th:field="${user.name}"/>
-                    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                    <div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${#fields.hasErrors('name')}">
+                        <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+                        <div th:errors="*{name}"></div>
+                    </div>
                     <label for="name" th:text="#{signup.lastname}"></label>
                     <input class="form-control" id="lastname" type="text" th:field="${user.lastname}"/>
-                    <div th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></div>
+                    <div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${#fields.hasErrors('lastname')}">
+                        <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+                        <div th:errors="*{lastname}"></div>
+                    </div>
                     <label for="email" th:text="#{signup.email}"></label>
                     <input class="form-control" id="email" type="text" th:field="*{email}"/>
-                    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                    <div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${#fields.hasErrors('email')}">
+                        <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+                        <div th:errors="*{email}"></div>
+                    </div>
                     <label for="password" th:text="#{signup.password}"></label>
                     <input class="form-control" id="password" type="password" th:field="*{password}"/>
-                    <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                    <div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${#fields.hasErrors('password')}">
+                        <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+                        <div th:errors="*{password}"></div>
+                    </div>
                     <div class="d-grid gap-2">
                         <input class="btn btn-sm m-1 btn-primary" type="submit" th:value="#{signup}"/>
                     </div>
