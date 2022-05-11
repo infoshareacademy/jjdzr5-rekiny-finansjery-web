@@ -26,6 +26,8 @@ public class TableController {
         }
         model.addAttribute("newDailyTable", new TableSettings());
         model.addAttribute("newCurrency", new ExchangeRate());
+//        model.addAttribute("successMessage", "Success");
+//        model.addAttribute("errorMessage", "Error");
         return "tableView";
     }
 }
