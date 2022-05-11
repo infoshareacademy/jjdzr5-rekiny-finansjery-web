@@ -16,16 +16,19 @@
 <main>
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-3" style="height: 70%;margin-top: 20%;margin-bottom: 20%;">
+            <div class="col-10 col-sm-8 col-md-6 col-lg-4 col-xl-3" style="margin-top: 20%;margin-bottom: 20%;">
                 <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.data.User"*/-->
-                <form th:action="@{/login}" method="post">
+                <form id="form" th:action="@{/login}" method="post">
                     <label for="email" th:text="#{login.email}"></label>
                     <input class="form-control" id="email" type="text" name="username"/>
                     <label for="password" th:text="#{login.password}"></label>
                     <input class="form-control" id="password" type="password" name="password"/>
-                    <div class="position-relative" th:if="${param.error}" th:text="#{login.error}"></div>
+                    <div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${param.error}">
+                        <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+                        <div th:text="#{login.error}"></div>
+                    </div>
                     <div class="d-grid gap-2">
-                        <input class="btn btn-sm m-1 btn-primary" type="submit" value="Sign in"/>
+                        <input class="btn btn-sm m-1 btn-primary" type="submit" th:value="#{signin}"/>
                     </div>
                 </form>
             </div>

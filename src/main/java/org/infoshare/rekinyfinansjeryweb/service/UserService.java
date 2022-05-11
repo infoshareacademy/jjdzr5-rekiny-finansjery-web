@@ -76,4 +76,8 @@ public class UserService implements UserDetailsService {
         //todo askCurrency
         return true;
     }
+
+    public boolean emailExists(final String email) {
+        return userRepository.findByEmailAddress(email).getEmail() != null;
+    }
 }
