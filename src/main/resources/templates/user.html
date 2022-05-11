@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Template</title>
+    <link rel="stylesheet" th:href="@{/styles/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/styles/style.css}">
+</head>
+<body>
+
+<header th:insert="fragments/general :: menu"></header>
+
+<!-- ======= Main ======= -->
+<main>
+
+    <div class="container">
+        <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.data.User"*/-->
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-2 fs-4" th:text="${user.getName()}"></div>
+            <div class="col-2 fs-4" th:text="${user.getLastname()}"></div>
+            <div class="col-2 text-end fs-4" th:text="${#numbers.formatCurrency(user.getBillingCurrency())}"></div>
+            <div class="col-3"></div>
+        </div>
+        <table class="table table-striped table-sm">
+            <thead>
+            <tr>
+                <th scope="col"> Currency </th>
+                <th scope="col"> Amount </th>
+            </tr>
+            </thead>
+            <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.data.User"*/-->
+            <tr th:each="currency : ${user.getMyCurrencies().keySet()}">
+                <!--/*@thymesVar id="currency" type="org.infoshare.rekinyfinansjeryweb.data.UserCurrency"*/-->
+                <th scope="row" >
+                    <a th:href="@{'/currency?currency=' + ${currency}}"><span th:text="${currency}"></span></a>
+                </th>
+                <td th:text="${#numbers.formatDecimal(user.getMyCurrencies().get(currency).getAmount(), 1, 'COMMA', 2, 'POINT')}"></td>
+            </tr>
+        </table>
+    </div>
+</main>
+
+<footer th:insert="fragments/general :: footer"></footer>
+
+<script th:src="@{~/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
+
+
+
+
