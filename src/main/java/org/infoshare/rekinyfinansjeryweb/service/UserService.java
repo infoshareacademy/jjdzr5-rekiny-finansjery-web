@@ -50,9 +50,7 @@ public class UserService implements UserDetailsService {
         Optional<User> max = users.stream().max(Comparator.comparingLong(User::getId));
         user.setId(max.orElse(new User()).getId()+1);
         user.setPassword(encoder.encode(user.getPassword()));
-        Set<UserEnum> roleSet = new HashSet<>();
-        roleSet.add(UserEnum.ROLE_USER);
-        user.setRole(roleSet);
+        user.setRole(Set.of(UserEnum.ROLE_USER));
         Map<String, UserCurrency> currencyMap = new HashMap<>();
         user.setMyCurrencies(currencyMap);
         user.setCreated(LocalDateTime.now());
