@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 
 <!-- ======= Header ======= -->
 <nav th:fragment="menu" class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top py-3">
@@ -15,6 +15,9 @@
         <div th:insert="fragments/general :: language_tool"></div>
         <div class="collapse navbar-collapse" id="navmenu">
             <ul class="navbar-nav ms-auto">
+                <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
+                    <a href="/admin-panel" class="nav-link">Admin</a>
+                </li>
                 <li class="nav-item">
                     <a th:href="@{/tables}" class="nav-link">Tables</a>
                 </li>
@@ -27,11 +30,20 @@
                 <li class="nav-item">
                     <a href="#account" class="nav-link">Account</a>
                 </li>
-                <li class="nav-item">
-                    <button type="button" class="btn btn-outline-primary mx-lg-2" th:href="@{/}">Sign in</button>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="btn btn-outline-primary mx-lg-2" type="button" th:href="@{/login}">Sign in</a>
                 </li>
-                <li class="nav-item">
-                    <button type="button" class="btn btn-primary mt-2 mt-lg-0" th:href="@{/}">Sign up</button>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="btn btn-outline-primary mx-lg-2" type="button" th:href="@{/user}">Profil</a>
+                </li>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="btn btn-primary mt-2 mt-lg-0" type="button" th:href="@{/signup}">Sign up</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a href="javascript: document.logoutForm.submit()" class="btn btn-primary mt-2 mt-lg-0" type="button">Sign out</a>
+                    <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
+                        <input hidden type="submit" value="Sign Out" />
+                    </form>
                 </li>
             </ul>
         </div>
