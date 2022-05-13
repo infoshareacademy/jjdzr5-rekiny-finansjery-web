@@ -23,3 +23,8 @@ body::before {
     margin-top: 5px;
     margin-bottom: 5px;
 }
+
+.hidden_input_element{
+    visibility: hidden;
+    display: none;
+}

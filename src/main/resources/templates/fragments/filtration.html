@@ -1,7 +1,45 @@
 <div th:fragment="filtration_tool">
     <div class="bg-secondary mt-1 p-3 border border-2 border-secondary rounded-3">
         <div class="h4 text-light" th:text="#{filtration.filter.by}">Filter by:</div>
+
+        <div class="nav-item" sec:authorize="isAuthenticated()">
+            <label for="filtration_preferences">Choose a car:</label>
+            <select class="form-control" id="filtration_preferences">
+                <option th:each="option : ${listOfPreferences}" th:value="${option}" th:text="${option}">Volvo</option>
+            </select>
+            <button type="button" class="form-control mt-3 bg-primary text-light border-primary" onclick="sendRequestForFiltrationPreferences(); this.blur();">Load</button>
+        </div>
+
         <form id="filtration_settings_form" name="filtration_settings_form" class="form-group" th:object="${filtrationSettings}" th:insert="fragments/filtration :: filtration_input"></form>
+    </div>
+</div>
+<div th:fragment="saving_filtration_preferences_input" id="saving_filtration_preferences_input">
+    <div sec:authorize="isAuthenticated()" class="modal fade py-5" tabindex="-1" role="dialog" th:id="'save_filtration_preferences_modal'">
+        <div class="modal-dialog">
+            <div class="modal-content rounded-5 shadow">
+                <div class="modal-header border-bottom-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body pb-4 pt-0 text-center">
+                    <form id="saving_preference_form" th:action="@{/user/filtration_preferences/add}" method="POST">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <label for="preference_name" class="col-form-label w-50">Preference name</label>
+                            <input type="text" class="form-control rounded-4" id="preference_name" name="preferenceName" placeholder="Enter name...">
+                        </div>
+                        <input class="hidden_input_element" id="savingEffectiveDateMin" name="effectiveDateMin" type="date"/>
+                        <input class="hidden_input_element" id="savingEffectiveDateMax" name="effectiveDateMax" type="date"/>
+                        <input class="hidden_input_element" id="savingTradingDateMin" name="tradingDateMin" type="date"/>
+                        <input class="hidden_input_element" id="savingTradingDateMax" name="tradingDateMax" type="date"/>
+                        <input class="hidden_input_element" id="savingBidPriceMin" name="bidPriceMin" type="number" step="any"/>
+                        <input class="hidden_input_element" id="savingBidPriceMax" name="bidPriceMax" type="number" step="any"/>
+                        <input class="hidden_input_element" id="savingAskPriceMin" name="askPriceMin" type="number" step="any"/>
+                        <input class="hidden_input_element" id="savingAskPriceMax" name="askPriceMax" type="number" step="any"/>
+                        <input class="hidden_input_element" th:each="currency : ${possibleCurrencies}" type="checkbox" name="currency" th:id="'savingCurrency_' + ${currency.code}" th:value="${currency.code}">
+                        <button type="submit" class="form-control mt-3" th:text="#{filtration.button.clear}">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <div th:fragment="filtration_input" id="filtration_input">
@@ -29,4 +67,10 @@
     </div>
     <input class="form-control mt-3 bg-primary text-light border-primary" type="submit" th:value="#{filtration.button.filter}"/>
     <button type="button" class="form-control mt-3" onclick="clearForm('filtration_settings_form'); this.blur();" th:text="#{filtration.button.clear}">Clear</button>
+
+    <button sec:authorize="isAuthenticated()" type="button" class="form-control mt-3"
+            onclick="fillSavingPreferencesForm()"
+            th:data-bs-toggle="modal"
+            th:data-bs-target="'#save_filtration_preferences_modal'">Save
+    </button>
 </div>
