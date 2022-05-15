@@ -18,7 +18,7 @@ public class TableController {
     @GetMapping("/{no}")
     public String singleTableView(@PathVariable("no") String no, Model model){
         Optional<DailyExchangeRates> dailyExchangeRates = NBPApiManager.getInstance().findDailyTable(no.replaceAll("_", "/"));
-        if(dailyEgitxchangeRates.isPresent()){
+        if(dailyExchangeRates.isPresent()){
             model.addAttribute("exchangeRates", dailyExchangeRates.get());
         }
         else{
