@@ -1,6 +1,6 @@
 package org.infoshare.rekinyfinansjeryweb.data;
 
-import org.infoshare.rekinyfinansjeryweb.form.FiltrationSettings;
+import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

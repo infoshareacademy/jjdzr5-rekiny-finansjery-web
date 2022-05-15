@@ -3,7 +3,7 @@ package org.infoshare.rekinyfinansjeryweb.controller;
 import com.infoshareacademy.domain.DailyExchangeRates;
 import com.infoshareacademy.domain.ExchangeRate;
 import com.infoshareacademy.services.NBPApiManager;
-import org.infoshare.rekinyfinansjeryweb.form.TableSettings;
+import org.infoshare.rekinyfinansjeryweb.formData.TableSettings;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +18,7 @@ public class TableController {
     @GetMapping("/{no}")
     public String singleTableView(@PathVariable("no") String no, Model model){
         Optional<DailyExchangeRates> dailyExchangeRates = NBPApiManager.getInstance().findDailyTable(no.replaceAll("_", "/"));
-        if(dailyExchangeRates.isPresent()){
+        if(dailyEgitxchangeRates.isPresent()){
             model.addAttribute("exchangeRates", dailyExchangeRates.get());
         }
         else{

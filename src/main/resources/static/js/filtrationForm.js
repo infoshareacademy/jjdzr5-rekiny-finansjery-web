@@ -13,6 +13,14 @@ function clearForm(form_name){
         }
     }
 }
+function clearFormWithoutSearchBar(){
+    let searchElement = document.getElementById("search_phrase");
+    if(searchElement != null){
+        let searchPhrase = searchElement.value;
+        clearForm("filtration_settings_form");
+        searchElement.value = searchPhrase;
+    }
+}
 function sendRequestForFiltrationPreferences(){
     var preferencesName = document.getElementById("filtration_preferences").value;
     var xmlHttp = new XMLHttpRequest();
@@ -26,7 +34,7 @@ function sendRequestForFiltrationPreferences(){
 }
 
 function loadFiltrationPreferences(response){
-    clearForm("filtration_settings_form");
+    clearFormWithoutSearchBar();
 
     var preferences = JSON.parse(response);
     document.getElementById("effectiveDateMin").value = preferences.effectiveDateMin;

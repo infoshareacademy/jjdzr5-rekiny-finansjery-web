@@ -1,12 +1,11 @@
 package org.infoshare.rekinyfinansjeryweb.repository;
 
 import org.infoshare.rekinyfinansjeryweb.data.*;
-import org.infoshare.rekinyfinansjeryweb.form.FiltrationSettings;
+import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -105,8 +104,8 @@ public class UserRepository {
         FiltrationSettings dolar = new FiltrationSettings();
         dolar.setCurrency(Arrays.asList("USD"));
         dolar.setEffectiveDateMin(LocalDate.of(2022,05,01));
-        map.put("Dolary $$$", dolar);
-        map.put("Dolarki $$$", dolar);
+        map.put("Dolary", dolar);
+        map.put("Dolarki", dolar);
         user2.setSavedFiltrationSettings(map);
 
 

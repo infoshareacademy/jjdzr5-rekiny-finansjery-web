@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Reliable and most up-to-date currency information">
+    <title>Rekiny Finansjery</title>
+    <link rel="stylesheet" th:href="@{/styles/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/styles/style.css}">
+</head>
+<body>
+<header th:insert="fragments/general :: menu"></header>
+
+<!-- ======= Main ======= -->
+<main>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-10 col-sm-8 col-md-6 col-lg-4 col-xl-3 m-5">
+                <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.data.User"*/-->
+                <form id="form" th:action="@{/user/filtration_preferences/add}" th:object="${saveOfFiltrationSettings}" method="post">
+                    <label for="name" th:text="'Preference name:'"></label>
+                    <input class="form-control" id="name" type="text" th:field="${saveOfFiltrationSettings.preferenceName}"/>
+                    <div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${#fields.hasErrors('preferenceName')}">
+                        <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+                        <div th:errors="*{preferenceName}"></div>
+                    </div>
+                    <div th:if="${errorMessage != null}" class="alert alert-danger d-flex align-items-center" role="alert">
+                        <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+                        <div th:text="${errorMessage}"></div>
+                    </div>
+
+                    <input class="hidden_input_element" th:field="${saveOfFiltrationSettings.effectiveDateMin}" id="savingEffectiveDateMin" name="effectiveDateMin" type="date"/>
+                    <input class="hidden_input_element" th:field="${saveOfFiltrationSettings.effectiveDateMax}" id="savingEffectiveDateMax" name="effectiveDateMax" type="date"/>
+                    <input class="hidden_input_element" th:field="${saveOfFiltrationSettings.tradingDateMin}" id="savingTradingDateMin" name="tradingDateMin" type="date"/>
+                    <input class="hidden_input_element" th:field="${saveOfFiltrationSettings.tradingDateMax}" id="savingTradingDateMax" name="tradingDateMax" type="date"/>
+                    <input class="hidden_input_element" th:field="${saveOfFiltrationSettings.bidPriceMin}" id="savingBidPriceMin" name="bidPriceMin" type="number" step="any"/>
+                    <input class="hidden_input_element" th:field="${saveOfFiltrationSettings.bidPriceMax}" id="savingBidPriceMax" name="bidPriceMax" type="number" step="any"/>
+                    <input class="hidden_input_element" th:field="${saveOfFiltrationSettings.askPriceMin}" id="savingAskPriceMin" name="askPriceMin" type="number" step="any"/>
+                    <input class="hidden_input_element" th:field="${saveOfFiltrationSettings.askPriceMax}" id="savingAskPriceMax" name="askPriceMax" type="number" step="any"/>
+                    <input class="hidden_input_element" th:each="currency : ${possibleCurrencies}" type="checkbox" name="currency" th:id="'savingCurrency_' + ${currency.code}"
+                           th:checked="${#lists.contains(saveOfFiltrationSettings.currency, currency.code)}" th:value="${currency.code}">
+                    <div class="d-grid gap-2">
+                        <input class="btn btn-sm m-1 btn-primary" type="submit" th:value="#{signup}"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:insert="fragments/general :: footer"></footer>
+<script th:src="@{~/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

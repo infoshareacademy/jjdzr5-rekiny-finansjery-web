@@ -66,7 +66,7 @@
         </span>
     </div>
     <input class="form-control mt-3 bg-primary text-light border-primary" type="submit" th:value="#{filtration.button.filter}"/>
-    <button type="button" class="form-control mt-3" onclick="clearForm('filtration_settings_form'); this.blur();" th:text="#{filtration.button.clear}">Clear</button>
+    <button type="button" class="form-control mt-3" onclick="clearFormWithoutSearchBar(); this.blur();" th:text="#{filtration.button.clear}">Clear</button>
 
     <button sec:authorize="isAuthenticated()" type="button" class="form-control mt-3"
             onclick="fillSavingPreferencesForm()"

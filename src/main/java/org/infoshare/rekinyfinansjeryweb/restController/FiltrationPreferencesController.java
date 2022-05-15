@@ -2,7 +2,7 @@ package org.infoshare.rekinyfinansjeryweb.restController;
 
 import org.infoshare.rekinyfinansjeryweb.data.MyUserPrincipal;
 import org.infoshare.rekinyfinansjeryweb.data.User;
-import org.infoshare.rekinyfinansjeryweb.form.FiltrationSettings;
+import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

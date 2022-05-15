@@ -1,11 +1,8 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
 import com.infoshareacademy.domain.DailyExchangeRates;
-import com.infoshareacademy.domain.ExchangeRate;
 import com.infoshareacademy.services.*;
-import org.infoshare.rekinyfinansjeryweb.controller.FiltrationController;
-import org.infoshare.rekinyfinansjeryweb.controller.SearchController;
-import org.infoshare.rekinyfinansjeryweb.form.SearchSettings;
+import org.infoshare.rekinyfinansjeryweb.formData.SearchSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

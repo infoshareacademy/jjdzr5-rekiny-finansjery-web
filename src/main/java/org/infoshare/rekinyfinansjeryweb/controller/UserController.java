@@ -1,17 +1,22 @@
 package org.infoshare.rekinyfinansjeryweb.controller;
 
+import com.infoshareacademy.services.NBPApiManager;
 import org.infoshare.rekinyfinansjeryweb.data.MyUserPrincipal;
-import org.infoshare.rekinyfinansjeryweb.form.SaveOfFiltrationSettings;
+import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
+import org.infoshare.rekinyfinansjeryweb.formData.SaveOfFiltrationSettings;
+import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
 import org.infoshare.rekinyfinansjeryweb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -31,19 +36,71 @@ public class UserController {
     @GetMapping("/filtration_preferences")
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public String userFiltrationPreferences(@AuthenticationPrincipal MyUserPrincipal principal, Model model) {
+        model.addAttribute("listOfSavedFiltrationSettings", getListOfSavedFiltrationSettings(principal));
         return "user_filtration_preferences_list";
     }
 
     @PostMapping("/filtration_preferences/add")
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    public String addUserFiltrationPreferences(@AuthenticationPrincipal MyUserPrincipal principal, @ModelAttribute SaveOfFiltrationSettings filtrationSettings, Model model) {
-        System.out.println(filtrationSettings);
+    public String addUserFiltrationPreferences(@AuthenticationPrincipal MyUserPrincipal principal,
+                                               @ModelAttribute @Valid SaveOfFiltrationSettings filtrationSettings,
+                                               BindingResult result, Model model, @Autowired UsedCurrenciesService usedCurrenciesService) {
+        if(result.hasErrors()){
+            model.addAttribute("possibleCurrencies",
+                    usedCurrenciesService.getShortNamesOfCurrencies(NBPApiManager.getInstance(), filtrationSettings.getCurrency()));
+            return "user_filtration_preferences_add_form";
+        }
+        else if(principal.getUser().getSavedFiltrationSettings().containsKey(filtrationSettings.getPreferenceName())){
+            model.addAttribute("errorMessage", "Name already in use.");
+            model.addAttribute("possibleCurrencies",
+                    usedCurrenciesService.getShortNamesOfCurrencies(NBPApiManager.getInstance(), filtrationSettings.getCurrency()));
+            return "user_filtration_preferences_add_form";
+        }
+
+        model.addAttribute("listOfSavedFiltrationSettings", getListOfSavedFiltrationSettings(principal));
+
+        if(isFiltrationSettingEmpty(filtrationSettings)){
+            model.addAttribute("errorMessage", "Filtration setting was empty.");
+            return "user_filtration_preferences_list";
+        }
+
+        principal.getUser().getSavedFiltrationSettings().put(filtrationSettings.getPreferenceName(), filtrationSettings);
+
+        model.addAttribute("successMessage", "Filtration settings saved.");
         return "user_filtration_preferences_list";
     }
 
-    @GetMapping("/filtration_preferences/delete")
+    @PostMapping("/filtration_preferences/delete")
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    public String deleteUserFiltrationPreferences(@AuthenticationPrincipal MyUserPrincipal principal, Model model) {
+    public String deleteUserFiltrationPreferences(@AuthenticationPrincipal MyUserPrincipal principal, @RequestParam("setting_key") String key, Model model) {
+        if(principal.getUser().getSavedFiltrationSettings().remove(key)!=null){
+            model.addAttribute("successMessage", key + " removed.");
+        }
+        model.addAttribute("listOfSavedFiltrationSettings", getListOfSavedFiltrationSettings(principal));
         return "user_filtration_preferences_list";
+    }
+
+    private List<Map.Entry<String, FiltrationSettings>> getListOfSavedFiltrationSettings(MyUserPrincipal principal){
+        return principal
+                .getUser()
+                .getSavedFiltrationSettings()
+                .entrySet()
+                .stream()
+                .toList();
+    }
+
+    private boolean isFiltrationSettingEmpty(FiltrationSettings filtrationSettings){
+        if(filtrationSettings.getAskPriceMax() == null &&
+            filtrationSettings.getAskPriceMin() == null &&
+            filtrationSettings.getBidPriceMax() == null &&
+            filtrationSettings.getBidPriceMin() == null &&
+            filtrationSettings.getTradingDateMax() == null &&
+            filtrationSettings.getTradingDateMin() == null &&
+            filtrationSettings.getEffectiveDateMax() == null &&
+            filtrationSettings.getEffectiveDateMin() == null &&
+            filtrationSettings.getCurrency().size() == 0){
+            return true;
+        }
+        return false;
     }
 }
