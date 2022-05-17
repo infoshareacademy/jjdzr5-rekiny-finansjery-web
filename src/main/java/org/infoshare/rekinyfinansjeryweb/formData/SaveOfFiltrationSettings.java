@@ -10,14 +10,6 @@ public class SaveOfFiltrationSettings extends FiltrationSettings {
     public SaveOfFiltrationSettings(){
         super();
     }
-    @NotBlank(message = "Empty value")
+    @NotBlank(message = "{filtration.saving.not.blank.name}")
     private String preferenceName;
-
-    @Override
-    public String toString() {
-        return "SaveOfFiltrationSettings{" +
-                "preferenceName='" + preferenceName + '\'' +
-                super.toString()+
-                '}';
-    }
 }

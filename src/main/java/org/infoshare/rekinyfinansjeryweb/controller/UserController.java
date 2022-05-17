@@ -40,6 +40,19 @@ public class UserController {
         return "user_filtration_preferences_list";
     }
 
+    @GetMapping("/filtration_preferences/add")
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
+    public String redirectToUserFiltersFromAdd(){
+        return "redirect:/user/filtration_preferences";
+    }
+
+    @GetMapping("/filtration_preferences/delete")
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
+    public String redirectToUserFiltersFromDelete(){
+        return "redirect:/user/filtration_preferences";
+    }
+
+
     @PostMapping("/filtration_preferences/add")
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public String addUserFiltrationPreferences(@AuthenticationPrincipal MyUserPrincipal principal,
@@ -51,22 +64,21 @@ public class UserController {
             return "user_filtration_preferences_add_form";
         }
         else if(principal.getUser().getSavedFiltrationSettings().containsKey(filtrationSettings.getPreferenceName())){
-            model.addAttribute("errorMessage", "Name already in use.");
+            model.addAttribute("errorMessage", "filters.error.name.used");
             model.addAttribute("possibleCurrencies",
                     usedCurrenciesService.getShortNamesOfCurrencies(NBPApiManager.getInstance(), filtrationSettings.getCurrency()));
             return "user_filtration_preferences_add_form";
         }
 
-        model.addAttribute("listOfSavedFiltrationSettings", getListOfSavedFiltrationSettings(principal));
-
         if(isFiltrationSettingEmpty(filtrationSettings)){
-            model.addAttribute("errorMessage", "Filtration setting was empty.");
-            return "user_filtration_preferences_list";
+            model.addAttribute("errorMessage", "filters.error.empty");
+        }
+        else{
+            principal.getUser().getSavedFiltrationSettings().put(filtrationSettings.getPreferenceName(), filtrationSettings);
+            model.addAttribute("successMessage", "filters.saved.success");
         }
 
-        principal.getUser().getSavedFiltrationSettings().put(filtrationSettings.getPreferenceName(), filtrationSettings);
-
-        model.addAttribute("successMessage", "Filtration settings saved.");
+        model.addAttribute("listOfSavedFiltrationSettings", getListOfSavedFiltrationSettings(principal));
         return "user_filtration_preferences_list";
     }
 
@@ -74,7 +86,7 @@ public class UserController {
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public String deleteUserFiltrationPreferences(@AuthenticationPrincipal MyUserPrincipal principal, @RequestParam("setting_key") String key, Model model) {
         if(principal.getUser().getSavedFiltrationSettings().remove(key)!=null){
-            model.addAttribute("successMessage", key + " removed.");
+            model.addAttribute("successMessage", "filters.remove.success");
         }
         model.addAttribute("listOfSavedFiltrationSettings", getListOfSavedFiltrationSettings(principal));
         return "user_filtration_preferences_list";

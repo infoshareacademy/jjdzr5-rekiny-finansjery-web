@@ -20,6 +20,9 @@ function clearFormWithoutSearchBar(){
         clearForm("filtration_settings_form");
         searchElement.value = searchPhrase;
     }
+    else{
+        clearForm("filtration_settings_form");
+    }
 }
 function sendRequestForFiltrationPreferences(){
     var preferencesName = document.getElementById("filtration_preferences").value;

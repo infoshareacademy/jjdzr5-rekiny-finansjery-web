@@ -19,7 +19,7 @@
             <div class="col-10 col-sm-8 col-md-6 col-lg-4 col-xl-3 m-5">
                 <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.data.User"*/-->
                 <form id="form" th:action="@{/user/filtration_preferences/add}" th:object="${saveOfFiltrationSettings}" method="post">
-                    <label for="name" th:text="'Preference name:'"></label>
+                    <label for="name" th:text="#{filtration.filter.name}"></label>
                     <input class="form-control" id="name" type="text" th:field="${saveOfFiltrationSettings.preferenceName}"/>
                     <div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${#fields.hasErrors('preferenceName')}">
                         <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
@@ -27,7 +27,7 @@
                     </div>
                     <div th:if="${errorMessage != null}" class="alert alert-danger d-flex align-items-center" role="alert">
                         <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
-                        <div th:text="${errorMessage}"></div>
+                        <div th:text="#{${errorMessage}}"></div>
                     </div>
 
                     <input class="hidden_input_element" th:field="${saveOfFiltrationSettings.effectiveDateMin}" id="savingEffectiveDateMin" name="effectiveDateMin" type="date"/>
@@ -41,7 +41,7 @@
                     <input class="hidden_input_element" th:each="currency : ${possibleCurrencies}" type="checkbox" name="currency" th:id="'savingCurrency_' + ${currency.code}"
                            th:checked="${#lists.contains(saveOfFiltrationSettings.currency, currency.code)}" th:value="${currency.code}">
                     <div class="d-grid gap-2">
-                        <input class="btn btn-sm m-1 btn-primary" type="submit" th:value="#{signup}"/>
+                        <input class="btn btn-sm m-1 btn-primary" type="submit" th:value="#{filtration.filter.save}"/>
                     </div>
                 </form>
             </div>
