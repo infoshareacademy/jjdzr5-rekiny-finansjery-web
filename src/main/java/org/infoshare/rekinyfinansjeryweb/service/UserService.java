@@ -1,8 +1,6 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
-import com.infoshareacademy.domain.DailyExchangeRates;
 import com.infoshareacademy.domain.ExchangeRate;
-import com.infoshareacademy.services.NBPApiManager;
 import org.infoshare.rekinyfinansjeryweb.data.*;
 import org.infoshare.rekinyfinansjeryweb.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

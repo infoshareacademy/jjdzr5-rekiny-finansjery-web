@@ -107,6 +107,5 @@ public class UserRepository {
         user2.setEnabled(true);
         user2.setCreated(LocalDateTime.now());
         usersRepository.add(user2);
-
     }
 }

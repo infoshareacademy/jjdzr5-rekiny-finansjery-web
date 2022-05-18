@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-
 @Controller
 @RequestMapping("/user")
 @Secured({"ROLE_USER", "ROLE_ADMIN"})
@@ -24,12 +23,10 @@ public class UserController {
     @Autowired
     SearchService searchService;
 
-
     @ModelAttribute
     public void addAttributes(Model model) {
         model.addAttribute("user", usersService.getUser());
     }
-
 
     @GetMapping
     public String getUser(Model model) {
