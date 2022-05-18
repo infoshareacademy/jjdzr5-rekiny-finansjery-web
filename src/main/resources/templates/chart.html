@@ -14,8 +14,30 @@
 
 <!-- ======= Main ======= -->
 <main>
+
     <div class="container p-5">
 
+        <form class="form-inline" th:action="@{'/currency/' + ${code} + '/monthly'}" method="get">
+
+            <div class="form-check-inline">
+                <label for="month" th:text="#{chart.month}">Month</label>
+                <select class="form-control" name="month" id="month" th:with="months=${#numbers.sequence(1,12)}"
+                        style="width: 40px">
+                    <option th:each="month:${months}" th:value="${month}" th:text="${month}"></option>
+                </select>
+
+            </div>
+            <div class="form-check-inline">
+                <label for="year" th:text="#{chart.year}">Year</label>
+                <select class="form-control" name="year" id="year" th:with="years=${#numbers.sequence(2020,2022)}"
+                        style="width: 70px">
+                    <option th:each="year:${years}" th:value="${year}" th:text="${year}"></option>
+                </select>
+            </div>
+
+            <button class="btn btn-sm m-1 btn-secondary" type="submit" th:text="#{chart.button.submit}">Submit</button>
+            <a class="btn btn-sm m-1 btn-primary" th:href="@{'/currency/history/' + ${code}}" th:text="${code} + ' ' + #{chart.button.history}" style="margin: 8px; position: auto; right: 10%"></a>
+        </form>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
         <canvas id="myChart" style="width:100%"></canvas>
