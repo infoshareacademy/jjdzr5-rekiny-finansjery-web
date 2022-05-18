@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title th:text="#{title} + #{user.wallet.title}"></title>
+    <title th:text="#{title} + #{user.history.title}"></title>
     <link rel="stylesheet" th:href="@{/styles/bootstrap.min.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <link rel="stylesheet" th:href="@{/styles/style.css}">
@@ -14,7 +14,7 @@
 
 <section class="bg-primary text-light p-5 text-center">
     <div class="container">
-        <h1 th:text="#{user.wallet.title}"></h1>
+        <h1 th:text="#{user.history.title}"></h1>
     </div>
 </section>
 <!-- ======= Main ======= -->
@@ -25,22 +25,26 @@
                 <div th:insert="fragments/user :: menu"></div>
             </div>
             <div class="col-12 col-md-9">
-                <table class="table table-striped table-sm align-middle">
+                <table class="table table-striped table-sm">
                     <thead>
-                        <tr>
-                            <th scope="col" th:text="#{user.wallet.currency}"></th>
-                            <th scope="col" th:text="#{user.wallet.amount}"></th>
-                            <th scope="col"> </th>
-                        </tr>
+                    <tr>
+                        <th scope="col" th:text="#{user.history.date}"></th>
+                        <th scope="col" th:text="#{user.history.exchange.rate}"></th>
+                        <th scope="col" th:text="#{user.history.operation}"></th>
+                        <th scope="col" th:text="#{user.history.amount}"></th>
+                        <th scope="col" th:text="#{user.history.currency}"></th>
+                    </tr>
                     </thead>
                     <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.data.User"*/-->
-                    <tr th:if="${user.getMyCurrencies().size()>0}" th:each="currency : ${user.getMyCurrencies().keySet()}">
-                            <td th:text="${currency}"></td>
-                            <td th:text="${#numbers.formatDecimal(user.getMyCurrencies().get(currency).getAmount(), 1, 'WHITESPACE', 2, 'COMMA')}"></td>
-                            <td class="text-end" th:insert="fragments/user :: button_bid_ask_width"></td>
+                    <tr th:if="${operationhistory.size()>0}" th:each="operation : ${operationhistory}">
+                        <td th:text="${#temporals.format(operation.dateOpreation, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td th:text="${operation.exchangeRate}"></td>
+                        <td th:text="#{'user.history.'+${operation.operation}}"></td>
+                        <td th:text="${#numbers.formatDecimal(operation.amount, 1, 'WHITESPACE', 2, 'COMMA')}"></td>
+                        <td th:text="${operation.currency}"></td>
                     </tr>
-                    <tr th:unless="${user.getMyCurrencies().size()>0}">
-                        <td colspan="3" th:text="#{user.no.items}"></td>
+                    <tr th:unless="${operationhistory.size()>0}">
+                        <td colspan="5" th:text="#{user.no.items}"></td>
                     </tr>
                 </table>
             </div>
