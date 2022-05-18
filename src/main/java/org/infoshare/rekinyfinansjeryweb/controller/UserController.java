@@ -159,12 +159,12 @@ public class UserController {
     @GetMapping("/history")
     public String getHistoryOperation(Model model) {
         model.addAttribute("operationhistory", usersService.getHistoryOperation());
-        return "history";
+        return "historyoperation";
     }
 
     @GetMapping("/history/{code}")
     public String getHistoryOperationCurrency(@PathVariable("code") String code, Model model) {
         model.addAttribute("operationhistory", usersService.getHistoryOperation(code));
-        return "history";
+        return "historyoperation";
     }
 }
