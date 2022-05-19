@@ -56,7 +56,7 @@ public class UserController {
             model.addAttribute("errorMessage", "msg.error.payment");
             //todo LOG
         }
-        return "redirect:/user";
+        return "user";
     }
 
     @GetMapping("/withdrawal")
@@ -82,7 +82,7 @@ public class UserController {
             model.addAttribute("errorMessage", "msg.error.payout");
             //todo LOG
         }
-        return "redirect:/user";
+        return "user";
     }
 
     @GetMapping("/buycurrency")
@@ -119,7 +119,7 @@ public class UserController {
             model.addAttribute("errorMessage", "msg.error.operation");
             //todo LOG
         }
-        return "redirect:/user";
+        return "user";
     }
 
     @GetMapping("/sellcurrency/{code}")
@@ -150,7 +150,7 @@ public class UserController {
             model.addAttribute("errorMessage", "msg.error.operation");
             //todo LOG
         }
-        return "redirect:/user";
+        return "user";
     }
 
     @GetMapping("/history")
