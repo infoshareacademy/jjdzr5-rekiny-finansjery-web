@@ -1,0 +1,247 @@
+<!-- ======= Display all Messages ======= -->
+<div th:fragment="messages" id="messages">
+    <div th:insert="fragments/messages :: edit_table_message"></div>
+    <div th:insert="fragments/messages :: currency_add_message"></div>
+    <div th:insert="fragments/messages :: currency_edit_message"></div>
+</div>
+
+<!-- ======= Success Message ======= -->
+<div th:fragment="menu_message">
+    <div th:if="${successMessage != null}" th:text="#{${successMessage}}"
+         class="alert alert-success text-center m-0" role="alert">
+        Success!
+    </div>
+    <div th:if="${errorMessage != null}" th:text="#{${errorMessage}}"
+         class="alert alert-danger text-center m-0" role="alert">
+        Error!
+    </div>
+</div>
+
+<!-- ======= Add Correct Table Message ======= -->
+<div th:fragment="add_message" id="add_message">
+    <div th:if="${errorMessageForAddTable != null}" class="d-flex align-items-center mt-4">
+        <div class="alert alert-danger p-4 me-5 w-100" role="alert">
+            <div class="d-flex align-items-center mb-2">
+                <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+                <h4 class="py-0 my-0" th:text="#{incorrect.data}">Incorrect table data</h4>
+            </div>
+            <ul>
+                <li th:each="err : ${errorMessageForAddTable}" th:text="#{${err.getDefaultMessage()}}"/>
+            </ul>
+        </div>
+        <form th:action="@{/admin/add-table}"
+              th:object="${invalidDailyTable}"
+              th:method="post"
+              class="p-3 pt-4 w-100 border border-1 border-primary rounded-3">
+            <h4 class="text-primary" th:text="#{add.new.table}">Add Table</h4>
+            <h5 class="mb-4" th:text="#{correct.values}"></h5>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <label for="addTableNo" class="col-form-label w-50" th:text="#{table.name}"></label>
+                <input type="text" class="form-control rounded-4" id="addTableNo"
+                       th:value="${invalidDailyTable.getNo()}" name="no"
+                       required minlength="3" maxlength="14">
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <label for="addEffectiveDate" class="col-form-label w-50"
+                       th:text="#{collection.view.effective.date}"></label>
+                <input type="date" class="form-control rounded-4" id="addEffectiveDate"
+                       th:value="${invalidDailyTable.getEffectiveDate()}" name="effectiveDate"
+                       required
+                       th:min="${#dates.format(#dates.create(2022,1,1), 'yyyy-MM-dd')}"
+                       th:max="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <label for="addTradingDate" class="col-form-label w-50"
+                       th:text="#{collection.view.trading.date}"></label>
+                <input type="date" class="form-control rounded-4" id="addTradingDate"
+                       th:value="${invalidDailyTable.getTradingDate()}" name="tradingDate"
+                       required
+                       th:min="${#dates.format(#dates.create(2022,1,1), 'yyyy-MM-dd')}"
+                       th:max="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
+            </div>
+            <div class="d-flex justify-content-end">
+                <a th:href="@{/tables}" th:text="#{cancel.button}"
+                   class="btn btn-lg my-2 mx-1 rounded-4 btn-secondary" style="width: 150px">Cancel</a>
+                <button class="btn btn-lg my-2 mx-1 rounded-4 btn-primary" style="width: 150px" type="submit"
+                        th:text="#{add.button}">
+                    Add
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ======= Edit Correct Table Message ======= -->
+<div th:fragment="edit_table_message" id="edit_message">
+    <div th:if="${errorMessageForEditTable != null}" class="d-flex align-items-center mt-4">
+        <div class="alert alert-danger p-4 me-5 w-100" role="alert">
+            <div class="d-flex align-items-center mb-2">
+                <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+                <h4 class="py-0 my-0" th:text="#{incorrect.data}">Incorrect table data</h4>
+            </div>
+            <ul>
+                <li th:each="err : ${errorMessageForEditTable}" th:text="#{${err.getDefaultMessage()}}"/>
+            </ul>
+        </div>
+        <div class="p-3 pt-4 w-100 border border-1 border-warning rounded-3">
+            <h4 class="text-warning" th:text="#{edit.table}">Edit Table</h4>
+            <h5 class="mb-4" th:text="#{correct.values}"></h5>
+            <form th:fragment="edit_table_form"
+                  th:with="no=${exchangeRates.getNo()}"
+                  th:action="@{admin/edit-table/{table}(table=${#strings.replace(no,'/','_')})}"
+                  th:object="${invalidDailyTable}"
+                  th:method="post">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <label for="editNo" class="col-form-label w-50" th:text="#{table.name}"></label>
+                    <input type="text" class="form-control rounded-4" id="editNo"
+                           th:value="${invalidDailyTable.getNo()}" name="no"
+                           required minlength="3" maxlength="14">
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <label for="editEffectiveDate" class="col-form-label w-50"
+                           th:text="#{collection.view.effective.date}"></label>
+                    <input type="date" class="form-control rounded-4" id="editEffectiveDate"
+                           th:value="${invalidDailyTable.getEffectiveDate()}" name="effectiveDate"
+                           required
+                           th:min="${#dates.format(#dates.create(2022,1,1), 'yyyy-MM-dd')}"
+                           th:max="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <label for="editTradingDate" class="col-form-label w-50"
+                           th:text="#{collection.view.trading.date}"></label>
+                    <input type="date" class="form-control rounded-4" id="editTradingDate"
+                           th:value="${invalidDailyTable.getTradingDate()}" name="tradingDate"
+                           required
+                           th:min="${#dates.format(#dates.create(2022,1,1), 'yyyy-MM-dd')}"
+                           th:max="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
+                </div>
+                <div class="d-flex justify-content-end">
+                    <a th:with="no=${exchangeRates.getNo()}"
+                       th:href="@{/table/{table}(table=${#strings.replace(no,'/','_')})}"
+                       th:text="#{cancel.button}"
+                       class="btn btn-lg my-2 mx-1 rounded-4 btn-secondary" style="width: 150px">Cancel</a>
+                    <button class="btn btn-lg my-2 mx-1 rounded-4 btn-warning" style="width: 150px" type="submit"
+                            th:text="#{save.button}">
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ======= Add Correct Currency Message ======= -->
+<div th:fragment="currency_add_message" id="currency_add_message">
+    <div th:if="${errorMessageForAddCurrency != null}" class="d-flex align-items-center mt-4">
+        <div class="alert alert-danger p-4 me-5 w-100" role="alert">
+            <div class="d-flex align-items-center mb-2">
+                <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+                <h4 class="py-0 my-0" th:text="#{incorrect.data}">Incorrect Currency Data</h4>
+            </div>
+            <ul>
+                <li th:each="err : ${errorMessageForAddCurrency}" th:text="#{${err.getDefaultMessage()}}"/>
+            </ul>
+        </div>
+        <div class="p-3 pt-4 w-100 border border-1 border-primary rounded-3">
+            <h4 class="text-primary" th:text="#{add.new.currency}">Add New Currency</h4>
+            <h5 class="mb-4" th:text="#{correct.values}"></h5>
+            <form th:with="no=${exchangeRates.getNo()}"
+                  th:action="@{/admin/add-currency/{table}(table=${#strings.replace(no,'/','_')})}"
+                  th:object="${invalidExchangeRate}"
+                  th:method="post">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <label for="addInvalidCurrencyName" class="col-form-label w-50"
+                           th:text="#{collection.view.currency.name}">Currency Name</label>
+                    <input type="text" class="form-control rounded-4" id="addInvalidCurrencyName"
+                           th:value="${invalidExchangeRate.currency}" name="currency" required maxlength="20">
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <label for="addInvalidCurrencyCode" class="col-form-label w-50"
+                           th:text="#{collection.view.code}">Code</label>
+                    <input type="text" class="form-control rounded-4" id="addInvalidCurrencyCode"
+                           th:value="${invalidExchangeRate.code}" name="code" required maxlength="3">
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <label for="addInvalidCurrencyBid" class="col-form-label w-50"
+                           th:text="#{collection.view.bid}">Bid</label>
+                    <input type="number" class="form-control rounded-4" id="addInvalidCurrencyBid"
+                           th:value="${invalidExchangeRate.bid}" step="any" name="bid" required max="100">
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <label for="addInvalidCurrencyAsk" class="col-form-label w-50"
+                           th:text="#{collection.view.ask}">Ask</label>
+                    <input type="number" class="form-control rounded-4" id="addInvalidCurrencyAsk"
+                           th:value="${invalidExchangeRate.ask}" step="any" name="ask" required max="100">
+                </div>
+                <div class="d-flex justify-content-end">
+                    <a th:with="no=${exchangeRates.getNo()}"
+                       th:href="@{/table/{table}(table=${#strings.replace(no,'/','_')})}"
+                       th:text="#{cancel.button}"
+                       class="btn btn-lg my-2 mx-1 rounded-4 btn-secondary" style="width: 150px">Cancel</a>
+                    <button class="btn btn-lg my-2 mx-1 rounded-4 btn-primary" style="width: 170px" type="submit"
+                            th:text="#{add.button}">
+                        Add Currency
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ======= Edit Correct Currency Message ======= -->
+<div th:fragment="currency_edit_message" id="edit_currency_message">
+    <div th:if="${errorMessageForEditCurrency != null}" class="d-flex align-items-center mt-4">
+        <div class="alert alert-danger p-4 me-5 w-100" role="alert">
+            <div class="d-flex align-items-center mb-2">
+                <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+                <h4 class="py-0 my-0" th:text="#{incorrect.data}">Incorrect Currency Data</h4>
+            </div>
+            <ul>
+                <li th:each="err : ${errorMessageForEditCurrency}" th:text="#{${err.getDefaultMessage()}}"/>
+            </ul>
+        </div>
+        <div class="p-3 pt-4 w-100 border border-1 border-warning rounded-3">
+            <h4 class="text-primary" th:text="#{edit.currency}">Edit Currency</h4>
+            <h5 class="mb-4" th:text="#{correct.values}"></h5>
+            <form th:with="no=${exchangeRates.getNo()}"
+                  th:action="@{/admin/edit-currency/{table}/{code}(table=${#strings.replace(no,'/','_')}, code=${currencyCode})}"
+                  th:object="${invalidExchangeRate}"
+                  th:method="post">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <label for="editInvalidCurrencyName" class="col-form-label w-50"
+                           th:text="#{collection.view.currency.name}">Currency Name</label>
+                    <input type="text" class="form-control rounded-4" id="editInvalidCurrencyName"
+                           th:value="${invalidExchangeRate.currency}" name="currency" required maxlength="20">
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <label for="editInvalidCurrencyCode" class="col-form-label w-50"
+                           th:text="#{collection.view.code}">Code</label>
+                    <input type="text" class="form-control rounded-4" id="editInvalidCurrencyCode"
+                           th:value="${invalidExchangeRate.code}" name="code" required maxlength="3">
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <label for="editInvalidCurrencyBid" class="col-form-label w-50"
+                           th:text="#{collection.view.bid}">Bid</label>
+                    <input type="number" class="form-control rounded-4" id="editInvalidCurrencyBid"
+                           th:value="${invalidExchangeRate.bid}" step="any" name="bid" required max="100">
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <label for="editInvalidCurrencyAsk" class="col-form-label w-50"
+                           th:text="#{collection.view.ask}">Ask</label>
+                    <input type="number" class="form-control rounded-4" id="editInvalidCurrencyAsk"
+                           th:value="${invalidExchangeRate.ask}" step="any" name="ask" required max="100">
+                </div>
+                <div class="d-flex justify-content-end">
+                    <a th:with="no=${exchangeRates.getNo()}"
+                       th:href="@{/table/{table}(table=${#strings.replace(no,'/','_')})}"
+                       th:text="#{cancel.button}"
+                       class="btn btn-lg my-2 mx-1 rounded-4 btn-secondary" style="width: 150px">Cancel</a>
+                    <button class="btn btn-lg my-2 mx-1 rounded-4 btn-warning" style="width: 170px" type="submit"
+                            th:text="#{save.button}">
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

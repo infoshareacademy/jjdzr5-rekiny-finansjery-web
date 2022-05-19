@@ -1,4 +1,5 @@
 <div th:fragment="page_wraper">
+    <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:insert="fragments/messages :: add_message"></div>
     <div class="d-flex mt-4 justify-content-between align-items-center">
         <div class="text-start">
             <div class="h3 text-secondary ms-3">

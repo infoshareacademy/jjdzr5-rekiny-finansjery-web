@@ -3,7 +3,8 @@ package org.infoshare.rekinyfinansjeryweb.service;
 import com.infoshareacademy.domain.DailyExchangeRates;
 import com.infoshareacademy.domain.ExchangeRate;
 import com.infoshareacademy.services.NBPApiManager;
-import org.infoshare.rekinyfinansjeryweb.form.TableSettings;
+import org.infoshare.rekinyfinansjeryweb.data.CurrencyData;
+import org.infoshare.rekinyfinansjeryweb.data.DailyTableData;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -11,12 +12,12 @@ import java.util.Optional;
 @Service
 public class AdminService {
 
-    public void addTable(TableSettings settings) {
+    public void addTable(DailyTableData dailyTableData) {
         DailyExchangeRates newDailyTable = new DailyExchangeRates();
         newDailyTable.setTable("C");
-        newDailyTable.setNo(settings.getNo());
-        newDailyTable.setEffectiveDate(settings.getEffectiveDate());
-        newDailyTable.setTradingDate(settings.getTradingDate());
+        newDailyTable.setNo(dailyTableData.getNo());
+        newDailyTable.setEffectiveDate(dailyTableData.getEffectiveDate());
+        newDailyTable.setTradingDate(dailyTableData.getTradingDate());
 
         if (NBPApiManager.getInstance().addDailyTable(newDailyTable)) {
             NBPApiManager.getInstance().saveCollection();
@@ -35,13 +36,13 @@ public class AdminService {
         }
     }
 
-    public void editTable(String no, TableSettings settings) {
+    public void editTable(String no, DailyTableData dailyTableData) {
         Optional<DailyExchangeRates> dailyTable = NBPApiManager.getInstance().findDailyTable(no);
         dailyTable.ifPresentOrElse(table -> {
             DailyExchangeRates dailyExchangeRates = dailyTable.get();
-            dailyExchangeRates.setNo(settings.getNo());
-            dailyExchangeRates.setEffectiveDate(settings.getEffectiveDate());
-            dailyExchangeRates.setTradingDate(settings.getTradingDate());
+            dailyExchangeRates.setNo(dailyTableData.getNo());
+            dailyExchangeRates.setEffectiveDate(dailyTableData.getEffectiveDate());
+            dailyExchangeRates.setTradingDate(dailyTableData.getTradingDate());
             NBPApiManager.getInstance().saveCollection();
             //TODO Add logger
         }, () -> {
@@ -49,7 +50,13 @@ public class AdminService {
         });
     }
 
-    public void addCurrency(String no, ExchangeRate newExchangeRate) {
+    public void addCurrency(String no, CurrencyData currencyData) {
+        ExchangeRate newExchangeRate = new ExchangeRate();
+        newExchangeRate.setCurrency(currencyData.getCurrency());
+        newExchangeRate.setCode(currencyData.getCode());
+        newExchangeRate.setBid(currencyData.getBid());
+        newExchangeRate.setAsk(currencyData.getAsk());
+
         if (NBPApiManager.getInstance().addExchangeRate(no, newExchangeRate)) {
             NBPApiManager.getInstance().saveCollection();
             //TODO Add logger
@@ -67,18 +74,27 @@ public class AdminService {
         }
     }
 
-    public void editCurrency(String tableNo, String code, ExchangeRate editedRate) {
+    public void editCurrency(String tableNo, String code, CurrencyData currencyData) {
         Optional<ExchangeRate> exchangeRate = NBPApiManager.getInstance().findExchangeRate(tableNo, code);
         exchangeRate.ifPresentOrElse(rate -> {
             ExchangeRate newExchangeRate = exchangeRate.get();
-            newExchangeRate.setCurrency(editedRate.getCurrency());
-            newExchangeRate.setCode(editedRate.getCode());
-            newExchangeRate.setBid(editedRate.getBid());
-            newExchangeRate.setAsk(editedRate.getAsk());
+            newExchangeRate.setCurrency(currencyData.getCurrency());
+            newExchangeRate.setCode(currencyData.getCode());
+            newExchangeRate.setBid(currencyData.getBid());
+            newExchangeRate.setAsk(currencyData.getAsk());
             NBPApiManager.getInstance().saveCollection();
             //TODO Add logger
         }, () -> {
             //TODO Add logger
         });
+    }
+
+    public boolean tableExists(String tableNo) {
+        return NBPApiManager.getInstance().findDailyTable(tableNo).isPresent();
+    }
+
+    public boolean currencyExists(String tableNo, String code) {
+        Optional<ExchangeRate> exchangeRate = NBPApiManager.getInstance().findExchangeRate(tableNo, code);
+        return exchangeRate.isPresent();
     }
 }
