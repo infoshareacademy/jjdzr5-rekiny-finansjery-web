@@ -12,14 +12,19 @@
 <body>
 <header th:insert="fragments/general :: menu"></header>
 
+<section class="bg-primary text-light p-5 text-center">
+    <div class="container">
+        <h1 th:text="#{user.saved.filters.title}"></h1>
+    </div>
+</section>
 <!-- ======= Main ======= -->
 <main>
     <div class="container">
         <div class="row">
-            <div class="col-12 col-md-3 mt-3 mb-3">
+            <div class="col-3 col-md-3 mt-3 mb-3">
                 <div th:insert="fragments/user :: menu"></div>
             </div>
-            <div class="col-12 col-md-9 mt-3 mb-3">
+            <div class="col-9 col-md-9 mt-3 mb-3">
                 <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.data.User"*/-->
                 <form id="form" th:action="@{/user/filtration_preferences/add}" th:object="${saveOfFiltrationSettings}" method="post">
                     <label for="name" th:text="#{filtration.filter.name}"></label>
