@@ -1,17 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
-<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Template</title>
+    <link rel="stylesheet" th:href="@{/styles/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/styles/style.css}">
 </head>
 <body>
-    <ul>
-        <li th:each="exchangeRate : ${collectionsOfExchangeRates}">
-            <p th:text="${exchangeRate.getNo()}"></p>
-            <p th:text="${exchangeRate.getEffectiveDate()}"></p>
-            <p th:text="${exchangeRate.getTable()}"></p>
-        </li>
-    </ul>
+
+<header th:insert="fragments/general :: menu"></header>
+
+<!-- ======= Main ======= -->
+<main>
+
+    <div class="container p-5">
+
+        <form class="form-inline" th:action="@{'/currency/' + ${code} + '/monthly'}" method="get">
+
+            <div class="form-check-inline">
+                <label for="month" th:text="#{chart.month}">Month</label>
+                <select class="form-control" name="month" id="month" th:with="currencyCode=${'USD'}" style="width: 40px">
+                    <option th:value="${currencyCode}" th:text="${currencyCode}"></option>
+                </select>
+            </div>
+            <div class="form-check-inline">
+                <label for="month" th:text="#{chart.month}">Month</label>
+                <select class="form-control" name="month" id="month" th:with="currencyCode=${'GBP'}" style="width: 40px">
+                    <option th:value="${currencyCode}" th:text="${currencyCode}"></option>
+                </select>
+
+            </div>
+            <button class="btn btn-sm m-1 btn-secondary" type="submit" th:text="#{chart.button.submit}">Submit</button>
+        </form>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+        <canvas id="myChart" style="width:100%"></canvas>
+
+        <script th:inline="javascript">
+
+
+            let currencies = /*[[${chartData}]]*/;
+            var xValues = currencies.map(currency => currency.tradingDate);
+
+            new Chart("myChart", {
+                type: "line",
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        data: currencies.map(currency => currency.bidPrice),
+                        borderColor: "red",
+                        fill: false
+                    },{
+                        data: currencies.map(currency => currency.askPrice),
+                        borderColor: "blue",
+                        fill: false
+                    }]
+                },
+                options: {
+                    legend: {display: false}
+                }
+            });
+        </script>
+
+    </div>
+</main>
+
+<footer th:insert="fragments/general :: footer"></footer>
+
+<script th:src="@{~/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>

@@ -1,32 +1,29 @@
 package org.infoshare.rekinyfinansjeryweb.controller;
 
-import com.infoshareacademy.domain.DailyExchangeRates;
-import com.infoshareacademy.services.DailyExchangeRatesFiltrationService;
-import com.infoshareacademy.services.ExchangeRatesFiltrationService;
-import com.infoshareacademy.services.NBPApiManager;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.infoshare.rekinyfinansjeryweb.controller.controllerComponents.ListToPagesSplitter;
+import org.infoshare.rekinyfinansjeryweb.service.ChartService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/currency")
 @RequiredArgsConstructor
+
 public class CurrencyChartController {
+
+    @Autowired
+    ChartService chartService;
 
     @GetMapping("/{code}")
     public String showChart(@PathVariable("code") String code, Model model) {
 
-       List<ChartData> chartData = getChartData(code);
+        List<ChartService.ChartData> chartData = chartService.getChartData(code);
         model.addAttribute("chartData", chartData);
         return "chart";
     }
@@ -34,7 +31,7 @@ public class CurrencyChartController {
     @GetMapping("/{code}/monthly")
     public String showChart(@PathVariable("code") String code, @RequestParam("year") int year, @RequestParam("month") int month, Model model) {
 
-        List<ChartData> chartData = getChartData(code, year, month);
+        List<ChartService.ChartData> chartData = chartService.getChartData(code, year, month);
         model.addAttribute("chartData", chartData);
         return "chart";
     }
@@ -42,44 +39,10 @@ public class CurrencyChartController {
     @GetMapping("/history/{code}")
     public String showHistory(@PathVariable("code") String code, Model model, @PageableDefault(size=25) Pageable pageable) {
 
-        List<ChartData> chartData = getChartData(code);
+        List<ChartService.ChartData> chartData = chartService.getChartData(code);
         ListToPagesSplitter.splitIntoPages(chartData, model, pageable);
         return "history";
     }
 
-    private List<ChartData> createChartDataSet(DailyExchangeRatesFiltrationService ratesCollectionProvider, String code){
-        List<DailyExchangeRates> exchangeRateTablesForOneCurrency = ratesCollectionProvider.forEachDay(dailyExchangeRates -> new ExchangeRatesFiltrationService(dailyExchangeRates.
-                getRates()).
-                filterByShortName(Arrays.asList(code))).getDailyExchangeRates();
-
-
-        return exchangeRateTablesForOneCurrency.stream().map(table -> new ChartData(table.getEffectiveDate(),
-                table.getTradingDate(),
-                table.getRates().get(0).getAsk(),
-                table.getRates().get(0).getBid())
-        ).collect(Collectors.toList());
-    }
-
-    public List<ChartData> getChartData(String code, int year, int month){
-        DailyExchangeRatesFiltrationService ratesCollectionProvider = NBPApiManager.getInstance().getDailyExchangeRatesService();
-        ratesCollectionProvider
-                .filterByTradingDateFrom(LocalDate.of(year, month, 1))
-                .filterByTradingDateTo(LocalDate.of(year, month, LocalDate.of(year, month, 1).lengthOfMonth()));
-        return createChartDataSet(ratesCollectionProvider, code);
-    }
-
-    public List<ChartData> getChartData(String code){
-        DailyExchangeRatesFiltrationService ratesCollectionProvider = NBPApiManager.getInstance().getDailyExchangeRatesService();
-        return createChartDataSet(ratesCollectionProvider, code);
-    }
-
-    public record ChartData(
-            LocalDate effectiveDate,
-            LocalDate tradingDate,
-            Double askPrice,
-            Double bidPrice
-    ) {
-        //empty
-    }
 
 }
