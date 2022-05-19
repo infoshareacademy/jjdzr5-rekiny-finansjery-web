@@ -6,6 +6,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,6 +24,7 @@ public class User {
     private String lastname;
     private boolean enabled;
     private double billingCurrency;
+    private List<OperationHistory> historyList;
     private Map<String,UserCurrency> myCurrencies;
     private Map<String, FiltrationSettings> savedFiltrationSettings;
     private LocalDateTime created;
@@ -95,6 +97,14 @@ public class User {
         this.billingCurrency = billingCurrency;
     }
 
+    public List<OperationHistory> getHistoryList() {
+        return historyList;
+    }
+
+    public void setHistoryList(List<OperationHistory> historyList) {
+        this.historyList = historyList;
+    }
+
     public Map<String, UserCurrency> getMyCurrencies() {
         return myCurrencies;
     }
@@ -142,6 +152,7 @@ public class User {
         if (role != null ? !role.equals(user.role) : user.role != null) return false;
         if (name != null ? !name.equals(user.name) : user.name != null) return false;
         if (lastname != null ? !lastname.equals(user.lastname) : user.lastname != null) return false;
+        if (historyList != null ? !historyList.equals(user.historyList) : user.historyList != null) return false;
         if (myCurrencies != null ? !myCurrencies.equals(user.myCurrencies) : user.myCurrencies != null) return false;
         if (created != null ? !created.equals(user.created) : user.created != null) return false;
         return lastLogin != null ? lastLogin.equals(user.lastLogin) : user.lastLogin == null;
@@ -160,6 +171,7 @@ public class User {
         result = 31 * result + (enabled ? 1 : 0);
         temp = Double.doubleToLongBits(billingCurrency);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (historyList != null ? historyList.hashCode() : 0);
         result = 31 * result + (myCurrencies != null ? myCurrencies.hashCode() : 0);
         result = 31 * result + (created != null ? created.hashCode() : 0);
         result = 31 * result + (lastLogin != null ? lastLogin.hashCode() : 0);
@@ -177,6 +189,7 @@ public class User {
                 ", lastname='" + lastname + '\'' +
                 ", enabled=" + enabled +
                 ", billingCurrency=" + billingCurrency +
+                ", historyList=" + historyList +
                 ", myCurrencies=" + myCurrencies +
                 ", created=" + created +
                 ", lastLogin=" + lastLogin +

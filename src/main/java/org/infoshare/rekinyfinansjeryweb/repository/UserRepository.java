@@ -43,14 +43,14 @@ public class UserRepository {
                 .findFirst().orElse(new User());
     }
 
-    public void save(User user){
-        usersRepository.add(user);
+    public boolean save(User user){
+        return usersRepository.add(user);
     }
 
-    public void update(User user){
+    public boolean update(User user){
         User oldUser = findUserById(user.getId());
         usersRepository.remove(oldUser);
-        usersRepository.add(user);
+        return usersRepository.add(user);
     }
 
     public void delete(long id){
@@ -69,6 +69,7 @@ public class UserRepository {
         user1.setName("REKINY");
         user1.setLastname("FINANSJERY");
         user1.setBillingCurrency(155222.86);
+        user1.setHistoryList(new ArrayList<>());
         Map<String, UserCurrency> currencyMap = new HashMap<>();
         List<OperationHistory> operationHistoryList1 = new ArrayList<>();
         operationHistoryList1.add(new OperationHistory(LocalDateTime.now().minusDays(15), OperationEnum.ASK, 4.3193, 50.99));
@@ -81,6 +82,11 @@ public class UserRepository {
         operationHistoryList2.add(new OperationHistory(LocalDateTime.now().minusDays(18), OperationEnum.ASK, 4.6021, 250.00));
         UserCurrency currency2 = new UserCurrency(500.50,operationHistoryList2);
         currencyMap.put("EUR", currency2);
+        List<OperationHistory> operationHistoryList3 = new ArrayList<>();
+        operationHistoryList3.add(new OperationHistory(LocalDateTime.now().minusDays(60), OperationEnum.ASK, 4.6025, 1.00));
+        operationHistoryList3.add(new OperationHistory(LocalDateTime.now().minusDays(98), OperationEnum.ASK, 4.6021, 1.00));
+        UserCurrency currency3 = new UserCurrency(2.00,operationHistoryList3);
+        currencyMap.put("RFC", currency3);
         user1.setMyCurrencies(currencyMap);
         user1.setSavedFiltrationSettings(new HashMap<>());
         user1.setEnabled(true);
@@ -97,6 +103,8 @@ public class UserRepository {
         user2.setName("Jan");
         user2.setLastname("Kowalski");
         user2.setBillingCurrency(1000);
+        List<OperationHistory> historyList = new ArrayList<>();
+        user2.setHistoryList(historyList);
         Map<String, UserCurrency> currencyMap2 = new HashMap<>();
         user2.setMyCurrencies(currencyMap2);
 
@@ -112,6 +120,5 @@ public class UserRepository {
         user2.setEnabled(true);
         user2.setCreated(LocalDateTime.now());
         usersRepository.add(user2);
-
     }
 }

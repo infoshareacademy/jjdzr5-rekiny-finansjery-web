@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+      xmlns="http://www.w3.org/1999/html">
 
 <!-- ======= Header ======= -->
-<nav th:fragment="menu" class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top py-3">
+<div th:fragment="menu">
+<nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top py-3">
     <div class="container">
         <a th:href="@{/}" class="navbar-brand">
             <i class="bi bi-coin h3"></i> Rekiny Finansjery
@@ -15,9 +17,9 @@
         <div th:insert="fragments/general :: language_tool"></div>
         <div class="collapse navbar-collapse" id="navmenu">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
-                    <a href="/admin-panel" class="nav-link">Admin</a>
-                </li>
+<!--                <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">-->
+<!--                    <a href="/admin-panel" class="nav-link">Admin</a>-->
+<!--                </li>-->
                 <li class="nav-item">
                     <a th:href="@{/tables}" class="nav-link">Tables</a>
                 </li>
@@ -49,6 +51,15 @@
         </div>
     </div>
 </nav>
+    <div th:if="${successMessage != null}" class="alert alert-success d-flex align-items-center justify-content-center" role="alert">
+        <div><i class="bi bi-check-circle h3 pe-3"></i></div>
+        <div th:text="#{${successMessage}}"></div>
+    </div>
+    <div th:if="${errorMessage != null}" class="alert alert-danger d-flex align-items-center justify-content-center" role="alert">
+        <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+        <div th:text="#{${errorMessage}}"></div>
+    </div>
+</div>
 
 <!-- ======= Footer ======= -->
 <div th:fragment="footer" class="p-5 bg-dark text-white text-center position-relative">
