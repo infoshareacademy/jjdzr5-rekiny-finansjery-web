@@ -40,6 +40,17 @@ public class SearchService {
         return dailyExchangeRates;
     }
 
+    public DailyExchangeRates getLastExchangeRates(){
+        return NBPApiManager.getInstance().getCollectionsOfExchangeRates().stream()
+                .sorted((o1, o2) -> o2.getEffectiveDate().compareTo(o1.getEffectiveDate()))
+                .findFirst().get();
+    }
+    public ExchangeRate getCurrencyOfLastExchamgeRates(String code) {
+        return getLastExchangeRates().getRates().stream()
+                .filter(e -> e.getCode().equals(code))
+                .findFirst().orElse(null);
+    }
+
     private List<DailyExchangeRates> searchTables(DailyExchangeRatesSearchService dailyExchangeRatesSearchService, SearchSettings settings){
         return dailyExchangeRatesSearchService.searchWidely(settings.getSearchPhrase());
     }
