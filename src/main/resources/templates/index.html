@@ -56,31 +56,38 @@
     <div class="container">
         <div class="row align-items-center justify-content-between">
             <div class="col-md">
-                <a class="btn btn-sm m-1 btn-primary" th:each="code : ${currencies}" th:href="@{'/' + ${code}}" th:text="${code}"></a>
-                <script>
+                <button type="button" class="btn btn-sm m-1 btn-primary" th:each="record : ${chartsData}"
+                        th:text="${record.code}" th:attr="onclick=|showCurrencyChart('${record.code}')|"></button>
+                <script th:inline="javascript">
                     var currencies = new Map();
+                    var currencies_codes = [[${currencies}]];
+                    function showCurrencyChart(code){
+                        for(const c of currencies_codes){
+                            document.getElementById('small_chart_'+c).classList.remove("chart_transition_visible");
+                            document.getElementById('small_chart_'+c).classList.add("chart_transition_hidden");
+                        }
+                        document.getElementById('small_chart_'+code).classList.add("chart_transition_visible");
+                        document.getElementById('small_chart_'+code).classList.remove("chart_transition_hidden");
+                    }
                 </script>
-                <div class="p-3" th:each="record : ${chartsData}">
+                <div class="p-3" th:each="record : ${chartsData}" th:id="'small_chart_'+${record.code}"
+                     th:class="${chartsData.get(0).code == record.code() ? 'chart_transition_visible' : 'chart_transition_hidden'}">
                     <h5 th:text="${record.code} + ' - ' + #{chart.title}">Title</h5>
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
                     <canvas th:id="'myChart' + ${record.code}" style="width:100%"></canvas>
                     <script th:inline="javascript">
                         currencies.set([[${record.code}]], [[${record.chartsData}]]);
-                        var currencies = [[${record.chartsData}]];
-                        var code = [[${record.code}]];
-                        var xValues = currencies.get([[${record.code}]]).map(currency => currency.tradingDate);
-                        var yValues = currencies.get([[${record.code}]]).map(currency => currency.askPrice);
 
                         new Chart("myChart" + [[${record.code}]], {
                             type: "line",
                             data: {
-                                labels: xValues,
+                                labels: currencies.get([[${record.code}]]).map(currency => currency.tradingDate),
                                 datasets: [{
-                                    data: currencies.map(currency => currency.bidPrice),
+                                    data: currencies.get([[${record.code}]]).map(currency => currency.bidPrice),
                                     borderColor: "red",
                                     fill: false
                                 },{
-                                    data: yValues,
+                                    data: currencies.get([[${record.code}]]).map(currency => currency.askPrice),
                                     borderColor: "blue",
                                     fill: false
                                 }]

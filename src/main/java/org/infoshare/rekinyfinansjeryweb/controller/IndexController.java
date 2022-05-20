@@ -20,7 +20,7 @@ public class IndexController {
     @Autowired
     ChartService chartService;
 
-    List<String> currencies = new ArrayList<>(Arrays.asList("GBP", "USD", "EUR", "CHF"));
+    List<String> currencies = new ArrayList<>(Arrays.asList("USD", "GBP", "EUR", "CHF"));
 
     @GetMapping
     public String showChart(Model model) {

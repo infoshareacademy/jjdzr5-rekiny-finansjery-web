@@ -23,3 +23,12 @@ body::before {
     margin-top: 5px;
     margin-bottom: 5px;
 }
+
+.chart_transition_visible {
+    visibility: visible;
+}
+
+.chart_transition_hidden {
+    visibility: hidden;
+    height: 0px;
+}

@@ -41,8 +41,9 @@ public class ChartService {
     }
 
     public List<ChartsData> getChartsData(List<String> codes){
-        DailyExchangeRatesFiltrationService ratesCollectionProvider = NBPApiManager.getInstance().getDailyExchangeRatesService();
-        return codes.stream().map(code -> new ChartsData(createChartDataSet(ratesCollectionProvider, code), code)).collect(Collectors.toList());
+        return codes.stream()
+                .map(code -> new ChartsData(createChartDataSet(NBPApiManager.getInstance().getDailyExchangeRatesService(), code), code))
+                .collect(Collectors.toList());
     }
 
     public record ChartsData(List<ChartData> chartsData, String code) {
