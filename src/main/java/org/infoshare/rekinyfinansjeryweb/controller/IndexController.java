@@ -28,18 +28,7 @@ public class IndexController {
         model.addAttribute("currencies", currencies);
         model.addAttribute("code", "EUR");
 
-        List<ChartService.ChartData> chartData = chartService.getChartData("EUR");
-        model.addAttribute("chartData", chartData);
-        return "index";
-    }
-
-    @GetMapping("/{code}")
-    public String showChart(@PathVariable String code, Model model) {
-
-        model.addAttribute("currencies", currencies);
-
-        List<ChartService.ChartData> chartData = chartService.getChartData(code);
-        model.addAttribute("chartData", chartData);
+        model.addAttribute("chartsData", chartService.getChartsData(currencies));
         return "index";
     }
 }

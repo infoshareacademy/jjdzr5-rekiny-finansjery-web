@@ -40,6 +40,14 @@ public class ChartService {
         return createChartDataSet(ratesCollectionProvider, code);
     }
 
+    public List<ChartsData> getChartsData(List<String> codes){
+        DailyExchangeRatesFiltrationService ratesCollectionProvider = NBPApiManager.getInstance().getDailyExchangeRatesService();
+        return codes.stream().map(code -> new ChartsData(createChartDataSet(ratesCollectionProvider, code), code)).collect(Collectors.toList());
+    }
+
+    public record ChartsData(List<ChartData> chartsData, String code) {
+        //empty
+    }
     public record ChartData(
             LocalDate effectiveDate,
             LocalDate tradingDate,
