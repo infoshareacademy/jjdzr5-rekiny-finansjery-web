@@ -1,4 +1,4 @@
-package org.infoshare.rekinyfinansjeryweb.data;
+package org.infoshare.rekinyfinansjeryweb.formData;
 
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -7,7 +7,7 @@ import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Data
-public class DailyTableData {
+public class DailyTableForm {
     private String table;
     @NotBlank(message = "validation.no.blank")
     @Pattern(regexp="^[a-zA-Z0-9/]+$", message = "validation.no.pattern")

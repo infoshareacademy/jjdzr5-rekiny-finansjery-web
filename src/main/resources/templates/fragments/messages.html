@@ -7,13 +7,13 @@
 
 <!-- ======= Success Message ======= -->
 <div th:fragment="menu_message">
-    <div th:if="${successMessage != null}" th:text="#{${successMessage}}"
-         class="alert alert-success text-center m-0" role="alert">
-        Success!
+    <div th:if="${successMessage != null}" class="alert alert-success d-flex align-items-center justify-content-center" role="alert">
+        <div><i class="bi bi-check-circle h3 pe-3"></i></div>
+        <div th:text="#{${successMessage}}"></div>
     </div>
-    <div th:if="${errorMessage != null}" th:text="#{${errorMessage}}"
-         class="alert alert-danger text-center m-0" role="alert">
-        Error!
+    <div th:if="${errorMessage != null}" class="alert alert-danger d-flex align-items-center justify-content-center" role="alert">
+        <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+        <div th:text="#{${errorMessage}}"></div>
     </div>
 </div>
 
@@ -201,7 +201,7 @@
             </ul>
         </div>
         <div class="p-3 pt-4 w-100 border border-1 border-warning rounded-3">
-            <h4 class="text-primary" th:text="#{edit.currency}">Edit Currency</h4>
+            <h4 class="text-warning" th:text="#{edit.currency}">Edit Currency</h4>
             <h5 class="mb-4" th:text="#{correct.values}"></h5>
             <form th:with="no=${exchangeRates.getNo()}"
                   th:action="@{/admin/edit-currency/{table}/{code}(table=${#strings.replace(no,'/','_')}, code=${currencyCode})}"

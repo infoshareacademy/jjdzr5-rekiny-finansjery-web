@@ -1,11 +1,11 @@
-package org.infoshare.rekinyfinansjeryweb.data;
+package org.infoshare.rekinyfinansjeryweb.formData;
 
 import lombok.Data;
 
 import javax.validation.constraints.*;
 
 @Data
-public class CurrencyData {
+public class ExchangeRateForm {
     @NotBlank(message = "validation.currency.blank")
     @Size(min = 3, max = 20, message = "validation.currency.size")
     private String currency;

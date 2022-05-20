@@ -1,7 +1,7 @@
 package org.infoshare.rekinyfinansjeryweb.controller;
 
-import org.infoshare.rekinyfinansjeryweb.data.CurrencyData;
-import org.infoshare.rekinyfinansjeryweb.formData.DailyTableData;
+import org.infoshare.rekinyfinansjeryweb.formData.ExchangeRateForm;
+import org.infoshare.rekinyfinansjeryweb.formData.DailyTableForm;
 import org.infoshare.rekinyfinansjeryweb.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -24,7 +24,7 @@ public class AdminController {
     AdminService adminService;
 
     @PostMapping("/add-table")
-    public String postNewTable(@Valid @ModelAttribute DailyTableData dailyTable, BindingResult result, RedirectAttributes attributes) {
+    public String postNewTable(@Valid @ModelAttribute DailyTableForm dailyTable, BindingResult result, RedirectAttributes attributes) {
         if (result.hasErrors() || adminService.tableExists(dailyTable.getNo())) {
             if (adminService.tableExists(dailyTable.getNo())) {
                 result.reject("Table not added", "validation.table.exists");
@@ -47,7 +47,7 @@ public class AdminController {
     }
 
     @PostMapping("/edit-table/{no}")
-    public String editTable(@PathVariable("no") String no, @Valid @ModelAttribute DailyTableData dailyTable, BindingResult result, RedirectAttributes attributes) {
+    public String editTable(@PathVariable("no") String no, @Valid @ModelAttribute DailyTableForm dailyTable, BindingResult result, RedirectAttributes attributes) {
         if (result.hasErrors() || (adminService.tableExists(dailyTable.getNo()) && !dailyTable.getNo().equals(no.replace('_', '/')))) {
             if (adminService.tableExists(dailyTable.getNo())) {
                 result.reject("Table not edited", "validation.table.exists");
@@ -63,7 +63,7 @@ public class AdminController {
     }
 
     @PostMapping("/add-currency/{no}")
-    public String postNewTable(@PathVariable("no") String no, @Valid @ModelAttribute CurrencyData newExchangeRate, BindingResult result, RedirectAttributes attributes) {
+    public String postNewTable(@PathVariable("no") String no, @Valid @ModelAttribute ExchangeRateForm newExchangeRate, BindingResult result, RedirectAttributes attributes) {
         if (result.hasErrors() || adminService.currencyExists(no.replace('_', '/'), newExchangeRate.getCode())) {
             if (adminService.currencyExists(no.replace('_', '/'), newExchangeRate.getCode())) {
                 result.reject("Currency not added", "validation.currency.exists");
@@ -86,7 +86,7 @@ public class AdminController {
     }
 
     @PostMapping("/edit-currency/{no}/{code}")
-    public String editCurrency(@PathVariable("no") String no, @PathVariable("code") String code, @Valid @ModelAttribute CurrencyData newExchangeRate, BindingResult result, RedirectAttributes attributes) {
+    public String editCurrency(@PathVariable("no") String no, @PathVariable("code") String code, @Valid @ModelAttribute ExchangeRateForm newExchangeRate, BindingResult result, RedirectAttributes attributes) {
 
         if (result.hasErrors() || adminService.currencyExists(no.replace('_', '/'), newExchangeRate.getCode())) {
             if (adminService.currencyExists(no.replace('_', '/'), newExchangeRate.getCode())) {

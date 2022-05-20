@@ -1,15 +1,12 @@
 package org.infoshare.rekinyfinansjeryweb.controller;
 
 import com.infoshareacademy.domain.DailyExchangeRates;
-import com.infoshareacademy.domain.ExchangeRate;
 import com.infoshareacademy.services.NBPApiManager;
 import org.infoshare.rekinyfinansjeryweb.controller.controllerComponents.ListToPagesSplitter;
-import org.infoshare.rekinyfinansjeryweb.data.CurrencyData;
-import org.infoshare.rekinyfinansjeryweb.data.DailyTableData;
+import org.infoshare.rekinyfinansjeryweb.formData.ExchangeRateForm;
+import org.infoshare.rekinyfinansjeryweb.formData.DailyTableForm;
 import org.infoshare.rekinyfinansjeryweb.data.MyUserPrincipal;
 import org.infoshare.rekinyfinansjeryweb.formData.SearchSettings;
-import org.infoshare.rekinyfinansjeryweb.formData.CurrencyData;
-import org.infoshare.rekinyfinansjeryweb.formData.DailyTableData;
 import org.infoshare.rekinyfinansjeryweb.service.FiltrationService;
 import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +46,8 @@ public class FiltrationController {
         ListToPagesSplitter.splitIntoPages(collection, model, pageable);
         model.addAttribute("filtrationSettings", settings);
         model.addAttribute("possibleCurrencies", usedCurrenciesService.getShortNamesOfCurrencies(NBPApiManager.getInstance(), settings.getCurrency()));
-        model.addAttribute("newDailyTable", new DailyTableData());
-        model.addAttribute("newCurrency", new CurrencyData());
+        model.addAttribute("newDailyTable", new DailyTableForm());
+        model.addAttribute("newCurrency", new ExchangeRateForm());
 
         if(principal != null) {
             model.addAttribute("listOfPreferences", new ArrayList<>(principal.getUser().getSavedFiltrationSettings().keySet()));

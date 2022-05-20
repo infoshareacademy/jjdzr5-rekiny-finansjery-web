@@ -4,10 +4,9 @@ import com.infoshareacademy.domain.DailyExchangeRates;
 import com.infoshareacademy.domain.ExchangeRate;
 import com.infoshareacademy.services.NBPApiManager;
 import org.infoshare.rekinyfinansjeryweb.controller.controllerComponents.ListToPagesSplitter;
-import org.infoshare.rekinyfinansjeryweb.data.DailyTableData;
+import org.infoshare.rekinyfinansjeryweb.formData.DailyTableForm;
 import org.infoshare.rekinyfinansjeryweb.data.MyUserPrincipal;
 import org.infoshare.rekinyfinansjeryweb.formData.SearchSettings;
-import org.infoshare.rekinyfinansjeryweb.formData.DailyTableData;
 import org.infoshare.rekinyfinansjeryweb.service.SearchService;
 import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +44,7 @@ public class SearchController {
         ListToPagesSplitter.splitIntoPages(collection, model, pageable);
         model.addAttribute("filtrationSettings", settings);
         model.addAttribute("possibleCurrencies", usedCurrenciesService.getShortNamesOfCurrencies(NBPApiManager.getInstance(), settings.getCurrency()));
-        model.addAttribute("newDailyTable", new DailyTableData());
+        model.addAttribute("newDailyTable", new DailyTableForm());
         model.addAttribute("newCurrency", new ExchangeRate());
 
         if(principal != null) {
