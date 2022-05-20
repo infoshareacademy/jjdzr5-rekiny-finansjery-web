@@ -1,4 +1,4 @@
-package org.infoshare.rekinyfinansjeryweb.form;
+package org.infoshare.rekinyfinansjeryweb.formData;
 
 import javax.validation.constraints.Min;
 

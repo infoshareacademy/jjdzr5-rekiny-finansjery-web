@@ -1,5 +1,7 @@
 package org.infoshare.rekinyfinansjeryweb.data;
 
+import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -24,6 +26,7 @@ public class User {
     private double billingCurrency;
     private List<OperationHistory> historyList;
     private Map<String,UserCurrency> myCurrencies;
+    private Map<String, FiltrationSettings> savedFiltrationSettings;
     private LocalDateTime created;
     private LocalDateTime lastLogin;
 
@@ -108,6 +111,14 @@ public class User {
 
     public void setMyCurrencies(Map<String, UserCurrency> myCurrencies) {
         this.myCurrencies = myCurrencies;
+    }
+
+    public Map<String, FiltrationSettings> getSavedFiltrationSettings() {
+        return savedFiltrationSettings;
+    }
+
+    public void setSavedFiltrationSettings(Map<String, FiltrationSettings> savedFiltrationSettings) {
+        this.savedFiltrationSettings = savedFiltrationSettings;
     }
 
     public LocalDateTime getCreated() {

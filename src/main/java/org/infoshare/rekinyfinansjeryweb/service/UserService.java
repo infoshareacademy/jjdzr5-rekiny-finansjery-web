@@ -2,6 +2,7 @@ package org.infoshare.rekinyfinansjeryweb.service;
 
 import com.infoshareacademy.domain.ExchangeRate;
 import org.infoshare.rekinyfinansjeryweb.data.*;
+import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
 import org.infoshare.rekinyfinansjeryweb.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -73,7 +74,7 @@ public class UserService implements UserDetailsService {
     }
 
     private boolean subtractCurrency(User user, String currency, double amount) {
-        ExchangeRate exchangeRate = searchService.getCurrencyOfLastExchamgeRates(currency);
+        ExchangeRate exchangeRate = searchService.getCurrencyOfLastExchangeRates(currency);
         if (addCurrencyHistory(user, currency, amount, exchangeRate.getBid(), OperationEnum.BID)){
             addToBillingCurrency(user, exchangeRate, amount);
             return true;
@@ -93,7 +94,7 @@ public class UserService implements UserDetailsService {
     }
     
     private boolean addCurrency(User user, String currency, double amount) {
-        ExchangeRate exchangeRate = searchService.getCurrencyOfLastExchamgeRates(currency);
+        ExchangeRate exchangeRate = searchService.getCurrencyOfLastExchangeRates(currency);
         if (subtractFromBillingCurrency(user, exchangeRate, amount) &&
             addCurrencyHistory(user, currency, amount, exchangeRate.getAsk(), OperationEnum.ASK)) return true;
         return false;
@@ -172,5 +173,14 @@ public class UserService implements UserDetailsService {
         return currencyOperationHistories.stream()
                 .sorted(((o1, o2) -> o2.getDateOpreation().compareTo(o1.getDateOpreation())))
                 .collect(Collectors.toList());
+    }
+
+    public List<Map.Entry<String, FiltrationSettings>> getListOfSavedFiltrationSettings(MyUserPrincipal principal){
+        return principal
+                .getUser()
+                .getSavedFiltrationSettings()
+                .entrySet()
+                .stream()
+                .toList();
     }
 }

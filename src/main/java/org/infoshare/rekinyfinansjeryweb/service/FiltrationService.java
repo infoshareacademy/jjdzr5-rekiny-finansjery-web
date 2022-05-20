@@ -4,7 +4,7 @@ import com.infoshareacademy.domain.DailyExchangeRates;
 import com.infoshareacademy.services.DailyExchangeRatesFiltrationService;
 import com.infoshareacademy.services.ExchangeRatesFiltrationService;
 import com.infoshareacademy.services.NBPApiManager;
-import org.infoshare.rekinyfinansjeryweb.form.FiltrationSettings;
+import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -3,9 +3,7 @@ package org.infoshare.rekinyfinansjeryweb.service;
 import com.infoshareacademy.domain.DailyExchangeRates;
 import com.infoshareacademy.domain.ExchangeRate;
 import com.infoshareacademy.services.*;
-import org.infoshare.rekinyfinansjeryweb.controller.FiltrationController;
-import org.infoshare.rekinyfinansjeryweb.controller.SearchController;
-import org.infoshare.rekinyfinansjeryweb.form.SearchSettings;
+import org.infoshare.rekinyfinansjeryweb.formData.SearchSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -45,7 +43,7 @@ public class SearchService {
                 .sorted((o1, o2) -> o2.getEffectiveDate().compareTo(o1.getEffectiveDate()))
                 .findFirst().get();
     }
-    public ExchangeRate getCurrencyOfLastExchamgeRates(String code) {
+    public ExchangeRate getCurrencyOfLastExchangeRates(String code) {
         return getLastExchangeRates().getRates().stream()
                 .filter(e -> e.getCode().equals(code))
                 .findFirst().orElse(null);

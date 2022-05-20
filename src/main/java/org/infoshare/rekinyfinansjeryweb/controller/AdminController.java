@@ -1,7 +1,7 @@
 package org.infoshare.rekinyfinansjeryweb.controller;
 
 import com.infoshareacademy.domain.ExchangeRate;
-import org.infoshare.rekinyfinansjeryweb.form.TableSettings;
+import org.infoshare.rekinyfinansjeryweb.formData.TableSettings;
 import org.infoshare.rekinyfinansjeryweb.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;

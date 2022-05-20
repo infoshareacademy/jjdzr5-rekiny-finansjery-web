@@ -1,10 +1,12 @@
 package org.infoshare.rekinyfinansjeryweb.repository;
 
 import org.infoshare.rekinyfinansjeryweb.data.*;
+import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -86,6 +88,7 @@ public class UserRepository {
         UserCurrency currency3 = new UserCurrency(2.00,operationHistoryList3);
         currencyMap.put("RFC", currency3);
         user1.setMyCurrencies(currencyMap);
+        user1.setSavedFiltrationSettings(new HashMap<>());
         user1.setEnabled(true);
         user1.setCreated(LocalDateTime.now());
         usersRepository.add(user1);
@@ -104,6 +107,16 @@ public class UserRepository {
         user2.setHistoryList(historyList);
         Map<String, UserCurrency> currencyMap2 = new HashMap<>();
         user2.setMyCurrencies(currencyMap2);
+
+        Map<String, FiltrationSettings> map = new HashMap<>();
+        FiltrationSettings dolar = new FiltrationSettings();
+        dolar.setCurrency(Arrays.asList("USD"));
+        dolar.setEffectiveDateMin(LocalDate.of(2022,05,01));
+        map.put("Dolary", dolar);
+        map.put("Dolarki", dolar);
+        user2.setSavedFiltrationSettings(map);
+
+
         user2.setEnabled(true);
         user2.setCreated(LocalDateTime.now());
         usersRepository.add(user2);
