@@ -3,8 +3,8 @@ package org.infoshare.rekinyfinansjeryweb.service;
 import com.infoshareacademy.domain.DailyExchangeRates;
 import com.infoshareacademy.domain.ExchangeRate;
 import com.infoshareacademy.services.NBPApiManager;
-import org.infoshare.rekinyfinansjeryweb.data.CurrencyData;
-import org.infoshare.rekinyfinansjeryweb.data.DailyTableData;
+import org.infoshare.rekinyfinansjeryweb.formData.CurrencyData;
+import org.infoshare.rekinyfinansjeryweb.formData.DailyTableData;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

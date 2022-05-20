@@ -1,0 +1,34 @@
+<div th:fragment="menu">
+    <div class="bg-secondary mt-1 p-3 border border-2 border-secondary rounded-3 d-grid gap-2">
+        <div th:insert="fragments/user :: user"></div>
+        <a class="btn btn-outline-light m-1" th:href="@{/user}" th:text="#{user.menu.wallet}"></a>
+        <a class="btn btn-outline-light m-1" th:href="@{/user/buycurrency}" th:text="#{user.menu.buy_currency}"></a>
+        <a class="btn btn-outline-light m-1" th:href="@{/user/payment}" th:text="#{user.menu.payment}"></a>
+        <a class="btn btn-outline-light m-1" th:href="@{/user/withdrawal}" th:text="#{user.menu.withdrawal}"></a>
+        <a class="btn btn-outline-light m-1" th:href="@{/user/filtration_preferences}" th:text="#{user.menu.saved.filters}"></a>
+        <a class="btn btn-outline-light m-1" th:href="@{/user/history}" th:text="#{user.menu.history}"></a>
+    </div>
+</div>
+<div th:fragment="user">
+    <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.data.User"*/-->
+    <div class="h4 text-light">
+        <div th:text="${user.getName()}"></div>
+        <div th:text="${user.getLastname()}"></div>
+        <div class="text-end" th:text="${#numbers.formatDecimal(user.getBillingCurrency(), 1, 'WHITESPACE', 2, 'COMMA')} + ' PLN'"></div>
+    </div>
+</div>
+<div th:fragment="button_bid" class="d-inline">
+    <!--/*@thymesVar id="rate" type="com.infoshareacademy.domain.ExchangeRate"*/-->
+    <a  class="btn mx-1 btn-success" th:href="@{/user/buycurrency/{code}(code=${rate.code})}">
+        <i class="bi bi-plus-square"></i></a>
+</div>
+<div th:fragment="button_bid_ask_width" class="d-inline">
+    <!--/*@thymesVar id="currency" type="java.text"*/-->
+    <a  class="btn mx-1 btn-primary" th:href="@{/user/history/{code}(code=${currency})}">
+        <i class="bi bi-eye"></i></a>
+    <a  class="btn mx-1 btn-success" style="width: 120px" th:href="@{/user/buycurrency/{code}(code=${currency})}">
+        <i class="bi bi-plus-square"></i><span th:text="' '+#{user.wallet.buy}"></span></a>
+    <a  class="btn mx-1 btn-info" style="width: 120px" th:href="@{/user/sellcurrency/{code}(code=${currency})}">
+        <i class="bi bi-dash-square"></i><span th:text="' '+#{user.wallet.sell}"></span></a>
+</div>
+

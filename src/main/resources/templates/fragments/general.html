@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+      xmlns="http://www.w3.org/1999/html">
 
 <!-- ======= Header ======= -->
 <div th:fragment="menu">
@@ -27,17 +28,20 @@
                         <a class="btn btn-outline-primary mx-lg-2" type="button" th:href="@{/user}">Profil</a>
                     </li>
                     <li class="nav-item" sec:authorize="!isAuthenticated()">
-                        <a th:text="#{menu.sign.up}" class="btn btn-outline-primary mt-2 mt-lg-0 mx-lg-2" type="button" th:href="@{/signup}">Sign up</a>
+                        <a th:text="#{menu.sign.up}" class="btn btn-outline-primary mt-2 mt-lg-0 mx-lg-2" type="button"
+                           th:href="@{/signup}">Sign up</a>
                     </li>
                     <li class="nav-item" sec:authorize="isAuthenticated()">
-                        <a th:text="#{menu.sign.out}" href="javascript: document.logoutForm.submit()" class="btn btn-primary mt-2 mt-lg-0 me-lg-4"
+                        <a th:text="#{menu.sign.out}" href="javascript: document.logoutForm.submit()"
+                           class="btn btn-primary mt-2 mt-lg-0 me-lg-4"
                            type="button">Sign out</a>
                         <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
                             <input hidden type="submit" value="Sign Out"/>
                         </form>
                     </li>
                     <li class="nav-item" sec:authorize="!isAuthenticated()">
-                        <a th:text="#{menu.sign.in}" class="btn btn-primary me-lg-4" type="button" th:href="@{/login}">Sign in</a>
+                        <a th:text="#{menu.sign.in}" class="btn btn-primary me-lg-4" type="button" th:href="@{/login}">Sign
+                            in</a>
                     </li>
                     <li class="nav-item">
                         <div class="dropdown pt-1">
@@ -51,6 +55,14 @@
         </div>
     </nav>
     <div th:replace="fragments/messages :: menu_message"></div>
+    <!--    <div th:if="${successMessage != null}" class="alert alert-success d-flex align-items-center justify-content-center" role="alert">-->
+    <!--        <div><i class="bi bi-check-circle h3 pe-3"></i></div>-->
+    <!--        <div th:text="#{${successMessage}}"></div>-->
+    <!--    </div>-->
+    <!--    <div th:if="${errorMessage != null}" class="alert alert-danger d-flex align-items-center justify-content-center" role="alert">-->
+    <!--        <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>-->
+    <!--        <div th:text="#{${errorMessage}}"></div>-->
+    <!--    </div>-->
 </div>
 
 <!-- ======= Footer ======= -->

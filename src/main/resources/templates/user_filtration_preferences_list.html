@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Reliable and most up-to-date currency information">
+    <title>Rekiny Finansjery</title>
+    <link rel="stylesheet" th:href="@{/styles/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/styles/style.css}">
+</head>
+<body>
+<header th:insert="fragments/general :: menu"></header>
+
+<section class="bg-primary text-light p-5 text-center">
+    <div class="container">
+        <h1 th:text="#{user.saved.filters.title}"></h1>
+    </div>
+</section>
+<!-- ======= Main ======= -->
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-3 col-md-3 mt-3 mb-3">
+                <div th:insert="fragments/user :: menu"></div>
+            </div>
+            <div class="col-9 col-md-9 mt-3 mb-3">
+                <div th:each="setting : ${listOfSavedFiltrationSettings}" th:with="modalName=${T(java.util.Base64).getEncoder().encodeToString(setting.key.getBytes()).replace('=','')}" class="m-3 mt-0 p-3 border border-2 border-secondary rounded-3">
+                    <div class="d-flex justify-content-between align-items-end p-3 pb-0 mb-0">
+                        <h4 th:text="${setting.key}"></h4>
+                    </div>
+
+                    <table class="table table-striped table-sm">
+                        <thead>
+                        <tr>
+                            <th scope="col" th:text="#{filters.option}"></th>
+                            <th scope="col" th:text="#{filters.value}"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${setting.value.effectiveDateMin != null}">
+                            <td class="align-middle" th:text="#{filtration.option.min.effective.date}"></td>
+                            <td class="align-middle" th:text="${setting.value.effectiveDateMin}"></td>
+                        </tr>
+                        <tr th:if="${setting.value.effectiveDateMax != null}">
+                            <td class="align-middle" th:text="#{filtration.option.max.effective.date}"></td>
+                            <td class="align-middle" th:text="${setting.value.effectiveDateMax}"></td>
+                        </tr>
+                        <tr th:if="${setting.value.tradingDateMin != null}">
+                            <td class="align-middle" th:text="#{filtration.option.min.trading.date}"></td>
+                            <td class="align-middle" th:text="${setting.value.tradingDateMin}"></td>
+                        </tr>
+                        <tr th:if="${setting.value.tradingDateMax != null}">
+                            <td class="align-middle" th:text="#{filtration.option.max.trading.date}"></td>
+                            <td class="align-middle" th:text="${setting.value.tradingDateMax}"></td>
+                        </tr>
+                        <tr th:if="${setting.value.bidPriceMin != null}">
+                            <td class="align-middle" th:text="#{filtration.option.min.bid.price}"></td>
+                            <td class="align-middle" th:text="${setting.value.bidPriceMin}"></td>
+                        </tr>
+                        <tr th:if="${setting.value.bidPriceMax != null}">
+                            <td class="align-middle" th:text="#{filtration.option.max.bid.price}"></td>
+                            <td class="align-middle" th:text="${setting.value.bidPriceMax}"></td>
+                        </tr>
+                        <tr th:if="${setting.value.askPriceMin != null}">
+                            <td class="align-middle" th:text="#{filtration.option.min.ask.price}"></td>
+                            <td class="align-middle" th:text="${setting.value.askPriceMin}"></td>
+                        </tr>
+                        <tr th:if="${setting.value.askPriceMax != null}">
+                            <td class="align-middle" th:text="#{filtration.option.max.ask.price}"></td>
+                            <td class="align-middle" th:text="${setting.value.askPriceMax}"></td>
+                        </tr>
+                        <tr th:if="${!setting.value.currency.isEmpty()}">
+                            <td class="align-middle" th:text="'Currencies'"></td>
+                            <td class="align-middle">
+                                <span th:each="currency : ${setting.value.currency}" th:text="${currency + ' '}"></span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <button class="btn my-2 mx-1 rounded-4 btn-danger" style="width: 120px"
+                            th:data-bs-toggle="modal"
+                            th:data-bs-target="'#delete' + ${modalName}">
+                        <i class="bi bi-x-lg"></i> <span th:text="#{filters.delete}"></span>
+                    </button>
+                    <div class="modal modal-alert fade py-5" tabindex="-1" role="dialog" th:id="'delete' + ${modalName}">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content rounded-5 shadow">
+                                <div class="modal-header border-bottom-0">
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <!--Delete-->
+                                <div class="modal-body pb-5 pt-0 text-center">
+                                    <i class="bi bi-x-circle text-danger" style="font-size: 85px"></i>
+                                    <h3 th:text="${setting.key}" class="mt-3">Table No</h3>
+                                    <h5 class="mb-0 mt-4" th:text="#{filters.removing.are.you.sure}">Do you want to delete this filter?</h5>
+                                    <p class="mb-0" th:text="#{filters.removing.no.reverse}">This action cannot be reversed.</p>
+                                </div>
+                                <div class="modal-footer d-flex p-3 align-items-center justify-content-center">
+                                    <button class="btn btn-lg my-2 mx-1 rounded-4 btn-secondary" style="width: 150px" type="button"
+                                            data-bs-dismiss="modal" th:text="#{filters.cancel}">
+                                        Cancel
+                                    </button>
+                                    <form th:action="@{/user/filtration_preferences/delete}" th:method="post">
+                                        <input type="hidden" name="setting_key" th:value="${setting.key}">
+                                        <button class="btn btn-lg my-2 mx-1 rounded-4 btn-danger" style="width: 150px"
+                                                type="submit" th:text="#{filters.delete}">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:insert="fragments/general :: footer"></footer>
+<script th:src="@{~/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

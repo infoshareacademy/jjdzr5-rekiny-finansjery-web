@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="#{title} + #{user.sell.currency.title}"></title>
+    <link rel="stylesheet" th:href="@{/styles/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/styles/style.css}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<header th:insert="fragments/general :: menu"></header>
+
+<section class="bg-primary text-light p-5 text-center">
+    <div class="container">
+        <h1 th:text="#{user.sell.currency.title}"></h1>
+    </div>
+</section>
+<!-- ======= Main ======= -->
+<main>
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div th:insert="fragments/user :: menu"></div>
+            </div>
+            <div class="col-12 col-md-3 offset-md-3" style="margin-top: 6%;">
+                <form id="form" th:action="@{/user/sellcurrency/{code}(code=${rate.getCode()})}"  th:object="${amount}" method="post">
+                    <table class="table align-middle">
+                        <tr>
+                            <td for="amount" th:text="#{user.sell.currency} +' ' + ${rate.getCode()}">
+                            </td>
+                            <td>
+                                <input class="form-control text-end" id="amount" type="number" step="any"  min="0" name="amount" th:value="${amount.amount}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" th:if="${#fields.hasErrors('amount')}">
+                                <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                    <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+                                    <div th:errors="*{amount}"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td th:text="#{user.sell.currency.exchange.rate}"></td>
+                            <td id="rate" class="text-end me-2" th:text="${rate.getBid()}"></td>
+                        </tr>
+                        <tr>
+                            <td th:text="#{user.sell.currency.value}"></td>
+                            <td id="sum" class="text-end me-2">1</td>
+                        </tr>
+                    </table>
+                    <div class="d-grid gap-2">
+                        <input class="btn btn-sm m-1 btn-primary" type="submit" th:value="#{user.wallet.sell}"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="mt-auto" th:insert="fragments/general :: footer"></footer>
+
+<script th:src="@{~/js/bootstrap.bundle.min.js}"></script>
+<script>
+    var amount = document.getElementById('amount');
+    var rate = document.getElementById('rate');
+    var sum = document.getElementById('sum');
+    var mat = new Intl.NumberFormat('pl-PL', {style: 'currency', currency: 'PLN'}).format((amount.textContent * rate.textContent));
+    sum.textContent = mat;
+    amount.addEventListener('change', (e) => {
+        mat = new Intl.NumberFormat('pl-PL', {style: 'currency', currency: 'PLN'}).format((e.target.value * rate.textContent));
+        sum.textContent = mat;
+    });
+</script>
+</body>
+</html>

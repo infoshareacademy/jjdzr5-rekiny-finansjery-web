@@ -34,7 +34,8 @@
         </form>
     </div>
 </main>
-
+<div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:insert="fragments/admin :: tables_admin_modals"></div>
+<div th:insert="fragments/filtration :: saving_filtration_preferences_input"></div>
 <footer th:insert="fragments/general :: footer"></footer>
 <script th:src="@{~/js/filtrationForm.js}"></script>
 <script th:src="@{~/js/bootstrap.bundle.min.js}"></script>

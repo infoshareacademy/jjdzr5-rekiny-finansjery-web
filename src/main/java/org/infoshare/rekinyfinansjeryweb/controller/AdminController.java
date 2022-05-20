@@ -1,7 +1,7 @@
 package org.infoshare.rekinyfinansjeryweb.controller;
 
 import org.infoshare.rekinyfinansjeryweb.data.CurrencyData;
-import org.infoshare.rekinyfinansjeryweb.data.DailyTableData;
+import org.infoshare.rekinyfinansjeryweb.formData.DailyTableData;
 import org.infoshare.rekinyfinansjeryweb.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
