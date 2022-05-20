@@ -9,6 +9,15 @@
     </div>
 </div>
 
+<div th:fragment="table_admin_modals">
+    <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:insert="fragments/admin :: edit_table_modal"></div>
+    <div th:each="rate : ${exchangeRates.getRates()}" >
+        <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:replace="fragments/admin :: edit_currency_modal"></div>
+    </div>
+    <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:insert="fragments/admin :: add_currency_modal"></div>
+</div>
+
+
 <!-- ======= Add New Table ======= -->
 <div th:fragment="add_table_buttons" id="add_table" class="text-end pe-3">
     <button class="btn my-2 mx-1 rounded-4 btn-primary" style="width: 130px"
@@ -101,7 +110,7 @@
                         <h2 th:text="'Edit Table: ' + ${exchangeRates.getNo()}" class="fw-bold mb-0">Edit Table</h2>
                     </div>
                     <form th:with="no=${exchangeRates.getNo()}"
-                          th:action="@{admin/edit-table/{table}(table=${#strings.replace(no,'/','_')})}"
+                          th:action="@{/admin/edit-table/{table}(table=${#strings.replace(no,'/','_')})}"
                           th:object="${newDailyTable}"
                           th:method="post"
                           class="px-5 my-3">
@@ -161,7 +170,7 @@
                         Cancel
                     </button>
                     <form th:with="no=${exchangeRates.getNo()}"
-                          th:action="@{admin/delete-table/{table}(table=${#strings.replace(no,'/','_')})}"
+                          th:action="@{/admin/delete-table/{table}(table=${#strings.replace(no,'/','_')})}"
                           th:method="post">
                         <input type="hidden" th:value="post">
                         <button class="btn btn-lg my-2 mx-1 rounded-4 btn-danger" style="width: 150px"
@@ -269,7 +278,7 @@
                             Currency</h2>
                     </div>
                     <form th:with="no=${exchangeRates.getNo()}"
-                          th:action="@{admin/edit-currency/{table}/{code}(table=${#strings.replace(no,'/','_')}, code=${rate.code})}"
+                          th:action="@{/admin/edit-currency/{table}/{code}(table=${#strings.replace(no,'/','_')}, code=${rate.code})}"
                           th:object="${newCurrency}"
                           th:method="post"
                           class="px-5 my-3">
@@ -331,7 +340,7 @@
                         Cancel
                     </button>
                     <form th:with="no=${exchangeRates.getNo()}"
-                          th:action="@{admin/delete-currency/{table}/{code}(table=${#strings.replace(no,'/','_')}, code=${rate.code})}"
+                          th:action="@{/admin/delete-currency/{table}/{code}(table=${#strings.replace(no,'/','_')}, code=${rate.code})}"
                           th:method="post">
                         <input type="hidden" th:value="post">
                         <button class="btn btn-lg my-2 mx-1 rounded-4 btn-danger" style="width: 150px" type="submit">
