@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="#{title} + #{user.payment.title}"></title>
+    <link rel="stylesheet" th:href="@{/styles/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/styles/style.css}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<header th:insert="fragments/general :: menu"></header>
+
+<section class="bg-primary text-light p-5 text-center">
+    <div class="container">
+        <h1 th:text="#{user.payment.title}"></h1>
+    </div>
+</section>
+<!-- ======= Main ======= -->
+<main>
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div th:insert="fragments/user :: menu"></div>
+            </div>
+            <div class="col-12 col-md-3 offset-md-3" style="margin-top: 6%;">
+                <form id="form" th:action="@{/user/payment}" th:object="${amount}" method="post">
+                    <label for="amount" th:text="#{user.payment.topup.amount}"></label>
+                    <input class="form-control" id="amount" type="number" step="any"  name="amount" th:value="${amount.amount}"/>
+                    <div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${#fields.hasErrors('amount')}">
+                        <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+                        <div th:errors="*{amount}"></div>
+                    </div>
+                    <div for="payment_method" th:text="#{user.payment.method}"></div>
+                    <div class="text-center">
+                        <input type="radio" class="btn-check" name="payment_method" id="blik" value="blik"
+                               th:checked="${payment_method == 'blik'} ? true : false"/>
+                        <label class="btn btn-outline-dark m-1 h1" for="blik">BLIK</label>
+                        <input type="radio" class="btn-check" name="payment_method" id="credit_card" value="credit_card"
+                               th:checked="${payment_method == 'credit_card'} ? true : false"/>
+                        <label class="btn btn-outline-dark m-1 h1" for="credit_card"><i class="bi bi-credit-card"></i></label>
+                        <input type="radio" class="btn-check" name="payment_method" id="paypal" value="paypal"
+                               th:checked="${payment_method == 'paypal'} ? true : false"/>
+                        <label class="btn btn-outline-dark m-1 h1" for="paypal"><i class="bi bi-paypal"></i></label>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <input class="btn btn-sm m-1 btn-primary" type="submit" th:value="#{user.payment.deposit}"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="mt-auto" th:insert="fragments/general :: footer"></footer>
+
+<script th:src="@{~/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

@@ -13,28 +13,21 @@
 
 <header th:insert="fragments/general :: menu"></header>
 
-<!-- ======= Hero ======= -->
-<section class="bg-primary text-light p-5 text-center">
-    <div class="container">
-        <h1 th:text="#{filtration.title}"></h1>
-    </div>
-</section>
-
 <!-- ======= Main ======= -->
 <main>
     <div class="container mt-3">
-        <div class="row">
-            <div class="col-3">
-                <div th:insert="fragments/filtration :: filtration_tool"></div>
-            </div>
-            <div class="col-9">
-                <div th:insert="fragments/collectionView :: page_wraper"></div>
-            </div>
+        <div th:if="${successMessage != null}" th:text="${successMessage}" class="alert alert-success" role="alert">
+            This is a success alert—check it out!
         </div>
+        <div th:if="${errorMessage != null}" th:text="${errorMessage}" class="alert alert-danger" role="alert">
+            This is a danger alert—check it out!
+        </div>
+        <a th:href="@{/tables}" class="btn m-3 btn-primary" th:text="#{table.return.to.list}"></a>
+        <div th:if="${exchangeRates != null}" th:insert="fragments/collectionView :: element_view"></div>
+        <h3 th:if="${exchangeRates == null}" class="m-3 text-center" th:text="#{table.not.found}"></h3>
     </div>
 </main>
-<div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:insert="fragments/admin :: tables_admin_modals"></div>
-<div th:insert="fragments/filtration :: saving_filtration_preferences_input"></div>
+
 <footer th:insert="fragments/general :: footer"></footer>
 <script th:src="@{/js/filtrationForm.js}"></script>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>

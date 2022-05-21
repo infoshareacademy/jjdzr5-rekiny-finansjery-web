@@ -1,4 +1,4 @@
-package org.infoshare.rekinyfinansjeryweb.form;
+package org.infoshare.rekinyfinansjeryweb.formData;
 
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;

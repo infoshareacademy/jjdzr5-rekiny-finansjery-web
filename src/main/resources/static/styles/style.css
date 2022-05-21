@@ -24,6 +24,11 @@ body::before {
     margin-bottom: 5px;
 }
 
+.hidden_input_element{
+    visibility: hidden;
+    display: none;
+}
+
 .chart_transition_visible {
     visibility: visible;
 }
