@@ -3,6 +3,7 @@ package org.infoshare.rekinyfinansjeryweb.controller;
 import com.infoshareacademy.services.NBPApiManager;
 import org.infoshare.rekinyfinansjeryweb.data.MyUserPrincipal;
 import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
+import org.infoshare.rekinyfinansjeryweb.formData.PayMethodForm;
 import org.infoshare.rekinyfinansjeryweb.formData.SaveOfFiltrationSettings;
 import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
 import com.infoshareacademy.domain.ExchangeRate;
@@ -14,9 +15,12 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
@@ -120,20 +124,18 @@ public class UserController {
 
     @GetMapping("/payment")
     public String getPaymentForm(Model model) {
-        model.addAttribute("payment_method", "credit_card");
-        model.addAttribute("amount", new AmountForm());
+//        model.addAttribute("payment_method", "credit_card");
+        model.addAttribute("amount", new PayMethodForm());
         return "pay";
     }
 
     @PostMapping("/payment")
-    public String getPayment(@ModelAttribute("payment_method") String paymentMethod,
-                             @Valid @ModelAttribute("amount") AmountForm amount,
-                             BindingResult result,
-                             Model model) {
+    public ModelAndView getPayment(@Valid @ModelAttribute("amount") PayMethodForm amount,
+                                   BindingResult result,
+                                   ModelMap model) {
         if (result.hasErrors()) {
-            model.addAttribute("payment_method", paymentMethod);
             model.addAttribute("amount", amount);
-            return "pay";
+            return new ModelAndView("pay",model);
         }
         if (usersService.paymentToWallet(amount.getAmount())) {
             model.addAttribute("successMessage", "msg.success.payment");
@@ -141,25 +143,26 @@ public class UserController {
             model.addAttribute("errorMessage", "msg.error.payment");
             //todo LOG
         }
-        return "user";
+        return new ModelAndView("redirect:/user",model);
     }
 
     @GetMapping("/withdrawal")
     public String getWithdrawalForm(Model model) {
-        model.addAttribute("amount", new AmountForm());
-        model.addAttribute("bank_account_number", "00 0000 0000 0000 0000 0000 0000");
+        PayMethodForm amount = new PayMethodForm();
+        amount.setPayMethod("00 0000 0000 0000 0000 0000 0000");
+        model.addAttribute("amount", amount);
         return "withdrawal";
     }
 
     @PostMapping("/withdrawal")
-    public String getWithdrawal(@ModelAttribute("bank_account_number") String bankAccountNumber,
-                                @Valid @ModelAttribute("amount") AmountForm amount,
+    public ModelAndView getWithdrawal(@Valid @ModelAttribute("amount") PayMethodForm amount,
                                 BindingResult result,
-                                Model model) {
+                                ModelMap model) {
+        System.out.println("konto: " + amount.getPayMethod());
+        System.out.println("konto: " + amount.getAmount());
         if (result.hasErrors()) {
-            model.addAttribute("payment_method", bankAccountNumber);
             model.addAttribute("amount", amount);
-            return "withdrawal";
+            return new ModelAndView("withdrawal", model);
         }
         if (usersService.withdrawalFromWallet(amount.getAmount())) {
             model.addAttribute("successMessage", "msg.success.payout");
@@ -167,7 +170,7 @@ public class UserController {
             model.addAttribute("errorMessage", "msg.error.payout");
             //todo LOG
         }
-        return "user";
+        return new ModelAndView("redirect:/user", model);
     }
 
     @GetMapping("/buycurrency")
@@ -190,13 +193,13 @@ public class UserController {
     }
 
     @PostMapping("/buycurrency/{code}")
-    public String askCurrency(@PathVariable("code") String code,
+    public ModelAndView askCurrency(@PathVariable("code") String code,
                               @Valid @ModelAttribute("amount") AmountForm amount,
                               BindingResult result,
-                              Model model) {
+                              ModelMap model) {
         if (result.hasErrors()) {
             model.addAttribute("rate", searchService.getCurrencyOfLastExchangeRates(code));
-            return "ask";
+            return new ModelAndView("ask",model);
         }
         if (usersService.askCurrency(code, amount.getAmount())) {
             model.addAttribute("successMessage", "msg.success.buy.currency");
@@ -204,7 +207,7 @@ public class UserController {
             model.addAttribute("errorMessage", "msg.error.operation");
             //todo LOG
         }
-        return "user";
+        return new ModelAndView("redirect:/user", model);
     }
 
     @GetMapping("/sellcurrency/{code}")
@@ -220,13 +223,13 @@ public class UserController {
     }
 
     @PostMapping("/sellcurrency/{code}")
-    public String bidCurrency(@PathVariable("code") String code,
+    public ModelAndView bidCurrency(@PathVariable("code") String code,
                               @Valid @ModelAttribute("amount") AmountForm amount,
                               BindingResult result,
-                              Model model) {
+                              ModelMap model) {
         if (result.hasErrors()) {
             model.addAttribute("rate", searchService.getCurrencyOfLastExchangeRates(code));
-            return "bid";
+            return new ModelAndView("bid", model);
         }
 
         if (usersService.bidCurrency(code,amount.getAmount())) {
@@ -235,7 +238,7 @@ public class UserController {
             model.addAttribute("errorMessage", "msg.error.operation");
             //todo LOG
         }
-        return "user";
+        return new ModelAndView("redirect:/user", model);
     }
 
     @GetMapping("/history")

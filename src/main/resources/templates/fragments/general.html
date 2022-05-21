@@ -55,9 +55,18 @@
         <div><i class="bi bi-check-circle h3 pe-3"></i></div>
         <div th:text="#{${successMessage}}"></div>
     </div>
+    <div th:if="${param.successMessage != null}" class="alert alert-success d-flex align-items-center justify-content-center" role="alert">
+        <div><i class="bi bi-check-circle h3 pe-3"></i></div>
+        <div th:text="#{${param.successMessage}}"></div>
+    </div>
+
     <div th:if="${errorMessage != null}" class="alert alert-danger d-flex align-items-center justify-content-center" role="alert">
         <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
         <div th:text="#{${errorMessage}}"></div>
+    </div>
+    <div th:if="${param.errorMessage != null}" class="alert alert-danger d-flex align-items-center justify-content-center" role="alert">
+        <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+        <div th:text="#{${param.errorMessage}}"></div>
     </div>
 </div>
 
