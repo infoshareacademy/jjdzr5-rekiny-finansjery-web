@@ -119,4 +119,35 @@
         </li>
     </ul>
 </div>
+<!-- ======= Charts ======= -->
+<div th:fragment="charts">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <canvas id="myChart" style="width:100%"></canvas>
+
+    <script th:inline="javascript">
+
+
+        let currencies = /*[[${chartData}]]*/;
+        var xValues = currencies.map(currency => currency.tradingDate);
+
+        new Chart("myChart", {
+            type: "line",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    data: currencies.map(currency => currency.bidPrice),
+                    borderColor: "red",
+                    fill: false
+                },{
+                    data: currencies.map(currency => currency.askPrice),
+                    borderColor: "blue",
+                    fill: false
+                }]
+            },
+            options: {
+                legend: {display: false}
+            }
+        });
+    </script>
+</div>
 </html>
