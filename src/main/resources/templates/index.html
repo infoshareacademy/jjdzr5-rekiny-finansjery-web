@@ -100,15 +100,20 @@
                 </div>
             </div>
                 <div class="col-md p-2">
-
-                <h3>About</h3>
-                <p class="lead">
-                    Wow! Amazing! Such exchange rates! Wow! Very exchange rates amazing!
-                </p>
-                <p th:text="#{index.about}">
-                    Lorem ipsum..
-                </p>
-            </div>
+                    <h3 th:text="#{index.about}"></h3>
+                    <p class="lead" th:text="#{index.about.p2}"></p>
+                    <p class="lead" th:text="#{index.about.p1}"></p>
+                    <p class="lead" th:text="#{index.about.p4}"></p>
+                    <p class="lead"th:text="#{index.about.p5}"></p>
+                    <p class="lead"th:text="#{index.about.p3}"></p>
+                    <h4 th:text="#{index.about.recommendations}"></h4>
+                    <ul>
+                        <li th:text="#{index.about.p9}"></li>
+                        <li th:text="#{index.about.p7}"></li>
+                        <li th:text="#{index.about.p8}"></li>
+                        <li th:text="#{index.about.p6}"></li>
+                    </ul>
+                </div>
         </div>
     </div>
 </section>
