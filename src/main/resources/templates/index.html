@@ -52,24 +52,68 @@
         </div>
     </section>
 <!-- ======= About ======= -->
-<section id="about" class="p-5 pb-lg-0">
+<section id="about" class="p-2 pb-lg-0">
     <div class="container">
         <div class="row align-items-center justify-content-between">
             <div class="col-md">
-                <img th:src="@{assets/img/rates.svg}" class="img-fluid" alt="Exchange rates">
+                <button type="button" class="btn btn-sm m-1 btn-primary" th:each="record : ${chartsData}"
+                        th:text="${record.code}" th:attr="onclick=|showCurrencyChart('${record.code}')|"></button>
+                <script th:inline="javascript">
+                    var currencies = new Map();
+                    var currencies_codes = [[${currencies}]];
+                    function showCurrencyChart(code){
+                        for(const c of currencies_codes){
+                            document.getElementById('small_chart_'+c).classList.remove("chart_transition_visible");
+                            document.getElementById('small_chart_'+c).classList.add("chart_transition_hidden");
+                        }
+                        document.getElementById('small_chart_'+code).classList.add("chart_transition_visible");
+                        document.getElementById('small_chart_'+code).classList.remove("chart_transition_hidden");
+                    }
+                </script>
+                <div class="p-3" th:each="record : ${chartsData}" th:id="'small_chart_'+${record.code}"
+                     th:class="${chartsData.get(0).code == record.code() ? 'chart_transition_visible' : 'chart_transition_hidden'}">
+                    <h5 th:text="${record.code} + ' - ' + #{chart.title}">Title</h5>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+                    <canvas th:id="'myChart' + ${record.code}" style="width:100%"></canvas>
+                    <script th:inline="javascript">
+                        currencies.set([[${record.code}]], [[${record.chartsData}]]);
+
+                        new Chart("myChart" + [[${record.code}]], {
+                            type: "line",
+                            data: {
+                                labels: currencies.get([[${record.code}]]).map(currency => currency.tradingDate),
+                                datasets: [{
+                                    data: currencies.get([[${record.code}]]).map(currency => currency.bidPrice),
+                                    borderColor: "red",
+                                    fill: false
+                                },{
+                                    data: currencies.get([[${record.code}]]).map(currency => currency.askPrice),
+                                    borderColor: "blue",
+                                    fill: false
+                                }]
+                            },
+                            options: {
+                                legend: {display: false}
+                            }
+                        });
+                    </script>
+                </div>
             </div>
-            <div class="col-md p-5">
-                <h3>About</h3>
-                <p class="lead">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores eum fugiat inventore voluptatem.
-                    Exercitationem, repellendus.
-                </p>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae consectetur id labore magni nihil
-                    nobis numquam optio quisquam, voluptatum. Autem dolor ipsum itaque numquam quaerat quam quo, sint
-                    voluptas voluptates.
-                </p>
-            </div>
+                <div class="col-md p-2">
+                    <h3 th:text="#{index.about}"></h3>
+                    <p class="lead" th:text="#{index.about.p2}"></p>
+                    <p class="lead" th:text="#{index.about.p1}"></p>
+                    <p class="lead" th:text="#{index.about.p4}"></p>
+                    <p class="lead"th:text="#{index.about.p5}"></p>
+                    <p class="lead"th:text="#{index.about.p3}"></p>
+                    <h4 th:text="#{index.about.recommendations}"></h4>
+                    <ul>
+                        <li th:text="#{index.about.p9}"></li>
+                        <li th:text="#{index.about.p7}"></li>
+                        <li th:text="#{index.about.p8}"></li>
+                        <li th:text="#{index.about.p6}"></li>
+                    </ul>
+                </div>
         </div>
     </div>
 </section>
