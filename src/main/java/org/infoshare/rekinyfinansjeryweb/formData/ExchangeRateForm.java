@@ -11,7 +11,7 @@ public class ExchangeRateForm {
     private String currency;
     @NotBlank(message = "validation.code.blank")
     @Size(min = 3, max = 3, message = "validation.code.size")
-    @Pattern(regexp="^[A-Z]+$", message = "validation.code.pattern")
+    @Pattern(regexp="^[a-zA-Z]+$", message = "validation.code.pattern")
     private String code;
     @Min(value = 0, message = "validation.bid.size")
     @Max(value = 100, message = "validation.bid.size")

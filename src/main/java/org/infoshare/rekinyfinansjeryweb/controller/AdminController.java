@@ -87,8 +87,7 @@ public class AdminController {
 
     @PostMapping("/edit-currency/{no}/{code}")
     public String editCurrency(@PathVariable("no") String no, @PathVariable("code") String code, @Valid @ModelAttribute ExchangeRateForm newExchangeRate, BindingResult result, RedirectAttributes attributes) {
-
-        if (result.hasErrors() || adminService.currencyExists(no.replace('_', '/'), newExchangeRate.getCode())) {
+        if (result.hasErrors() || (adminService.currencyExists(no.replace('_', '/'), newExchangeRate.getCode()) && !newExchangeRate.getCode().equals(code))) {
             if (adminService.currencyExists(no.replace('_', '/'), newExchangeRate.getCode())) {
                 result.reject("Currency not edited", "validation.currency.exists");
             }
