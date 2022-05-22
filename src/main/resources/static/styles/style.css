@@ -28,3 +28,12 @@ body::before {
     visibility: hidden;
     display: none;
 }
+
+.chart_transition_visible {
+    visibility: visible;
+}
+
+.chart_transition_hidden {
+    visibility: hidden;
+    height: 0px;
+}
