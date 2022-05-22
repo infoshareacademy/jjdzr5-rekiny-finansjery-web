@@ -20,10 +20,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/user")
@@ -124,7 +121,6 @@ public class UserController {
 
     @GetMapping("/payment")
     public String getPaymentForm(Model model) {
-//        model.addAttribute("payment_method", "credit_card");
         model.addAttribute("amount", new PayMethodForm());
         return "pay";
     }
@@ -158,8 +154,7 @@ public class UserController {
     public ModelAndView getWithdrawal(@Valid @ModelAttribute("amount") PayMethodForm amount,
                                 BindingResult result,
                                 ModelMap model) {
-        System.out.println("konto: " + amount.getPayMethod());
-        System.out.println("konto: " + amount.getAmount());
+
         if (result.hasErrors()) {
             model.addAttribute("amount", amount);
             return new ModelAndView("withdrawal", model);
