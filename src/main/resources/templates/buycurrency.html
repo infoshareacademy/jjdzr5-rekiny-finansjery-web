@@ -30,7 +30,7 @@
         </div>
     </div>
 </main>
-
+<div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:insert="fragments/admin :: table_admin_modals"></div>
 <footer class="mt-auto" th:insert="fragments/general :: footer"></footer>
 
 <script th:src="@{~/js/bootstrap.bundle.min.js}"></script>
