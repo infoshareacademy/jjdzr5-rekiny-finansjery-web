@@ -1,4 +1,5 @@
 <div th:fragment="page_wraper">
+    <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:insert="fragments/messages :: add_message"></div>
     <div class="d-flex mt-4 justify-content-between align-items-center">
         <div class="text-start">
             <div class="h3 text-secondary ms-3">
@@ -41,7 +42,8 @@
         <tbody>
         <tr th:each="rate : ${exchangeRates.getRates()}">
             <th class="align-middle" scope="row" th:text="${rate.code}"></th>
-            <td class="align-middle" th:text="${#messages.msgOrNull('currency.' + #strings.toString(rate.code)) != null} ? #{'currency.'+${rate.code}} : ${rate.currency}"></td>
+            <td class="align-middle"
+                th:text="${#messages.msgOrNull('currency.' + #strings.toString(rate.code)) != null} ? #{'currency.'+${rate.code}} : ${rate.currency}"></td>
             <td class="align-middle" th:text="${rate.bid}"></td>
             <td class="align-middle" th:text="${rate.ask}"></td>
             <td class="text-end">

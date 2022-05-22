@@ -4,65 +4,61 @@
 
 <!-- ======= Header ======= -->
 <div th:fragment="menu">
-<nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top py-3">
-    <div class="container">
-        <a th:href="@{/}" class="navbar-brand">
-            <i class="bi bi-coin h3"></i> Rekiny Finansjery
-        </a>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div th:insert="fragments/general :: language_tool"></div>
-        <div class="collapse navbar-collapse" id="navmenu">
-            <ul class="navbar-nav ms-auto">
-<!--                <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">-->
-<!--                    <a href="/admin-panel" class="nav-link">Admin</a>-->
-<!--                </li>-->
-                <li class="nav-item">
-                    <a th:href="@{/tables}" class="nav-link">Tables</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#about" class="nav-link">About</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#contact" class="nav-link">Contact</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#account" class="nav-link">Account</a>
-                </li>
-                <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a class="btn btn-outline-primary mx-lg-2" type="button" th:href="@{/login}">Sign in</a>
-                </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="btn btn-outline-primary mx-lg-2" type="button" th:href="@{/user}">Profil</a>
-                </li>
-                <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a class="btn btn-primary mt-2 mt-lg-0" type="button" th:href="@{/signup}">Sign up</a>
-                </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a href="javascript: document.logoutForm.submit()" class="btn btn-primary mt-2 mt-lg-0" type="button">Sign out</a>
-                    <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
-                        <input hidden type="submit" value="Sign Out" />
-                    </form>
-                </li>
-            </ul>
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top py-3">
+        <div class="container">
+            <a th:href="@{/}" class="navbar-brand d-flex align-items-center">
+                <i class="bi bi-coin m-0 h3"></i>
+                <span>&nbspRekiny Finansjery</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navmenu">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
+                        <a href="/admin-panel" class="nav-link mx-lg-4">Admin</a>
+                    </li>
+                    <li class="nav-item">
+                        <a th:href="@{/tables}" th:text="#{menu.tables}" class="nav-link">Tables</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#about" th:text="#{menu.about}" class="nav-link mx-lg-4">About</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="btn btn-outline-primary mx-lg-2" type="button" th:href="@{/user}">Profil</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a th:text="#{menu.sign.up}" class="btn btn-outline-primary mt-2 mt-lg-0 mx-lg-2" type="button"
+                           th:href="@{/signup}">Sign up</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a th:text="#{menu.sign.out}" href="javascript: document.logoutForm.submit()"
+                           class="btn btn-primary mt-2 mt-lg-0 me-lg-4"
+                           type="button">Sign out</a>
+                        <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
+                            <input hidden type="submit" value="Sign Out"/>
+                        </form>
+                    </li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a th:text="#{menu.sign.in}" class="btn btn-primary me-lg-4" type="button" th:href="@{/login}">Sign
+                            in</a>
+                    </li>
+                    <li class="nav-item">
+                        <div class="dropdown pt-1">
+                            <a class="dropdown-toggle text-white" href="#" role="button" id="dropdownLanguages"
+                               data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-globe2 h4"></i></a>
+                            <div th:replace="fragments/general :: language_tool"></div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
-</nav>
-    <div th:if="${successMessage != null}" class="alert alert-success d-flex align-items-center justify-content-center" role="alert">
-        <div><i class="bi bi-check-circle h3 pe-3"></i></div>
-        <div th:text="#{${successMessage}}"></div>
-    </div>
+    </nav>
+    <div th:replace="fragments/messages :: menu_message"></div>
+
     <div th:if="${param.successMessage != null}" class="alert alert-success d-flex align-items-center justify-content-center" role="alert">
         <div><i class="bi bi-check-circle h3 pe-3"></i></div>
         <div th:text="#{${param.successMessage}}"></div>
-    </div>
-
-    <div th:if="${errorMessage != null}" class="alert alert-danger d-flex align-items-center justify-content-center" role="alert">
-        <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
-        <div th:text="#{${errorMessage}}"></div>
     </div>
     <div th:if="${param.errorMessage != null}" class="alert alert-danger d-flex align-items-center justify-content-center" role="alert">
         <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
@@ -82,21 +78,26 @@
         </a>
     </div>
 </div>
+
 <!-- ======= Language selector ======= -->
-<div th:fragment="language_tool">
-    <div class="btn-group">
+<ul th:fragment="language_tool" class="dropdown-menu" aria-labelledby="dropdownLanguages">
+    <li>
         <a th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
            th:href="${urlBuilder.replaceQueryParam('lang', 'pl').toUriString()}"
-           th:class="'btn btn-outline-secondary'+${#strings.equals(#locale, 'pl') ? ' active' : ''}">
-            <img th:src="@{/assets/img/flags/pl.png}" alt="Polski" class="language_flag_selector_icon">
+           th:class="'dropdown-item btn btn-outline-secondary'+${#strings.equals(#locale, 'pl') ? ' active' : ''}">
+            <img th:src="@{/assets/img/flags/poland.png}" alt="Polski" class="language_flag_selector_icon"> Polski
         </a>
+    </li>
+    <li>
         <a th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
            th:href="${urlBuilder.replaceQueryParam('lang', 'en').toUriString()}"
-           th:class="'btn btn-outline-secondary'+${#strings.equals(#locale, 'en') ? ' active' : '' }">
-            <img th:src="@{/assets/img/flags/gb.png}" alt="Angielski" class="language_flag_selector_icon">
+           th:class="'dropdown-item btn btn-outline-secondary'+${#strings.equals(#locale, 'en') ? ' active' : '' }">
+            <img th:src="@{/assets/img/flags/united-kingdom.png}" alt="English" class="language_flag_selector_icon">
+            English
         </a>
-    </div>
-</div>
+    </li>
+</ul>
+
 <!-- ======= Pagination ======= -->
 <div th:fragment="pagination" class="d-flex p-2 justify-content-center"
      th:with="offset=3,bottom_offset=${pageActive - offset},upper_offset=${pageActive + offset},last=${pagesAmount-1}">
@@ -113,7 +114,7 @@
         </li>
         <li th:each="counter : ${#numbers.sequence(start,end)}"
             th:class="'page-item '+${counter eq pageActive ? 'active' : ''}">
-            <a th:class="page-link"  th:text="${counter+1}"
+            <a th:class="page-link" th:text="${counter+1}"
                th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
                th:href="${urlBuilder.replaceQueryParam('page', counter).toUriString()}">#</a>
         </li>

@@ -16,18 +16,13 @@
 <!-- ======= Main ======= -->
 <main>
     <div class="container mt-3">
-        <div th:if="${successMessage != null}" th:text="${successMessage}" class="alert alert-success" role="alert">
-            This is a success alert—check it out!
-        </div>
-        <div th:if="${errorMessage != null}" th:text="${errorMessage}" class="alert alert-danger" role="alert">
-            This is a danger alert—check it out!
-        </div>
+        <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:insert="fragments/messages :: messages"></div>
         <a th:href="@{/tables}" class="btn m-3 btn-primary" th:text="#{table.return.to.list}"></a>
         <div th:if="${exchangeRates != null}" th:insert="fragments/collectionView :: element_view"></div>
         <h3 th:if="${exchangeRates == null}" class="m-3 text-center" th:text="#{table.not.found}"></h3>
     </div>
 </main>
-
+<div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:insert="fragments/admin :: table_admin_modals"></div>
 <footer th:insert="fragments/general :: footer"></footer>
 <script th:src="@{/js/filtrationForm.js}"></script>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
