@@ -47,7 +47,7 @@
             <td class="align-middle" th:text="${rate.bid}"></td>
             <td class="align-middle" th:text="${rate.ask}"></td>
             <td class="text-end">
-                <button class="btn mx-1 btn-primary"><i class="bi bi-eye"></i></button>
+                <a th:href="@{'/currency/'+${rate.code}}" class="btn mx-1 btn-primary"><i class="bi bi-eye"></i></a>
                 <div th:replace="fragments/user :: button_bid"></div>
                 <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:replace="fragments/admin :: edit_currency_buttons"></div>
             </td>
