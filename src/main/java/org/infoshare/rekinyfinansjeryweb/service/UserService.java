@@ -53,6 +53,8 @@ public class UserService implements UserDetailsService {
         user.setPassword(encoder.encode(user.getPassword()));
         user.setRole(Set.of(UserEnum.ROLE_USER));
         Map<String, UserCurrency> currencyMap = new HashMap<>();
+        user.setHistoryList(new ArrayList<>());
+        user.setSavedFiltrationSettings(new HashMap<>());
         user.setMyCurrencies(currencyMap);
         user.setCreated(LocalDateTime.now());
         user.setEnabled(true);
