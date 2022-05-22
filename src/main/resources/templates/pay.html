@@ -34,15 +34,19 @@
                     </div>
                     <div for="payment_method" th:text="#{user.payment.method}"></div>
                     <div class="text-center">
-                        <input type="radio" class="btn-check" name="payment_method" id="blik" value="blik"
-                               th:checked="${payment_method == 'blik'} ? true : false"/>
+                        <input type="radio" class="btn-check" name="payment_method" th:field="${amount.payMethod}" id="blik" value="blik"
+                               th:checked="${amount.payMethod == 'blik'} ? true : false"/>
                         <label class="btn btn-outline-dark m-1 h1" for="blik">BLIK</label>
-                        <input type="radio" class="btn-check" name="payment_method" id="credit_card" value="credit_card"
-                               th:checked="${payment_method == 'credit_card'} ? true : false"/>
+                        <input type="radio" class="btn-check" name="payment_method" th:field="${amount.payMethod}" id="credit_card" value="credit_card"
+                               th:checked="${amount.payMethod == 'credit_card'} ? true : false"/>
                         <label class="btn btn-outline-dark m-1 h1" for="credit_card"><i class="bi bi-credit-card"></i></label>
-                        <input type="radio" class="btn-check" name="payment_method" id="paypal" value="paypal"
-                               th:checked="${payment_method == 'paypal'} ? true : false"/>
+                        <input type="radio" class="btn-check" name="payment_method" th:field="${amount.payMethod}" id="paypal" value="paypal"
+                               th:checked="${amount.payMethod == 'paypal'} ? true : false"/>
                         <label class="btn btn-outline-dark m-1 h1" for="paypal"><i class="bi bi-paypal"></i></label>
+                    </div>
+                    <div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${#fields.hasErrors('payMethod')}">
+                        <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+                        <div th:errors="*{payMethod}"></div>
                     </div>
                     <div class="d-grid gap-2">
                         <input class="btn btn-sm m-1 btn-primary" type="submit" th:value="#{user.payment.deposit}"/>
