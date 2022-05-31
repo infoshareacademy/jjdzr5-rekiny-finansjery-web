@@ -7,6 +7,7 @@ import org.infoshare.rekinyfinansjeryweb.controller.controllerComponents.ListToP
 import org.infoshare.rekinyfinansjeryweb.formData.DailyTableForm;
 import org.infoshare.rekinyfinansjeryweb.data.MyUserPrincipal;
 import org.infoshare.rekinyfinansjeryweb.formData.SearchSettings;
+import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRatesTable;
 import org.infoshare.rekinyfinansjeryweb.service.SearchService;
 import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class SearchController {
                                 Model model,
                                 @AuthenticationPrincipal MyUserPrincipal principal) {
 
-        List<DailyExchangeRates> collection = searchService
+        List<ExchangeRatesTable> collection = searchService
                 .searchInCollection(settings);
 
         ListToPagesSplitter.splitIntoPages(collection, model, pageable);

@@ -3,17 +3,38 @@ package org.infoshare.rekinyfinansjeryweb.service;
 import com.infoshareacademy.domain.DailyExchangeRates;
 import com.infoshareacademy.services.DailyExchangeRatesFiltrationService;
 import com.infoshareacademy.services.ExchangeRatesFiltrationService;
-import com.infoshareacademy.services.NBPApiManager;
 import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
+import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRateRepository;
+import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRatesTable;
+import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRatesTableRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 public class FiltrationService {
-    public List<DailyExchangeRates> getFilteredCollection(FiltrationSettings settings) {
-        DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService = NBPApiManager.getInstance().getDailyExchangeRatesService();
-        return filterCollection(dailyExchangeRatesFiltrationService, settings);
+    @Autowired
+    ExchangeRatesTableRepository exchangeRatesTableRepository;
+
+    @Autowired
+    ExchangeRateRepository exchangeRateRepository;
+
+    public List<ExchangeRatesTable> getFilteredCollection(FiltrationSettings settings) {
+        //List<ExchangeRatesTable> tables = exchangeRatesTableRepository.findAll();
+        List<ExchangeRatesTable> tables = exchangeRatesTableRepository.findExchangeRatesTableByFilterSettings();
+        tables.forEach(table -> {
+            System.out.println(table.getNo());
+            table.getRates().forEach(rate -> {
+                System.out.println(rate.getAskPrice());
+                System.out.println(rate.getBidPrice());
+                System.out.println(rate.getCurrency().getCode());
+            });
+            System.out.println("===================================================================");
+        });
+        /*DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService = NBPApiManager.getInstance().getDailyExchangeRatesService();
+        return filterCollection(dailyExchangeRatesFiltrationService, settings);*/
+        return exchangeRatesTableRepository.findAll();
     }
 
     public List<DailyExchangeRates> getFilteredCollectionFromList(List<DailyExchangeRates> dailyExchangeRates, FiltrationSettings settings) {

@@ -1,4 +1,4 @@
-package org.infoshare.rekinyfinansjeryweb.service.extrernalApi.nbpAdapter;
+package org.infoshare.rekinyfinansjeryweb.service.extrernalApi.nbpAdapter.data;
 
 public class ExchangeRate {
     private String currency;

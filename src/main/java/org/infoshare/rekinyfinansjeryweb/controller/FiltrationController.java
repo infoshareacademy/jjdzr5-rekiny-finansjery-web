@@ -7,6 +7,7 @@ import org.infoshare.rekinyfinansjeryweb.formData.ExchangeRateForm;
 import org.infoshare.rekinyfinansjeryweb.formData.DailyTableForm;
 import org.infoshare.rekinyfinansjeryweb.data.MyUserPrincipal;
 import org.infoshare.rekinyfinansjeryweb.formData.SearchSettings;
+import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRatesTable;
 import org.infoshare.rekinyfinansjeryweb.service.FiltrationService;
 import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class FiltrationController {
                                 HttpServletRequest request,
                                 Model model,
                                 @AuthenticationPrincipal MyUserPrincipal principal) {
-        List<DailyExchangeRates> collection = collectionFiltrationService.getFilteredCollection(settings);
+        List<ExchangeRatesTable> collection = collectionFiltrationService.getFilteredCollection(settings);
 
         ListToPagesSplitter.splitIntoPages(collection, model, pageable);
         model.addAttribute("filtrationSettings", settings);

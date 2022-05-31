@@ -1,15 +1,14 @@
 package org.infoshare.rekinyfinansjeryweb.repository;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class ExchangeRate {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -17,7 +16,8 @@ public class ExchangeRate {
     @ManyToOne
     private Currency currency;
     @ManyToOne
-    private ExchangeRatesTable table;
+    @JoinColumn(name = "dailyTable")
+    private ExchangeRatesTable dailyTable;
     private Double askPrice;
     private Double bidPrice;
 }

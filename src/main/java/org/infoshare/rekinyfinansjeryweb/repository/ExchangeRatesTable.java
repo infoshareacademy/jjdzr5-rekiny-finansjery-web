@@ -1,18 +1,15 @@
 package org.infoshare.rekinyfinansjeryweb.repository;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExchangeRatesTable {
@@ -25,4 +22,6 @@ public class ExchangeRatesTable {
     LocalDate effectiveDate;
     @NotNull
     LocalDate tradingDate;
+    @OneToMany(mappedBy = "dailyTable")
+    List<ExchangeRate> rates;
 }
