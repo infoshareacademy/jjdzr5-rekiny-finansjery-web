@@ -1,6 +1,8 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
 import org.infoshare.rekinyfinansjeryweb.repository.*;
+import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ApiRequestResult;
+import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.nbpAdapter.NBPApiAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,24 +18,11 @@ public class ExternalDataApiService {
     ExchangeRateRepository exchangeRateRepository;
 
     public void getData(){
-        Currency currency = new Currency();
-        currency.setCode("USD");
-        currency.setName("dolar");
-        currency.setCategory("waluta");
+        NBPApiAdapter nbpApiAdapter = new NBPApiAdapter();
+        ApiRequestResult result = nbpApiAdapter.getResultData();
+        currencyRepository.saveAll(result.getCurrencies());
+        exchangeRatesTableRepository.saveAll(result.getExchangeRatesTables());
+        exchangeRateRepository.saveAll(result.getExchangeRates());
 
-        ExchangeRatesTable exchangeRatesTable = new ExchangeRatesTable();
-        exchangeRatesTable.setNo("000/12");
-        exchangeRatesTable.setEffectiveDate(LocalDate.now());
-        exchangeRatesTable.setTradingDate(LocalDate.now());
-
-        ExchangeRate exchangeRate = new ExchangeRate();
-        exchangeRate.setAskPrice(2.0);
-        exchangeRate.setBidPrice(2.2);
-        exchangeRate.setCurrency(currency);
-        exchangeRate.setTable(exchangeRatesTable);
-
-        currencyRepository.save(currency);
-        exchangeRatesTableRepository.save(exchangeRatesTable);
-        exchangeRateRepository.save(exchangeRate);
     }
 }

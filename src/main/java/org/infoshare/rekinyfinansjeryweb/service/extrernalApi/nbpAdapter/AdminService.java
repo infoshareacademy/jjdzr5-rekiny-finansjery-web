@@ -1,4 +1,4 @@
-package org.infoshare.rekinyfinansjeryweb.service;
+package org.infoshare.rekinyfinansjeryweb.service.extrernalApi.nbpAdapter;
 
 import com.infoshareacademy.domain.DailyExchangeRates;
 import com.infoshareacademy.domain.ExchangeRate;

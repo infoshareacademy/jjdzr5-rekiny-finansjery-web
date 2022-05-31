@@ -1,6 +1,8 @@
 package org.infoshare.rekinyfinansjeryweb.repository;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +13,8 @@ import java.time.LocalDate;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ExchangeRatesTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

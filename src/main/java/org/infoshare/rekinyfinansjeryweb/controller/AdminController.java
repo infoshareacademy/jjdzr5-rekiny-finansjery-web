@@ -2,7 +2,7 @@ package org.infoshare.rekinyfinansjeryweb.controller;
 
 import org.infoshare.rekinyfinansjeryweb.formData.ExchangeRateForm;
 import org.infoshare.rekinyfinansjeryweb.formData.DailyTableForm;
-import org.infoshare.rekinyfinansjeryweb.service.AdminService;
+import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.nbpAdapter.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
