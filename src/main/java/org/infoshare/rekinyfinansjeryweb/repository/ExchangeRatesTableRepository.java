@@ -8,13 +8,13 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ExchangeRatesTableRepository extends JpaRepository<ExchangeRatesTable, Long> {
+public interface ExchangeRatesTableRepository extends JpaRepository<ExchangeRatesTable, Long>, ExchangeRatesTableRepositoryCustom {
 
     /*@Query("SELECT t FROM ExchangeRatesTable t")
     List<ExchangeRatesTable> findExchangeRatesTableByFilterSettings();*/
 
-    @Query("SELECT t, r, c FROM ExchangeRatesTable t LEFT JOIN t.rates r LEFT JOIN r.currency c WHERE c.code LIKE '%USD%' OR c.code LIKE '%AUD%' ORDER BY t.effectiveDate DESC")
-    List<ExchangeRatesTable> findExchangeRatesTableByFilterSettings();
+    /*@Query("SELECT t, r, c FROM ExchangeRatesTable t LEFT JOIN t.rates r LEFT JOIN r.currency c WHERE c.code LIKE '%USD%' OR c.code LIKE '%AUD%' ORDER BY t.effectiveDate DESC")
+    List<ExchangeRatesTable> findExchangeRatesTableByFilterSettings();*/
 
     /*@Query(nativeQuery = true, value = "SELECT * FROM Exchange_Rates_Table t LEFT JOIN Exchange_Rate r ON r.daily_table = t.id"
             + " LEFT JOIN Currency c ON r.currency_code = c.code"

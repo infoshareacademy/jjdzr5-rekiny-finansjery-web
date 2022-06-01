@@ -7,6 +7,4 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ExchangeRateRepository extends JpaRepository<ExchangeRate, Long> {
-    @Query("SELECT t FROM ExchangeRate r JOIN ExchangeRatesTable t JOIN Currency c")
-    List<ExchangeRatesTable> findExchangeRatesTableByFilterSettings();
 }
