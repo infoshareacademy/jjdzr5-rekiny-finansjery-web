@@ -39,3 +39,6 @@ db_table.json
 db.properties
 
 /src/logs
+
+#db files
+db/
