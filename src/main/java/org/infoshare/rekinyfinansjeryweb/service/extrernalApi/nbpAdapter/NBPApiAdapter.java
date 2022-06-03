@@ -10,6 +10,7 @@ import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ExtendedGson;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.nbpAdapter.data.DailyExchangeRates;
 import org.infoshare.rekinyfinansjeryweb.repository.Currency;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,9 @@ public class NBPApiAdapter extends ApiAdapter {
             ExchangeRatesTable exchangeRatesTable = new ExchangeRatesTable(null, dailyExchangeRate.getNo(),
                     dailyExchangeRate.getEffectiveDate(), dailyExchangeRate.getTradingDate(), null);
             dailyExchangeRate.getRates().forEach(exchangeRate -> {
-                Currency currency = new Currency(exchangeRate.getCode(), exchangeRate.getCurrency(), "currency");
+                Currency currency = new Currency(exchangeRate.getCode(),
+                        new String(exchangeRate.getCurrency().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8),
+                        "currency");
                 currenciesMap.putIfAbsent(exchangeRate.getCode(), currency);
                 currency = currenciesMap.getOrDefault(exchangeRate.getCode(), currency);
                 ExchangeRate rate = new ExchangeRate(null, currency, exchangeRatesTable, exchangeRate.getAsk(), exchangeRate.getBid());

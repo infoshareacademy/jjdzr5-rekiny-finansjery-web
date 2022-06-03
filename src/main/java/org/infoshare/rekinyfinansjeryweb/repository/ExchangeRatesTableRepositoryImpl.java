@@ -20,7 +20,7 @@ public class ExchangeRatesTableRepositoryImpl implements ExchangeRatesTableRepos
     public List<ExchangeRatesTable> findExchangeRatesTableByFilterSettings(FiltrationSettings filtrationSettings) {
 
         //SELECT * FROM EXCHANGE_RATE RIGHT JOIN EXCHANGE_RATES_TABLE ON EXCHANGE_RATE.DAILY_TABLE = EXCHANGE_RATES_TABLE.ID
-/*
+
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<ExchangeRate> cr = cb.createQuery(ExchangeRate.class);
         Root<ExchangeRate> root = cr.from(ExchangeRate.class);
@@ -53,7 +53,6 @@ public class ExchangeRatesTableRepositoryImpl implements ExchangeRatesTableRepos
             Predicate singleCurrencyPredicate = cb.equal(joinCurrencies.get("code"), currency);
             currenciesPredicates.add(singleCurrencyPredicate);
         }
-        return cb.or(currenciesPredicates.toArray(new Predicate[0]));*/
-        return null;
+        return cb.or(currenciesPredicates.toArray(new Predicate[0]));
     }
 }

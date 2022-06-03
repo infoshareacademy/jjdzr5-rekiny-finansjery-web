@@ -13,6 +13,6 @@ services:
       MYSQL_PASSWORD: $DB_PASSWORD
     ports:
       - "3306:3306"
-    volumes:
+#    volumes:
 #      - ./db/mysql:/var/lib/mysql :rw
 #      - ./db/dump.sql:/docker-entrypoint-initdb.d/dump.sql
