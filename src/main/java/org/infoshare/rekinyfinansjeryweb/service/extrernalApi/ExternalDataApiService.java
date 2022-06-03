@@ -1,4 +1,4 @@
-package org.infoshare.rekinyfinansjeryweb.service;
+package org.infoshare.rekinyfinansjeryweb.service.extrernalApi;
 
 import org.infoshare.rekinyfinansjeryweb.repository.*;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ApiRequestResult;
