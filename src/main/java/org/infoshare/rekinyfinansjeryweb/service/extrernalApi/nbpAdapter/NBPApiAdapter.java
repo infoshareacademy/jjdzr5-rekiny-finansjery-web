@@ -34,7 +34,7 @@ public class NBPApiAdapter extends ApiAdapter {
                     dailyExchangeRate.getEffectiveDate(), dailyExchangeRate.getTradingDate(), null);
             dailyExchangeRate.getRates().forEach(exchangeRate -> {
                 Currency currency = new Currency(exchangeRate.getCode(),
-                        new String(exchangeRate.getCurrency().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8),
+                        exchangeRate.getCurrency(),
                         "currency");
                 currenciesMap.putIfAbsent(exchangeRate.getCode(), currency);
                 currency = currenciesMap.getOrDefault(exchangeRate.getCode(), currency);
@@ -43,6 +43,7 @@ public class NBPApiAdapter extends ApiAdapter {
             });
             exchangeRatesTables.add(exchangeRatesTable);
         }
+
         return new ApiRequestResult(currenciesMap.values().stream().collect(Collectors.toList()), exchangeRatesTables, exchangeRates);
     }
 

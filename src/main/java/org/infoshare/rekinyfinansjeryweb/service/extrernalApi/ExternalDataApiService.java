@@ -6,6 +6,8 @@ import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.nbpAdapter.NBPApiA
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 
 @Component

@@ -16,3 +16,4 @@ services:
 #    volumes:
 #      - ./db/mysql:/var/lib/mysql :rw
 #      - ./db/dump.sql:/docker-entrypoint-initdb.d/dump.sql
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
