@@ -18,6 +18,9 @@ public class ExchangeRatesTableRepositoryImpl implements ExchangeRatesTableRepos
 
     @Override
     public List<ExchangeRatesTable> findExchangeRatesTableByFilterSettings(FiltrationSettings filtrationSettings) {
+
+        //SELECT * FROM EXCHANGE_RATE RIGHT JOIN EXCHANGE_RATES_TABLE ON EXCHANGE_RATE.DAILY_TABLE = EXCHANGE_RATES_TABLE.ID
+
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<ExchangeRate> cr = cb.createQuery(ExchangeRate.class);
         Root<ExchangeRate> root = cr.from(ExchangeRate.class);
