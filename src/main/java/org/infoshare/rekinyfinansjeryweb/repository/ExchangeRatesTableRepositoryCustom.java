@@ -1,6 +1,7 @@
 package org.infoshare.rekinyfinansjeryweb.repository;
 
 import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
+import org.infoshare.rekinyfinansjeryweb.repository.entity.ExchangeRatesTable;
 
 import java.util.List;
 

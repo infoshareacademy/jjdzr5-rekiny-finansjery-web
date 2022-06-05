@@ -1,6 +1,6 @@
 package org.infoshare.rekinyfinansjeryweb;
 
-import org.infoshare.rekinyfinansjeryweb.service.ExternalDataApiService;
+import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ExternalDataApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

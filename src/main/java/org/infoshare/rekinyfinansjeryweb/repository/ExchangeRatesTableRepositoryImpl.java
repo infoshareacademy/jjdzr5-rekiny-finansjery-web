@@ -1,6 +1,9 @@
 package org.infoshare.rekinyfinansjeryweb.repository;
 
 import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
+import org.infoshare.rekinyfinansjeryweb.repository.entity.Currency;
+import org.infoshare.rekinyfinansjeryweb.repository.entity.ExchangeRate;
+import org.infoshare.rekinyfinansjeryweb.repository.entity.ExchangeRatesTable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

@@ -4,10 +4,8 @@ import com.infoshareacademy.domain.DailyExchangeRates;
 import com.infoshareacademy.services.DailyExchangeRatesFiltrationService;
 import com.infoshareacademy.services.ExchangeRatesFiltrationService;
 import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
-import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRate;
-import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRateRepository;
-import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRatesTable;
-import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRatesTableRepository;
+import org.infoshare.rekinyfinansjeryweb.repository.*;
+import org.infoshare.rekinyfinansjeryweb.repository.entity.ExchangeRatesTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,10 +19,11 @@ public class FiltrationService {
     @Autowired
     ExchangeRateRepository exchangeRateRepository;
 
+
     public List<ExchangeRatesTable> getFilteredCollection(FiltrationSettings settings) {
         //List<ExchangeRatesTable> tables = exchangeRatesTableRepository.findAll();
        List<ExchangeRatesTable> tables = exchangeRatesTableRepository.findExchangeRatesTableByFilterSettings(settings);
-         /*tables.forEach(table -> {
+        /*tables.forEach(table -> {
             System.out.println(table.getNo());
             table.getRates().forEach(rate -> {
                 System.out.println(rate.getAskPrice());

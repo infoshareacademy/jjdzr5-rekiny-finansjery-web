@@ -2,15 +2,14 @@ package org.infoshare.rekinyfinansjeryweb.service.extrernalApi.nbpAdapter;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRate;
-import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRatesTable;
+import org.infoshare.rekinyfinansjeryweb.repository.entity.ExchangeRate;
+import org.infoshare.rekinyfinansjeryweb.repository.entity.ExchangeRatesTable;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ApiAdapter;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ApiRequestResult;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ExtendedGson;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.nbpAdapter.data.DailyExchangeRates;
-import org.infoshare.rekinyfinansjeryweb.repository.Currency;
+import org.infoshare.rekinyfinansjeryweb.repository.entity.Currency;
 
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,7 +32,7 @@ public class NBPApiAdapter extends ApiAdapter {
             ExchangeRatesTable exchangeRatesTable = new ExchangeRatesTable(null, dailyExchangeRate.getNo(),
                     dailyExchangeRate.getEffectiveDate(), dailyExchangeRate.getTradingDate(), null);
             dailyExchangeRate.getRates().forEach(exchangeRate -> {
-                Currency currency = new Currency(exchangeRate.getCode(),
+                Currency currency = new Currency(null, exchangeRate.getCode(),
                         exchangeRate.getCurrency(),
                         "currency");
                 currenciesMap.putIfAbsent(exchangeRate.getCode(), currency);

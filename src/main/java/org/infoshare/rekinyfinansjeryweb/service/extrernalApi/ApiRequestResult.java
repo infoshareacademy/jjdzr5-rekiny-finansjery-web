@@ -2,9 +2,9 @@ package org.infoshare.rekinyfinansjeryweb.service.extrernalApi;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.infoshare.rekinyfinansjeryweb.repository.Currency;
-import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRate;
-import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRatesTable;
+import org.infoshare.rekinyfinansjeryweb.repository.entity.Currency;
+import org.infoshare.rekinyfinansjeryweb.repository.entity.ExchangeRate;
+import org.infoshare.rekinyfinansjeryweb.repository.entity.ExchangeRatesTable;
 import java.util.List;
 
 @Data
