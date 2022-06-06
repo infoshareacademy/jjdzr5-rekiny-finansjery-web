@@ -1,9 +1,9 @@
 package org.infoshare.rekinyfinansjeryweb.repository;
 
 import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
-import org.infoshare.rekinyfinansjeryweb.repository.entity.Currency;
-import org.infoshare.rekinyfinansjeryweb.repository.entity.ExchangeRate;
-import org.infoshare.rekinyfinansjeryweb.repository.entity.ExchangeRatesTable;
+import org.infoshare.rekinyfinansjeryweb.entity.Currency;
+import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRate;
+import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRatesTable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -31,7 +31,7 @@ public class ExchangeRatesTableRepositoryImpl implements ExchangeRatesTableRepos
         Join<ExchangeRate, Currency> joinCurrencies = root.join("currency", JoinType.LEFT);
 
         Predicate[] predicates = new Predicate[2];
-        predicates[0] = cb.greaterThan(joinTables.get("effectiveDate"), LocalDate.now().minusDays(4));
+        predicates[0] = cb.greaterThanOrEqualTo(joinTables.get("effectiveDate"), LocalDate.now().minusDays(4));
         predicates[1] = getSelectedCurrencyPredicate(cb, joinCurrencies, Arrays.asList("USD", "JPY"));
 
         cr.select(root).where(predicates);

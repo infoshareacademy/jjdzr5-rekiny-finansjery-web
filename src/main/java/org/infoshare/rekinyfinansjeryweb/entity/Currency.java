@@ -1,4 +1,4 @@
-package org.infoshare.rekinyfinansjeryweb.repository.entity;
+package org.infoshare.rekinyfinansjeryweb.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 import java.util.UUID;
 
 @Entity

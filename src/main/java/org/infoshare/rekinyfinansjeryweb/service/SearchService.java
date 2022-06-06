@@ -4,7 +4,7 @@ import com.infoshareacademy.domain.DailyExchangeRates;
 import com.infoshareacademy.domain.ExchangeRate;
 import com.infoshareacademy.services.*;
 import org.infoshare.rekinyfinansjeryweb.formData.SearchSettings;
-import org.infoshare.rekinyfinansjeryweb.repository.entity.ExchangeRatesTable;
+import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRatesTable;
 import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRatesTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

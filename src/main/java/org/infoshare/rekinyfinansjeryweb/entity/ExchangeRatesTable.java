@@ -1,4 +1,4 @@
-package org.infoshare.rekinyfinansjeryweb.repository.entity;
+package org.infoshare.rekinyfinansjeryweb.entity;
 
 import lombok.*;
 

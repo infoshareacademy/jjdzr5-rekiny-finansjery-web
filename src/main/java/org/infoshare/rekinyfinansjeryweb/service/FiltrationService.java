@@ -5,7 +5,7 @@ import com.infoshareacademy.services.DailyExchangeRatesFiltrationService;
 import com.infoshareacademy.services.ExchangeRatesFiltrationService;
 import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
 import org.infoshare.rekinyfinansjeryweb.repository.*;
-import org.infoshare.rekinyfinansjeryweb.repository.entity.ExchangeRatesTable;
+import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRatesTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

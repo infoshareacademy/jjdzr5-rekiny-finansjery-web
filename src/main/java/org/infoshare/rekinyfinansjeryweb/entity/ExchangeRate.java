@@ -1,4 +1,4 @@
-package org.infoshare.rekinyfinansjeryweb.repository.entity;
+package org.infoshare.rekinyfinansjeryweb.entity;
 
 import lombok.*;
 
@@ -25,6 +25,8 @@ public class ExchangeRate {
     @ManyToOne
     @JoinColumn(name = COLUMN_PREFIX + "daily_table")
     private ExchangeRatesTable dailyTable;
+    @Column(name = COLUMN_PREFIX + "ask_price")
     private Double askPrice;
+    @Column(name = COLUMN_PREFIX + "bid_price")
     private Double bidPrice;
 }

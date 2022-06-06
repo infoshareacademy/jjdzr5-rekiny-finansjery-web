@@ -1,6 +1,6 @@
 package org.infoshare.rekinyfinansjeryweb.repository;
 
-import org.infoshare.rekinyfinansjeryweb.repository.entity.ExchangeRatesTable;
+import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRatesTable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
