@@ -3,7 +3,7 @@ package org.infoshare.rekinyfinansjeryweb.service;
 import com.infoshareacademy.domain.DailyExchangeRates;
 import com.infoshareacademy.domain.ExchangeRate;
 import com.infoshareacademy.services.*;
-import org.infoshare.rekinyfinansjeryweb.formData.SearchSettings;
+import org.infoshare.rekinyfinansjeryweb.dto.SearchSettingsDTO;
 import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRatesTable;
 import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRatesTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class SearchService {
     @Autowired
     ExchangeRatesTableRepository exchangeRatesTableRepository;
 
-    public List<ExchangeRatesTable> searchInCollection(SearchSettings settings){
+    public List<ExchangeRatesTable> searchInCollection(SearchSettingsDTO settings){
         /*DailyExchangeRatesSearchService dailyExchangeRatesSearchService = NBPApiManager.getInstance().getDailyExchangeSearchRatesService();
         List<DailyExchangeRates> result = new ArrayList<>();
         if(settings.getSearchType() == null || settings.getSearchType().equals("") || settings.getSearchPhrase()==null || settings.getSearchPhrase().equals("")){
@@ -54,11 +54,11 @@ public class SearchService {
                 .findFirst().orElse(null);
     }
 
-    private List<DailyExchangeRates> searchTables(DailyExchangeRatesSearchService dailyExchangeRatesSearchService, SearchSettings settings){
+    private List<DailyExchangeRates> searchTables(DailyExchangeRatesSearchService dailyExchangeRatesSearchService, SearchSettingsDTO settings){
         return dailyExchangeRatesSearchService.searchWidely(settings.getSearchPhrase());
     }
 
-    private List<DailyExchangeRates> searchCurrencies(DailyExchangeRatesSearchService dailyExchangeRatesSearchService, SearchSettings settings) {
+    private List<DailyExchangeRates> searchCurrencies(DailyExchangeRatesSearchService dailyExchangeRatesSearchService, SearchSettingsDTO settings) {
         return dailyExchangeRatesSearchService.forEachDay(exchangeRates -> exchangeRates.setRates(new ExchangeRatesSearchService(exchangeRates
                 .getRates())
                 .searchWidely(settings.getSearchPhrase())))

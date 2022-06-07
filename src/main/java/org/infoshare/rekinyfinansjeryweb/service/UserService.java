@@ -2,7 +2,7 @@ package org.infoshare.rekinyfinansjeryweb.service;
 
 import com.infoshareacademy.domain.ExchangeRate;
 import org.infoshare.rekinyfinansjeryweb.data.*;
-import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
+import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
 import org.infoshare.rekinyfinansjeryweb.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -177,7 +177,7 @@ public class UserService implements UserDetailsService {
                 .collect(Collectors.toList());
     }
 
-    public List<Map.Entry<String, FiltrationSettings>> getListOfSavedFiltrationSettings(MyUserPrincipal principal){
+    public List<Map.Entry<String, FiltrationSettingsDTO>> getListOfSavedFiltrationSettings(MyUserPrincipal principal){
         return principal
                 .getUser()
                 .getSavedFiltrationSettings()

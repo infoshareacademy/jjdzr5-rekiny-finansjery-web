@@ -3,8 +3,8 @@ package org.infoshare.rekinyfinansjeryweb.service;
 import com.infoshareacademy.domain.DailyExchangeRates;
 import com.infoshareacademy.domain.ExchangeRate;
 import com.infoshareacademy.services.NBPApiManager;
-import org.infoshare.rekinyfinansjeryweb.formData.ExchangeRateForm;
-import org.infoshare.rekinyfinansjeryweb.formData.DailyTableForm;
+import org.infoshare.rekinyfinansjeryweb.dto.ExchangeRateFormDTO;
+import org.infoshare.rekinyfinansjeryweb.dto.DailyTableFormDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -12,7 +12,7 @@ import java.util.Optional;
 @Service
 public class AdminService {
 
-    public void addTable(DailyTableForm dailyTableData) {
+    public void addTable(DailyTableFormDTO dailyTableData) {
         DailyExchangeRates newDailyTable = new DailyExchangeRates();
         newDailyTable.setTable("C");
         newDailyTable.setNo(dailyTableData.getNo());
@@ -36,7 +36,7 @@ public class AdminService {
         }
     }
 
-    public void editTable(String no, DailyTableForm dailyTableData) {
+    public void editTable(String no, DailyTableFormDTO dailyTableData) {
         Optional<DailyExchangeRates> dailyTable = NBPApiManager.getInstance().findDailyTable(no);
         dailyTable.ifPresentOrElse(table -> {
             DailyExchangeRates dailyExchangeRates = dailyTable.get();
@@ -50,7 +50,7 @@ public class AdminService {
         });
     }
 
-    public void addCurrency(String no, ExchangeRateForm currencyData) {
+    public void addCurrency(String no, ExchangeRateFormDTO currencyData) {
         ExchangeRate newExchangeRate = new ExchangeRate();
         newExchangeRate.setCurrency(currencyData.getCurrency());
         newExchangeRate.setCode(currencyData.getCode());
@@ -74,7 +74,7 @@ public class AdminService {
         }
     }
 
-    public void editCurrency(String tableNo, String code, ExchangeRateForm currencyData) {
+    public void editCurrency(String tableNo, String code, ExchangeRateFormDTO currencyData) {
         Optional<ExchangeRate> exchangeRate = NBPApiManager.getInstance().findExchangeRate(tableNo, code);
         exchangeRate.ifPresentOrElse(rate -> {
             ExchangeRate newExchangeRate = exchangeRate.get();

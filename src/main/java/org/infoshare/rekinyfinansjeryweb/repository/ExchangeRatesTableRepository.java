@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ExchangeRatesTableRepository extends JpaRepository<ExchangeRatesTable, Long>, ExchangeRatesTableRepositoryCustom {
+public interface ExchangeRatesTableRepository extends JpaRepository<ExchangeRatesTable, Long>, ExchangeRatesTableRepositoryExtension {
 
     /*@Query("SELECT t FROM ExchangeRatesTable t")
     List<ExchangeRatesTable> findExchangeRatesTableByFilterSettings();*/

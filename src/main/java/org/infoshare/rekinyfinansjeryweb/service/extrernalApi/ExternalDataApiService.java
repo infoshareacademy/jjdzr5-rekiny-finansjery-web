@@ -1,6 +1,7 @@
 package org.infoshare.rekinyfinansjeryweb.service.extrernalApi;
 
 import org.infoshare.rekinyfinansjeryweb.entity.Currency;
+import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRatesTable;
 import org.infoshare.rekinyfinansjeryweb.entity.LastUpdate;
 import org.infoshare.rekinyfinansjeryweb.repository.*;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ApiRequestResult;
@@ -13,6 +14,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +37,7 @@ public class ExternalDataApiService {
         ApiRequestResult result = nbpApiAdapter.getResultData(currencies, lastUpdate);
         currencyRepository.saveAll(result.getCurrencies());
         exchangeRatesTableRepository.saveAll(result.getExchangeRatesTables());
+        exchangeRatesTableRepository.save(new ExchangeRatesTable(null, "sadsad", LocalDate.now().minusDays(1), LocalDate.now().minusDays(1), new ArrayList<>()));
         exchangeRateRepository.saveAll(result.getExchangeRates());
         if(lastUpdate.isPresent()){
             LastUpdate thisUpdate = lastUpdate.get();

@@ -1,8 +1,8 @@
-package org.infoshare.rekinyfinansjeryweb.formData;
+package org.infoshare.rekinyfinansjeryweb.dto;
 
 import javax.validation.constraints.NotNull;
 
-public class PayMethodForm extends AmountForm{
+public class PayMethodFormDTO extends AmountFormDTO {
 
     @NotNull(message = "{typeMismatch}")
     private String payMethod;
@@ -21,7 +21,7 @@ public class PayMethodForm extends AmountForm{
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        PayMethodForm that = (PayMethodForm) o;
+        PayMethodFormDTO that = (PayMethodFormDTO) o;
 
         return payMethod != null ? payMethod.equals(that.payMethod) : that.payMethod == null;
     }

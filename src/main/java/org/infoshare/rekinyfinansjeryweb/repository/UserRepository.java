@@ -1,7 +1,7 @@
 package org.infoshare.rekinyfinansjeryweb.repository;
 
 import org.infoshare.rekinyfinansjeryweb.data.*;
-import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
+import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
@@ -108,8 +108,8 @@ public class UserRepository {
         Map<String, UserCurrency> currencyMap2 = new HashMap<>();
         user2.setMyCurrencies(currencyMap2);
 
-        Map<String, FiltrationSettings> map = new HashMap<>();
-        FiltrationSettings dolar = new FiltrationSettings();
+        Map<String, FiltrationSettingsDTO> map = new HashMap<>();
+        FiltrationSettingsDTO dolar = new FiltrationSettingsDTO();
         dolar.setCurrency(Arrays.asList("USD"));
         dolar.setEffectiveDateMin(LocalDate.of(2022,05,01));
         map.put("Dolary", dolar);
