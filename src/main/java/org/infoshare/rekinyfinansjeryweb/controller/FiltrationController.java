@@ -2,6 +2,7 @@ package org.infoshare.rekinyfinansjeryweb.controller;
 
 import com.infoshareacademy.services.NBPApiManager;
 import org.infoshare.rekinyfinansjeryweb.controller.controllerComponents.ListToPagesSplitter;
+import org.infoshare.rekinyfinansjeryweb.dto.DailyTableDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.ExchangeRateFormDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.DailyTableFormDTO;
 import org.infoshare.rekinyfinansjeryweb.data.MyUserPrincipal;
@@ -41,7 +42,7 @@ public class FiltrationController {
                                 HttpServletRequest request,
                                 Model model,
                                 @AuthenticationPrincipal MyUserPrincipal principal) {
-        List<ExchangeRatesTable> collection = collectionFiltrationService.getFilteredCollection(settings);
+        List<DailyTableDTO> collection = collectionFiltrationService.getFilteredCollection(settings, pageable);
 
         ListToPagesSplitter.splitIntoPages(collection, model, pageable);
         model.addAttribute("filtrationSettings", settings);

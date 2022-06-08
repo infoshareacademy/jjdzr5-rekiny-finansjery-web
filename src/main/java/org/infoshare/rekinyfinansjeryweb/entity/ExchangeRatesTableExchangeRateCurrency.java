@@ -22,10 +22,12 @@ public class ExchangeRatesTableExchangeRateCurrency {
     @org.hibernate.annotations.Type(type = "uuid-char")
     @Column(name = ExchangeRatesTable.COLUMN_PREFIX + "id")
     private UUID id;
-    @Column(name = ExchangeRatesTable.COLUMN_PREFIX + "no")
+    @Column(name = ExchangeRatesTable.COLUMN_PREFIX + "no", unique = true)
     String no;
     @Column(name = ExchangeRatesTable.COLUMN_PREFIX + "effective_date")
     LocalDate effectiveDate;
+    @Column(name = ExchangeRatesTable.COLUMN_PREFIX + "trading_date")
+    LocalDate tradingDate;
 
     @Column(name = ExchangeRate.COLUMN_PREFIX + "ask_price")
     private Double askPrice;

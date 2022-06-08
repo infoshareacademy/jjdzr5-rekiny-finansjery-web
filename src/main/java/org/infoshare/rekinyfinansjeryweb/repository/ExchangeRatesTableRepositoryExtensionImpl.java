@@ -5,12 +5,14 @@ import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
 import org.infoshare.rekinyfinansjeryweb.entity.Currency;
 import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRate;
 import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRatesTable;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Repository;
 import org.thymeleaf.util.ArrayUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ public class ExchangeRatesTableRepositoryExtensionImpl implements ExchangeRatesT
     private EntityManager entityManager;
 
     @Override
-    public List<ExchangeRatesTableExchangeRateCurrency> findExchangeRatesTableByFilterSettings(FiltrationSettingsDTO filtrationSettings) {
+    public List<ExchangeRatesTableExchangeRateCurrency> findExchangeRatesTableByFilterSettings(FiltrationSettingsDTO filtrationSettings, Pageable pageable) {
 
         //SELECT * FROM EXCHANGE_RATE RIGHT JOIN EXCHANGE_RATES_TABLE ON EXCHANGE_RATE.DAILY_TABLE = EXCHANGE_RATES_TABLE.ID
 
@@ -38,28 +40,27 @@ public class ExchangeRatesTableRepositoryExtensionImpl implements ExchangeRatesT
         predicates.addAll(getPredicationCurrenciesFromFiltrationSettingsDTO(filtrationSettings, cb, joinCurrencies));
 
         cr.select(cb.construct(ExchangeRatesTableExchangeRateCurrency.class,
-                root.get("id"), root.get("no"), root.get("effectiveDate"), joinExchangeRate.get("askPrice"),
+                root.get("id"), root.get("no"), root.get("effectiveDate"), root.get("tradingDate"), joinExchangeRate.get("askPrice"),
                 joinExchangeRate.get("bidPrice"), joinCurrencies.get("code"), joinCurrencies.get("name"),
                 joinCurrencies.get("category")))
                 .where(predicates.toArray(Predicate[]::new));
 
-        List<ExchangeRatesTableExchangeRateCurrency> results = entityManager.createQuery(cr).getResultList();
+        /*CriteriaQuery<ExchangeRatesTableExchangeRateCurrency> criteriaQuery = cr.select(cb.construct(ExchangeRatesTableExchangeRateCurrency.class,
+                        root.get("id"), root.get("no"), root.get("effectiveDate"), root.get("tradingDate"), joinExchangeRate.get("askPrice"),
+                        joinExchangeRate.get("bidPrice"), joinCurrencies.get("code"), joinCurrencies.get("name"),
+                        joinCurrencies.get("category")))
+                .where(predicates.toArray(Predicate[]::new));
 
-        results.forEach(rate -> {
-            System.out.println(rate.getNo());
-            System.out.println(rate.getAskPrice());
-            System.out.println(rate.getBidPrice());
-            System.out.println(rate.getCode());
-            System.out.println(rate.getCategory());
-            System.out.println(rate.getEffectiveDate());
-            System.out.println(rate.getName());
-            System.out.println("===================================================================");
-        });
-        return null;
+        TypedQuery<ExchangeRatesTableExchangeRateCurrency> typedQuery = entityManager.createQuery(criteriaQuery);
+        typedQuery.setFirstResult(pageable.getPageNumber()*pageable.getPageSize());
+        typedQuery.setMaxResults(pageable.getPageSize());*/
+
+        List<ExchangeRatesTableExchangeRateCurrency> results = entityManager.createQuery(cr).getResultList();
+        return results;
     }
 
     private List<Predicate> getPredicationExchangeRatesTableFromFiltrationSettingsDTO(FiltrationSettingsDTO filtrationSettings, CriteriaBuilder cb,
-        Root<ExchangeRatesTable> root) {
+            Root<ExchangeRatesTable> root) {
         List<Predicate> predicates = new ArrayList<>();
         if (filtrationSettings.getEffectiveDateMin() != null)
             predicates.add(cb.greaterThanOrEqualTo(root.get("effectiveDate"), filtrationSettings.getEffectiveDateMin()));
@@ -72,7 +73,7 @@ public class ExchangeRatesTableRepositoryExtensionImpl implements ExchangeRatesT
         return predicates;
     }
     private List<Predicate> getPredicationExchangeRateFromFiltrationSettingsDTO(FiltrationSettingsDTO filtrationSettings, CriteriaBuilder cb,
-                                                                            Join<ExchangeRatesTable, ExchangeRate> joinExchangeRate) {
+            Join<ExchangeRatesTable, ExchangeRate> joinExchangeRate) {
         List<Predicate> predicates = new ArrayList<>();
         if (filtrationSettings.getAskPriceMin() != null)
             predicates.add(cb.greaterThanOrEqualTo(joinExchangeRate.get("askPrice"), filtrationSettings.getAskPriceMin()));
@@ -85,7 +86,7 @@ public class ExchangeRatesTableRepositoryExtensionImpl implements ExchangeRatesT
         return predicates;
     }
     private List<Predicate> getPredicationCurrenciesFromFiltrationSettingsDTO(FiltrationSettingsDTO filtrationSettings, CriteriaBuilder cb,
-                                                                         Join<ExchangeRate, Currency> joinCurrencies){
+            Join<ExchangeRate, Currency> joinCurrencies){
         List<Predicate> predicates = new ArrayList<>();
         if(filtrationSettings.getCurrency()!=null && filtrationSettings.getCurrency().size()>0)
             predicates.add(getSelectedCurrencyPredicate(cb, joinCurrencies, filtrationSettings.getCurrency()));

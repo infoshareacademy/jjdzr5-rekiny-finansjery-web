@@ -3,14 +3,21 @@ package org.infoshare.rekinyfinansjeryweb.service;
 import com.infoshareacademy.domain.DailyExchangeRates;
 import com.infoshareacademy.services.DailyExchangeRatesFiltrationService;
 import com.infoshareacademy.services.ExchangeRatesFiltrationService;
+import org.infoshare.rekinyfinansjeryweb.dto.DailyTableDTO;
+import org.infoshare.rekinyfinansjeryweb.dto.ExchangeRateDTO;
 import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRatesTableExchangeRateCurrency;
 import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
 import org.infoshare.rekinyfinansjeryweb.repository.*;
 import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRatesTable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class FiltrationService {
@@ -21,22 +28,19 @@ public class FiltrationService {
     ExchangeRateRepository exchangeRateRepository;
 
 
-    public List<ExchangeRatesTable> getFilteredCollection(FiltrationSettingsDTO settings) {
+    public List<DailyTableDTO> getFilteredCollection(FiltrationSettingsDTO settings, Pageable pageable) {
         //List<ExchangeRatesTable> tables = exchangeRatesTableRepository.findAll();
-        List<ExchangeRatesTableExchangeRateCurrency> tables = exchangeRatesTableRepository.findExchangeRatesTableByFilterSettings(settings);
-        /*tables.forEach(table -> {
-            System.out.println(table.getNo());
-            table.getRates().forEach(rate -> {
-                System.out.println(rate.getAskPrice());
-                System.out.println(rate.getBidPrice());
-                System.out.println(rate.getCurrency().getCode());
-            });
-            System.out.println("===================================================================");
+        List<ExchangeRatesTableExchangeRateCurrency> tables = exchangeRatesTableRepository.findExchangeRatesTableByFilterSettings(settings, pageable);
+        Map<String, DailyTableDTO> dailyTables = new HashMap<>();
+        tables.forEach(table-> {
+            dailyTables.putIfAbsent(table.getNo(), new DailyTableDTO(table.getNo(), table.getEffectiveDate(),
+                    table.getTradingDate(), new ArrayList<>()));
+            if(table.getAskPrice()!=null && table.getBidPrice()!=null) {
+                dailyTables.get(table.getNo()).getRates().add(new ExchangeRateDTO(table.getAskPrice(), table.getBidPrice(),
+                        table.getCode(), table.getName()));
+            }
         });
-        */
-        /*DailyExchangeRatesFiltrationService dailyExchangeRatesFiltrationService = NBPApiManager.getInstance().getDailyExchangeRatesService();
-        return filterCollection(dailyExchangeRatesFiltrationService, settings);*/
-        return exchangeRatesTableRepository.findAll();
+        return dailyTables.values().stream().toList();
     }
 
     public List<DailyExchangeRates> getFilteredCollectionFromList(List<DailyExchangeRates> dailyExchangeRates, FiltrationSettingsDTO settings) {

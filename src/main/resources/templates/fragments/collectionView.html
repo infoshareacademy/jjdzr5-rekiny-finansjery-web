@@ -41,13 +41,13 @@
         </thead>
         <tbody>
         <tr th:each="rate : ${exchangeRates.getRates()}">
-            <th class="align-middle" scope="row" th:text="${rate.currency.code}"></th>
+            <th class="align-middle" scope="row" th:text="${rate.code}"></th>
             <td class="align-middle"
-                th:text="${#messages.msgOrNull('currency.' + #strings.toString(rate.currency.code)) != null} ? #{'currency.'+${rate.currency.code}} : ${rate.currency.name}"></td>
+                th:text="${#messages.msgOrNull('currency.' + #strings.toString(rate.code)) != null} ? #{'currency.'+${rate.code}} : ${rate.name}"></td>
             <td class="align-middle" th:text="${rate.bidPrice}"></td>
             <td class="align-middle" th:text="${rate.askPrice}"></td>
             <td class="text-end">
-                <a th:href="@{'/currency/'+${rate.currency.code}}" class="btn mx-1 btn-primary"><i class="bi bi-eye"></i></a>
+                <a th:href="@{'/currency/'+${rate.code}}" class="btn mx-1 btn-primary"><i class="bi bi-eye"></i></a>
                 <div th:replace="fragments/user :: button_bid"></div>
                 <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:replace="fragments/admin :: edit_currency_buttons"></div>
             </td>
