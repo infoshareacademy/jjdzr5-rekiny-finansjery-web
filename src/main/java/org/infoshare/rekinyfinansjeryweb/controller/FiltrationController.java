@@ -2,12 +2,8 @@ package org.infoshare.rekinyfinansjeryweb.controller;
 
 import com.infoshareacademy.services.NBPApiManager;
 import org.infoshare.rekinyfinansjeryweb.controller.controllerComponents.ListToPagesSplitter;
-import org.infoshare.rekinyfinansjeryweb.dto.DailyTableDTO;
-import org.infoshare.rekinyfinansjeryweb.dto.ExchangeRateFormDTO;
-import org.infoshare.rekinyfinansjeryweb.dto.DailyTableFormDTO;
+import org.infoshare.rekinyfinansjeryweb.dto.*;
 import org.infoshare.rekinyfinansjeryweb.data.MyUserPrincipal;
-import org.infoshare.rekinyfinansjeryweb.dto.SearchSettingsDTO;
-import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRatesTable;
 import org.infoshare.rekinyfinansjeryweb.service.FiltrationService;
 import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +16,6 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -42,9 +37,14 @@ public class FiltrationController {
                                 HttpServletRequest request,
                                 Model model,
                                 @AuthenticationPrincipal MyUserPrincipal principal) {
-        List<DailyTableDTO> collection = collectionFiltrationService.getFilteredCollection(settings, pageable);
+        PageDTO collection = collectionFiltrationService.getFilteredCollection(settings, pageable);
 
-        ListToPagesSplitter.splitIntoPages(collection, model, pageable);
+        model.addAttribute("numberOfElements", collection.getTotalDailyTables());
+        model.addAttribute("pageSize", pageable.getPageSize());
+        model.addAttribute("pagesAmount", collection.getNumberOfPages());
+        model.addAttribute("pageActive", pageable.getPageNumber());
+        model.addAttribute("pageContent", collection.getTables());
+
         model.addAttribute("filtrationSettings", settings);
         model.addAttribute("possibleCurrencies", usedCurrenciesService.getShortNamesOfCurrencies(NBPApiManager.getInstance(), settings.getCurrency()));
         model.addAttribute("newDailyTable", new DailyTableFormDTO());

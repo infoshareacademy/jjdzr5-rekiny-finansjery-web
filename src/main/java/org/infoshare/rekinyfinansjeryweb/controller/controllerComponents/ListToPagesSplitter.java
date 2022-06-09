@@ -1,6 +1,7 @@
 package org.infoshare.rekinyfinansjeryweb.controller.controllerComponents;
 
 import com.infoshareacademy.domain.DailyExchangeRates;
+import org.infoshare.rekinyfinansjeryweb.dto.PageDTO;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.ui.Model;
@@ -18,5 +19,14 @@ public class ListToPagesSplitter<T> {
         model.addAttribute("pagesAmount", pageElements.getPageCount());
         model.addAttribute("pageActive", pageable.getPageNumber());
         model.addAttribute("pageContent", pageElements.getPageList());
+    }
+
+    public static void splitIntoPages(PageDTO page, Model model, Pageable pageable){
+
+        model.addAttribute("numberOfElements", page.getTotalDailyTables());
+        model.addAttribute("pageSize", pageable.getPageSize());
+        model.addAttribute("pagesAmount", page.getTotalDailyTables());
+        model.addAttribute("pageActive", pageable.getPageNumber());
+        model.addAttribute("pageContent", page.getTables());
     }
 }

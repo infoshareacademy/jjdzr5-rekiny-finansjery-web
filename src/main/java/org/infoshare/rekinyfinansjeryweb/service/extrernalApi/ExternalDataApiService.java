@@ -37,7 +37,6 @@ public class ExternalDataApiService {
         ApiRequestResult result = nbpApiAdapter.getResultData(currencies, lastUpdate);
         currencyRepository.saveAll(result.getCurrencies());
         exchangeRatesTableRepository.saveAll(result.getExchangeRatesTables());
-        exchangeRatesTableRepository.save(new ExchangeRatesTable(null, "sadsad", LocalDate.now().minusDays(1), LocalDate.now().minusDays(1), new ArrayList<>()));
         exchangeRateRepository.saveAll(result.getExchangeRates());
         if(lastUpdate.isPresent()){
             LastUpdate thisUpdate = lastUpdate.get();

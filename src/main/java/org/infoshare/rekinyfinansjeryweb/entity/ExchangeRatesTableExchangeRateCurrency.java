@@ -10,8 +10,6 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Entity
-@Immutable
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

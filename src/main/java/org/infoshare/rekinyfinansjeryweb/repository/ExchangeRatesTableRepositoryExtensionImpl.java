@@ -1,10 +1,12 @@
 package org.infoshare.rekinyfinansjeryweb.repository;
 
-import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRatesTableExchangeRateCurrency;
+import com.infoshareacademy.domain.DailyExchangeRates;
+import org.infoshare.rekinyfinansjeryweb.entity.*;
 import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
 import org.infoshare.rekinyfinansjeryweb.entity.Currency;
-import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRate;
-import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRatesTable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.PagedListHolder;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Repository;
@@ -15,48 +17,44 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class ExchangeRatesTableRepositoryExtensionImpl implements ExchangeRatesTableRepositoryExtension {
     @PersistenceContext
     private EntityManager entityManager;
 
+
     @Override
-    public List<ExchangeRatesTableExchangeRateCurrency> findExchangeRatesTableByFilterSettings(FiltrationSettingsDTO filtrationSettings, Pageable pageable) {
+    public List<ExchangeRatesTable> findExchangeRatesTableByFilterSettings(FiltrationSettingsDTO filtrationSettings) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<ExchangeRatesTable> cr = cb.createQuery(ExchangeRatesTable.class);
+        Root<ExchangeRatesTable> root = cr.from(ExchangeRatesTable.class);
+        List<Predicate> predicate = getPredicationExchangeRatesTableFromFiltrationSettingsDTO(filtrationSettings, cb, root);
+        cr.select(root).where(predicate.toArray(Predicate[]::new)).orderBy(cb.desc(root.get("effectiveDate"))).groupBy(root.get("no"));
+        return entityManager.createQuery(cr).getResultList();
+    }
 
-        //SELECT * FROM EXCHANGE_RATE RIGHT JOIN EXCHANGE_RATES_TABLE ON EXCHANGE_RATE.DAILY_TABLE = EXCHANGE_RATES_TABLE.ID
-
+    @Override
+    public List<ExchangeRatesTableExchangeRateCurrency> findExchangeRatesTableJoinExchangeRateJoinCurrencyByFilterSettings(List<String> tables, FiltrationSettingsDTO filtrationSettings, Pageable pageable) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<ExchangeRatesTableExchangeRateCurrency> cr = cb.createQuery(ExchangeRatesTableExchangeRateCurrency.class);
         Root<ExchangeRatesTable> root = cr.from(ExchangeRatesTable.class);
         Join<ExchangeRatesTable, ExchangeRate> joinExchangeRate = root.join("rates", JoinType.LEFT);
         Join<ExchangeRate, Currency> joinCurrencies = joinExchangeRate.join("currency", JoinType.LEFT);
 
-        List<Predicate> predicates = getPredicationExchangeRatesTableFromFiltrationSettingsDTO(filtrationSettings, cb, root);
-        predicates.addAll(getPredicationExchangeRateFromFiltrationSettingsDTO(filtrationSettings, cb, joinExchangeRate));
+        List<Predicate> predicates = getPredicationExchangeRateFromFiltrationSettingsDTO(filtrationSettings, cb, joinExchangeRate);
         predicates.addAll(getPredicationCurrenciesFromFiltrationSettingsDTO(filtrationSettings, cb, joinCurrencies));
+        predicates.add(root.get("no").in(tables));
 
-        cr.select(cb.construct(ExchangeRatesTableExchangeRateCurrency.class,
-                root.get("id"), root.get("no"), root.get("effectiveDate"), root.get("tradingDate"), joinExchangeRate.get("askPrice"),
-                joinExchangeRate.get("bidPrice"), joinCurrencies.get("code"), joinCurrencies.get("name"),
-                joinCurrencies.get("category")))
-                .where(predicates.toArray(Predicate[]::new));
-
-        /*CriteriaQuery<ExchangeRatesTableExchangeRateCurrency> criteriaQuery = cr.select(cb.construct(ExchangeRatesTableExchangeRateCurrency.class,
+        CriteriaQuery<ExchangeRatesTableExchangeRateCurrency> criteriaQuery = cr.select(cb.construct(ExchangeRatesTableExchangeRateCurrency.class,
                         root.get("id"), root.get("no"), root.get("effectiveDate"), root.get("tradingDate"), joinExchangeRate.get("askPrice"),
                         joinExchangeRate.get("bidPrice"), joinCurrencies.get("code"), joinCurrencies.get("name"),
                         joinCurrencies.get("category")))
-                .where(predicates.toArray(Predicate[]::new));
+                .where(predicates.toArray(Predicate[]::new)).orderBy(cb.desc(root.get("effectiveDate")));
 
         TypedQuery<ExchangeRatesTableExchangeRateCurrency> typedQuery = entityManager.createQuery(criteriaQuery);
-        typedQuery.setFirstResult(pageable.getPageNumber()*pageable.getPageSize());
-        typedQuery.setMaxResults(pageable.getPageSize());*/
-
-        List<ExchangeRatesTableExchangeRateCurrency> results = entityManager.createQuery(cr).getResultList();
-        return results;
+        return typedQuery.getResultList();
     }
 
     private List<Predicate> getPredicationExchangeRatesTableFromFiltrationSettingsDTO(FiltrationSettingsDTO filtrationSettings, CriteriaBuilder cb,
