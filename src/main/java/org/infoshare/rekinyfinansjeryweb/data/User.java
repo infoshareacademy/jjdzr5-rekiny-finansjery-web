@@ -1,43 +1,83 @@
 package org.infoshare.rekinyfinansjeryweb.data;
 
+import org.hibernate.annotations.Type;
 import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
 
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+@Entity
+@Table(name = User.TABLE_NAME)
 public class User {
-    private long id;
+    public static final String TABLE_NAME = "user";
+    public static final String COLUMN_PREFIX = "u_";
+
+    @Id
+    @GeneratedValue
+    @Type(type = "uuid-char")
+    @Column(name = COLUMN_PREFIX + "id")
+    private UUID id;
+
     @Email(message = "{validation.email}")
     @NotBlank(message = "{validation.email.blank}")
+    @Column(name = COLUMN_PREFIX + "email")
     private String email;
-    @Size(min = 8, max = 32, message = "{validation.password}")
+
+    @Size(min = 8, max = 255, message = "{validation.password}")
+    @Column(name = COLUMN_PREFIX + "password")
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(targetClass = UserEnum.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_role",
+            joinColumns = @JoinColumn(name = "id"))
+    @Column(name = COLUMN_PREFIX + "role")
     private Set<UserEnum> role;
+
     @Size(min = 3, max = 30, message = "{validation.name}")
+    @Column(name = COLUMN_PREFIX + "name")
     private String name;
+
     @Size(min = 3, max = 30, message = "{validation.lastname}")
+    @Column(name = COLUMN_PREFIX + "lastname")
     private String lastname;
+
+    @Column(name = COLUMN_PREFIX + "enabled")
     private boolean enabled;
+
+    @Column(name = COLUMN_PREFIX + "billing_currency")
     private double billingCurrency;
-    private List<OperationHistory> historyList;
-    private Map<String,UserCurrency> myCurrencies;
-    private Map<String, FiltrationSettings> savedFiltrationSettings;
-    private LocalDateTime created;
+
+    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<OperationHistory> historyList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<UserCurrency> myCurrencies = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "filtration_sett_mapping",
+            joinColumns = {@JoinColumn(name = COLUMN_PREFIX + "id", referencedColumnName = COLUMN_PREFIX + "id")})//,
+    @MapKeyColumn(name = "name")
+    private Map<String, FiltrationSettings> savedFiltrationSettings = new HashMap<>();
+
+    @Column(name = COLUMN_PREFIX + "create_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = COLUMN_PREFIX + "last_login")
     private LocalDateTime lastLogin;
 
     public User() {
     }
 
-    public long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -105,11 +145,11 @@ public class User {
         this.historyList = historyList;
     }
 
-    public Map<String, UserCurrency> getMyCurrencies() {
+    public Set<UserCurrency> getMyCurrencies() {
         return myCurrencies;
     }
 
-    public void setMyCurrencies(Map<String, UserCurrency> myCurrencies) {
+    public void setMyCurrencies(Set<UserCurrency> myCurrencies) {
         this.myCurrencies = myCurrencies;
     }
 
@@ -121,12 +161,12 @@ public class User {
         this.savedFiltrationSettings = savedFiltrationSettings;
     }
 
-    public LocalDateTime getCreated() {
-        return created;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
+    public void setCreatedAt(LocalDateTime created) {
+        this.createdAt = created;
     }
 
     public LocalDateTime getLastLogin() {
@@ -144,9 +184,9 @@ public class User {
 
         User user = (User) o;
 
-        if (id != user.id) return false;
         if (enabled != user.enabled) return false;
         if (Double.compare(user.billingCurrency, billingCurrency) != 0) return false;
+        if (id != null ? !id.equals(user.id) : user.id != null) return false;
         if (email != null ? !email.equals(user.email) : user.email != null) return false;
         if (password != null ? !password.equals(user.password) : user.password != null) return false;
         if (role != null ? !role.equals(user.role) : user.role != null) return false;
@@ -154,7 +194,9 @@ public class User {
         if (lastname != null ? !lastname.equals(user.lastname) : user.lastname != null) return false;
         if (historyList != null ? !historyList.equals(user.historyList) : user.historyList != null) return false;
         if (myCurrencies != null ? !myCurrencies.equals(user.myCurrencies) : user.myCurrencies != null) return false;
-        if (created != null ? !created.equals(user.created) : user.created != null) return false;
+        if (savedFiltrationSettings != null ? !savedFiltrationSettings.equals(user.savedFiltrationSettings) : user.savedFiltrationSettings != null)
+            return false;
+        if (createdAt != null ? !createdAt.equals(user.createdAt) : user.createdAt != null) return false;
         return lastLogin != null ? lastLogin.equals(user.lastLogin) : user.lastLogin == null;
     }
 
@@ -162,7 +204,7 @@ public class User {
     public int hashCode() {
         int result;
         long temp;
-        result = (int) (id ^ (id >>> 32));
+        result = id != null ? id.hashCode() : 0;
         result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (role != null ? role.hashCode() : 0);
@@ -173,7 +215,8 @@ public class User {
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (historyList != null ? historyList.hashCode() : 0);
         result = 31 * result + (myCurrencies != null ? myCurrencies.hashCode() : 0);
-        result = 31 * result + (created != null ? created.hashCode() : 0);
+        result = 31 * result + (savedFiltrationSettings != null ? savedFiltrationSettings.hashCode() : 0);
+        result = 31 * result + (createdAt != null ? createdAt.hashCode() : 0);
         result = 31 * result + (lastLogin != null ? lastLogin.hashCode() : 0);
         return result;
     }
@@ -191,7 +234,8 @@ public class User {
                 ", billingCurrency=" + billingCurrency +
                 ", historyList=" + historyList +
                 ", myCurrencies=" + myCurrencies +
-                ", created=" + created +
+                ", savedFiltrationSettings=" + savedFiltrationSettings +
+                ", createdAt=" + createdAt +
                 ", lastLogin=" + lastLogin +
                 '}';
     }

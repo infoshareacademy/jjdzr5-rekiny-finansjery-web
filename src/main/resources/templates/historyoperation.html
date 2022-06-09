@@ -37,7 +37,7 @@
                     </thead>
                     <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.data.User"*/-->
                     <tr th:if="${operationhistory.size()>0}" th:each="operation : ${operationhistory}">
-                        <td th:text="${#temporals.format(operation.dateOpreation, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td th:text="${#temporals.format(operation.dateOperation, 'yyyy-MM-dd HH:mm:ss')}"></td>
                         <td th:text="${operation.exchangeRate}"></td>
                         <td th:text="#{'user.history.'+${operation.operation}}"></td>
                         <td th:text="${#numbers.formatDecimal(operation.amount, 1, 'WHITESPACE', 2, 'COMMA')}"></td>

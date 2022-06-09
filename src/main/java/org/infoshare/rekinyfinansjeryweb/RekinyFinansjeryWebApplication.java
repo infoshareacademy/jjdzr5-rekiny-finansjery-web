@@ -1,6 +1,7 @@
 package org.infoshare.rekinyfinansjeryweb;
 
-import org.infoshare.rekinyfinansjeryweb.service.ExternalDataApiService;
+import org.infoshare.rekinyfinansjeryweb.service.CreateUserService;
+import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ExternalDataApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -12,6 +13,8 @@ public class RekinyFinansjeryWebApplication {
 
 	@Autowired
 	ExternalDataApiService externalDataApiService;
+	@Autowired
+	CreateUserService createUserService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(RekinyFinansjeryWebApplication.class, args);
@@ -21,6 +24,7 @@ public class RekinyFinansjeryWebApplication {
 	public CommandLineRunner CommandLineRunnerBean() {
 		return (args) -> {
 			externalDataApiService.getData();
+			createUserService.createUsers();
 		};
 	}
 }

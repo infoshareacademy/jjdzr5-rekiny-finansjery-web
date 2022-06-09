@@ -5,8 +5,8 @@ import org.infoshare.rekinyfinansjeryweb.data.MyUserPrincipal;
 import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
 import org.infoshare.rekinyfinansjeryweb.formData.PayMethodForm;
 import org.infoshare.rekinyfinansjeryweb.formData.SaveOfFiltrationSettings;
+import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRate;
 import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
-import com.infoshareacademy.domain.ExchangeRate;
 import org.infoshare.rekinyfinansjeryweb.formData.AmountForm;
 import org.infoshare.rekinyfinansjeryweb.service.SearchService;
 import org.infoshare.rekinyfinansjeryweb.service.UserService;
@@ -85,6 +85,7 @@ public class UserController {
         }
         else{
             principal.getUser().getSavedFiltrationSettings().put(filtrationSettings.getPreferenceName(), filtrationSettings);
+            usersService.updateUser(principal.getUser());
             model.addAttribute("successMessage", "filters.saved.success");
         }
 
@@ -101,9 +102,6 @@ public class UserController {
         model.addAttribute("listOfSavedFiltrationSettings", usersService.getListOfSavedFiltrationSettings(principal));
         return "user_filtration_preferences_list";
     }
-
-
-
     private boolean isFiltrationSettingEmpty(FiltrationSettings filtrationSettings) {
         if (filtrationSettings.getAskPriceMax() == null &&
                 filtrationSettings.getAskPriceMin() == null &&
@@ -129,6 +127,7 @@ public class UserController {
     public ModelAndView getPayment(@Valid @ModelAttribute("amount") PayMethodForm amount,
                                    BindingResult result,
                                    ModelMap model) {
+        ModelMap modelMap = new ModelMap();
         if (result.hasErrors()) {
             model.addAttribute("amount", amount);
             return new ModelAndView("pay",model);
@@ -170,6 +169,7 @@ public class UserController {
 
     @GetMapping("/buycurrency")
     public String getLastTradingTable(Model model) {
+
         model.addAttribute("exchangeRates", searchService.getLastExchangeRates());
         model.addAttribute("newCurrency", new ExchangeRate());
         return "buycurrency";

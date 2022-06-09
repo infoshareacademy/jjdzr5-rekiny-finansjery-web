@@ -1,8 +1,10 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
-import com.infoshareacademy.domain.ExchangeRate;
 import org.infoshare.rekinyfinansjeryweb.data.*;
 import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
+import org.infoshare.rekinyfinansjeryweb.repository.Currency;
+import org.infoshare.rekinyfinansjeryweb.repository.CurrencyRepository;
+import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRate;
 import org.infoshare.rekinyfinansjeryweb.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -15,13 +17,19 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 @Service
 public class UserService implements UserDetailsService {
 
+
+//    @Autowired
+//    private UserRepository userRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CurrencyRepository currencyRepository;
     @Autowired
     SearchService searchService;
     @Autowired
@@ -29,7 +37,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.findByEmailAddress(username);
+        User user = userRepository.findByEmail(username);
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
@@ -43,138 +51,155 @@ public class UserService implements UserDetailsService {
     }
 
     public List<User> getUsers(){
-        return userRepository.getUserRepository();
+        return userRepository.findAll();
     }
 
-    public boolean addUser(User user){
-        List<User> users = userRepository.getUserRepository();
-        Optional<User> max = users.stream().max(Comparator.comparingLong(User::getId));
-        user.setId(max.orElse(new User()).getId()+1);
+    public User addUser(User user){
         user.setPassword(encoder.encode(user.getPassword()));
         user.setRole(Set.of(UserEnum.ROLE_USER));
-        Map<String, UserCurrency> currencyMap = new HashMap<>();
-        user.setHistoryList(new ArrayList<>());
-        user.setSavedFiltrationSettings(new HashMap<>());
-        user.setMyCurrencies(currencyMap);
-        user.setCreated(LocalDateTime.now());
+        user.setCreatedAt(LocalDateTime.now());
         user.setEnabled(true);
+
         return userRepository.save(user);
     }
 
-    public boolean updateUser(User user){
-        return userRepository.update(user);
+    public User updateUser(User user){
+        return userRepository.save(user);
     }
 
-    public void deleteUser(long id) {
-        userRepository.delete(id);
+    public void deleteUser(User user) {
+        userRepository.delete(user);
     }
 
     public boolean bidCurrency(String currency, double amount){
-        User user = getUser();
-        if (!subtractCurrency(user, currency, amount)) return false;
-        return updateUser(user);
+        if (!subtractCurrency(getUser(), currency, amount)) return false;
+        return updateUser(getUser()) != null;
     }
 
     private boolean subtractCurrency(User user, String currency, double amount) {
         ExchangeRate exchangeRate = searchService.getCurrencyOfLastExchangeRates(currency);
-        if (addCurrencyHistory(user, currency, amount, exchangeRate.getBid(), OperationEnum.BID)){
-            addToBillingCurrency(user, exchangeRate, amount);
-            return true;
-        }
-        return false;
+           return addToBillingCurrency(user, exchangeRate, amount) &&
+                   addCurrencyHistory(user, currency, amount, exchangeRate.getBidPrice(), OperationEnum.BID);
     }
 
-    private void addToBillingCurrency(User user, ExchangeRate exchangeRate, double amount) {
-        double billingCurrency = exchangeRate.getBid() * amount;
+    private boolean addToBillingCurrency(User user, ExchangeRate exchangeRate, double amount) {
+        double billingCurrency = exchangeRate.getBidPrice() * amount;
         user.setBillingCurrency(user.getBillingCurrency() + billingCurrency);
+        return true;
     }
 
     public boolean askCurrency(String currency, double amount){
-        User user = getUser();
-        if (!addCurrency(user, currency, amount)) return false;
-        return updateUser(user);
+        if (!addCurrency(getUser(), currency, amount)) return false;
+        return updateUser(getUser()) != null;
     }
     
     private boolean addCurrency(User user, String currency, double amount) {
         ExchangeRate exchangeRate = searchService.getCurrencyOfLastExchangeRates(currency);
-        if (subtractFromBillingCurrency(user, exchangeRate, amount) &&
-            addCurrencyHistory(user, currency, amount, exchangeRate.getAsk(), OperationEnum.ASK)) return true;
-        return false;
+        return subtractFromBillingCurrency(user, exchangeRate, amount) &&
+            addCurrencyHistory(user, currency, amount, exchangeRate.getAskPrice(), OperationEnum.ASK);
     }
 
     private boolean subtractFromBillingCurrency(User user, ExchangeRate exchangeRate, double amount) {
-        double billingCurrency = exchangeRate.getAsk() * amount;
+        double billingCurrency = exchangeRate.getAskPrice() * amount;
         if (user.getBillingCurrency() < billingCurrency) return false;
         user.setBillingCurrency(user.getBillingCurrency() - billingCurrency);
         return true;
     }
 
     private boolean addCurrencyHistory(User user, String currency, double amount, double exchangeRate, OperationEnum operationEnum) {
-        user.getMyCurrencies().putIfAbsent(currency, new UserCurrency(0.00, new ArrayList<>()));
-        UserCurrency userCurrency = user.getMyCurrencies().get(currency);
+        Currency code = currencyRepository.getById(currency);
+        UserCurrency userCurrency = getUserCurrency(user, code);
         if (operationEnum == OperationEnum.ASK) {
             userCurrency.setAmount(userCurrency.getAmount() + amount);
         } else if (operationEnum == OperationEnum.BID && userCurrency.getAmount() >= amount){
             userCurrency.setAmount(userCurrency.getAmount() - amount);
         } else return false;
-        List<OperationHistory> historyList = userCurrency.getHistoryList();
-        addOperationHistory(amount, exchangeRate, operationEnum, historyList);
-        user.getMyCurrencies().put(currency, userCurrency);
+        userCurrency.setUser(user);
+        userCurrency.setCurrency(code);
+        addOperationHistory(amount, exchangeRate, operationEnum, userCurrency);
+        user.getMyCurrencies().add(userCurrency);
         return true;
     }
 
-    private void addOperationHistory(double amount, double exchangeRate, OperationEnum operationEnum, List<OperationHistory> historyList ) {
-        historyList.add(new OperationHistory(LocalDateTime.now(), operationEnum, exchangeRate, amount));
+    private void addOperationHistory(double amount, double exchangeRate, OperationEnum operationEnum, Object whereSave ) {
+        List<OperationHistory> operationHistoryList = new ArrayList<>();
+        OperationHistory operationHistory = new OperationHistory(LocalDateTime.now(), operationEnum, exchangeRate, amount);
+        if (operationEnum.equals(OperationEnum.PAYCHECK) || operationEnum.equals(OperationEnum.PAYMENT)) {
+            operationHistoryList = ((User) whereSave).getHistoryList();
+            operationHistory.setUser((User) whereSave);
+        }
+        else if (operationEnum.equals(OperationEnum.ASK) || operationEnum.equals(OperationEnum.BID)) {
+            operationHistoryList = ((UserCurrency) whereSave).getHistoryList();
+            operationHistory.setUserCurrency((UserCurrency) whereSave);
+        }
+        operationHistoryList.add(operationHistory);
     }
 
     public boolean paymentToWallet(double amount) {
         User user = getUser();
         user.setBillingCurrency(user.getBillingCurrency() + amount);
-        List<OperationHistory> historyList = user.getHistoryList();
-        addOperationHistory(amount,1,OperationEnum.PAYMENT, historyList);
-        updateUser(user);
-        return true;
+        addOperationHistory(amount,1,OperationEnum.PAYMENT, user);
+        return updateUser(user) != null;
     }
 
     public boolean withdrawalFromWallet(double amount){
         User user = getUser();
         user.setBillingCurrency(user.getBillingCurrency() - amount);
-        List<OperationHistory> historyList = user.getHistoryList();
-        addOperationHistory(amount,1,OperationEnum.PAYCHECK, historyList);
-        updateUser(user);
-        return true;
+        addOperationHistory(amount,1,OperationEnum.PAYCHECK, user);
+        return updateUser(user) != null;
     }
 
     public boolean emailExists(final String email) {
-        return userRepository.findByEmailAddress(email).getEmail() != null;
+        return userRepository.findByEmail(email) != null;
     }
 
     public List<CurrencyOperationHistory> getHistoryOperation() {
         List<CurrencyOperationHistory> currencyOperationHistories = new ArrayList<>();
         User user = getUser();
-        user.getHistoryList().forEach(e -> currencyOperationHistories.add(new CurrencyOperationHistory(e, "PLN")));
-        user.getMyCurrencies()
-                .entrySet().
-                forEach(e -> e.getValue()
-                        .getHistoryList()
-                        .forEach( history -> currencyOperationHistories.add(new CurrencyOperationHistory(history, e.getKey()))));
+        user.getHistoryList().
+                forEach(e -> currencyOperationHistories.add(new CurrencyOperationHistory(e, "PLN")));
+
+        user.getMyCurrencies().forEach(e -> e.getHistoryList().forEach(h -> currencyOperationHistories.add(new CurrencyOperationHistory(h, e.getCurrency().getCode()))));
 
         return sortHistory(currencyOperationHistories);
     }
 
     public List<CurrencyOperationHistory> getHistoryOperation(String code) {
-        List<CurrencyOperationHistory> currencyOperationHistories = new ArrayList<>();
+        Optional<Currency> currency = currencyRepository.findById(code);
         User user = getUser();
-        user.getMyCurrencies().get(code).getHistoryList()
-                        .forEach( history -> currencyOperationHistories.add(new CurrencyOperationHistory(history, code)));
+        return sortHistory(
+                convertFromOperationHistory(
+                        getHistoryList(user.getMyCurrencies(), currency.orElse(new Currency())),currency.orElse(new Currency())));
+    }
 
-        return sortHistory(currencyOperationHistories);
+    private List<OperationHistory> getHistoryList(Set<UserCurrency> userCurrencySet, Currency currency) {
+        for (UserCurrency userCurrency :userCurrencySet){
+            if (userCurrency.getCurrency().getCode().equals(currency.getCode())){
+                return userCurrency.getHistoryList();
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    private UserCurrency getUserCurrency(User user, Currency currency) {
+        for (UserCurrency userCurrency :user.getMyCurrencies()){
+            if (userCurrency.getCurrency().getCode().equals(currency.getCode())){
+                return userCurrency;
+            }
+        }
+        return new UserCurrency();
+    }
+
+    private List<CurrencyOperationHistory> convertFromOperationHistory(List<OperationHistory> operationHistory, Currency currency) {
+        List<CurrencyOperationHistory> currencyOperationHistories = new ArrayList<>();
+        operationHistory.forEach(h -> currencyOperationHistories.add(new CurrencyOperationHistory(h, currency.getCode())));
+        return currencyOperationHistories;
     }
 
     private List<CurrencyOperationHistory> sortHistory(List<CurrencyOperationHistory> currencyOperationHistories) {
         return currencyOperationHistories.stream()
-                .sorted(((o1, o2) -> o2.getDateOpreation().compareTo(o1.getDateOpreation())))
-                .collect(Collectors.toList());
+                .sorted(((o1, o2) -> o2.getDateOperation().compareTo(o1.getDateOperation())))
+                .collect(toList());
     }
 
     public List<Map.Entry<String, FiltrationSettings>> getListOfSavedFiltrationSettings(MyUserPrincipal principal){

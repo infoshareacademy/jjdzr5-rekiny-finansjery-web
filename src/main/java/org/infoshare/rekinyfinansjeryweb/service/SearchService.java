@@ -1,15 +1,15 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
 import com.infoshareacademy.domain.DailyExchangeRates;
-import com.infoshareacademy.domain.ExchangeRate;
 import com.infoshareacademy.services.*;
 import org.infoshare.rekinyfinansjeryweb.formData.SearchSettings;
+import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRate;
 import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRatesTable;
 import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRatesTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,14 +44,12 @@ public class SearchService {
         return exchangeRatesTableRepository.findAll();
     }
 
-    public DailyExchangeRates getLastExchangeRates(){
-        return NBPApiManager.getInstance().getCollectionsOfExchangeRates().stream()
-                .sorted((o1, o2) -> o2.getEffectiveDate().compareTo(o1.getEffectiveDate()))
-                .findFirst().get();
+    public ExchangeRatesTable getLastExchangeRates(){
+       return exchangeRatesTableRepository.findFirstByOrderByEffectiveDateDesc();
     }
     public ExchangeRate getCurrencyOfLastExchangeRates(String code) {
         return getLastExchangeRates().getRates().stream()
-                .filter(e -> e.getCode().equals(code))
+                .filter(e -> e.getCurrency().getCode().equals(code))
                 .findFirst().orElse(null);
     }
 

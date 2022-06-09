@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -20,4 +21,6 @@ public interface ExchangeRatesTableRepository extends JpaRepository<ExchangeRate
             + " LEFT JOIN Currency c ON r.currency_code = c.code"
             + " WHERE c.code LIKE '%USD%' OR c.code LIKE '%AUD%' ORDER BY t.effective_Date DESC LIMIT 5")
     List<ExchangeRatesTable> findExchangeRatesTableByFilterSettings();*/
+
+    ExchangeRatesTable findFirstByOrderByEffectiveDateDesc();
 }
