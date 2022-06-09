@@ -25,7 +25,7 @@ public class ListToPagesSplitter<T> {
 
         model.addAttribute("numberOfElements", page.getTotalDailyTables());
         model.addAttribute("pageSize", pageable.getPageSize());
-        model.addAttribute("pagesAmount", page.getTotalDailyTables());
+        model.addAttribute("pagesAmount", page.getNumberOfPages());
         model.addAttribute("pageActive", pageable.getPageNumber());
         model.addAttribute("pageContent", page.getTables());
     }

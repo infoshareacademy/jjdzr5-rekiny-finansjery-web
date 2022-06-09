@@ -39,12 +39,9 @@ public class FiltrationController {
                                 @AuthenticationPrincipal MyUserPrincipal principal) {
         PageDTO collection = collectionFiltrationService.getFilteredCollection(settings, pageable);
 
-        model.addAttribute("numberOfElements", collection.getTotalDailyTables());
-        model.addAttribute("pageSize", pageable.getPageSize());
-        model.addAttribute("pagesAmount", collection.getNumberOfPages());
-        model.addAttribute("pageActive", pageable.getPageNumber());
-        model.addAttribute("pageContent", collection.getTables());
 
+
+        ListToPagesSplitter.splitIntoPages(collection, model, pageable);
         model.addAttribute("filtrationSettings", settings);
         model.addAttribute("possibleCurrencies", usedCurrenciesService.getShortNamesOfCurrencies(NBPApiManager.getInstance(), settings.getCurrency()));
         model.addAttribute("newDailyTable", new DailyTableFormDTO());
