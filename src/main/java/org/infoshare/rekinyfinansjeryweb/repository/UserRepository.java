@@ -1,6 +1,6 @@
 package org.infoshare.rekinyfinansjeryweb.repository;
 
-import org.infoshare.rekinyfinansjeryweb.data.User;
+import org.infoshare.rekinyfinansjeryweb.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

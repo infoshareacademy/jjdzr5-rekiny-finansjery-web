@@ -33,7 +33,7 @@
                             <th scope="col"> </th>
                         </tr>
                     </thead>
-                    <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.data.User"*/-->
+                    <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.entity.user.User"*/-->
                     <tr th:if="${user.getMyCurrencies().size()>0}" th:each="currency : ${user.getMyCurrencies()}">
                             <td th:text="${currency.currency.code}"></td>
                             <td th:text="${#numbers.formatDecimal(currency.amount, 1, 'WHITESPACE', 2, 'COMMA')}"></td>

@@ -1,7 +1,7 @@
 package org.infoshare.rekinyfinansjeryweb.controller;
 
 import com.infoshareacademy.services.NBPApiManager;
-import org.infoshare.rekinyfinansjeryweb.data.MyUserPrincipal;
+import org.infoshare.rekinyfinansjeryweb.entity.user.MyUserPrincipal;
 import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
 import org.infoshare.rekinyfinansjeryweb.formData.PayMethodForm;
 import org.infoshare.rekinyfinansjeryweb.formData.SaveOfFiltrationSettings;

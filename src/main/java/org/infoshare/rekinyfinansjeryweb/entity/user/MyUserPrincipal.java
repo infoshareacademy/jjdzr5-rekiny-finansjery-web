@@ -1,4 +1,4 @@
-package org.infoshare.rekinyfinansjeryweb.data;
+package org.infoshare.rekinyfinansjeryweb.entity.user;
 
 
 import org.springframework.security.core.GrantedAuthority;

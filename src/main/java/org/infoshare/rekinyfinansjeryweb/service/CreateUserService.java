@@ -1,6 +1,7 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
-import org.infoshare.rekinyfinansjeryweb.data.*;
+import org.infoshare.rekinyfinansjeryweb.entity.user.User;
+import org.infoshare.rekinyfinansjeryweb.entity.user.UserEnum;
 import org.infoshare.rekinyfinansjeryweb.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;

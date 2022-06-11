@@ -1,11 +1,10 @@
 package org.infoshare.rekinyfinansjeryweb.controller;
 
-import com.infoshareacademy.domain.DailyExchangeRates;
 import com.infoshareacademy.services.NBPApiManager;
 import org.infoshare.rekinyfinansjeryweb.controller.controllerComponents.ListToPagesSplitter;
 import org.infoshare.rekinyfinansjeryweb.formData.ExchangeRateForm;
 import org.infoshare.rekinyfinansjeryweb.formData.DailyTableForm;
-import org.infoshare.rekinyfinansjeryweb.data.MyUserPrincipal;
+import org.infoshare.rekinyfinansjeryweb.entity.user.MyUserPrincipal;
 import org.infoshare.rekinyfinansjeryweb.formData.SearchSettings;
 import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRatesTable;
 import org.infoshare.rekinyfinansjeryweb.service.FiltrationService;

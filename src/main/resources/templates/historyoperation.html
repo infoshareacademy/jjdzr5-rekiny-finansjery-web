@@ -35,7 +35,7 @@
                         <th scope="col" th:text="#{user.history.currency}"></th>
                     </tr>
                     </thead>
-                    <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.data.User"*/-->
+                    <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.entity.user.User"*/-->
                     <tr th:if="${operationhistory.size()>0}" th:each="operation : ${operationhistory}">
                         <td th:text="${#temporals.format(operation.dateOperation, 'yyyy-MM-dd HH:mm:ss')}"></td>
                         <td th:text="${operation.exchangeRate}"></td>

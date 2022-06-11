@@ -1,6 +1,6 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
-import org.infoshare.rekinyfinansjeryweb.data.*;
+import org.infoshare.rekinyfinansjeryweb.entity.user.*;
 import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
 import org.infoshare.rekinyfinansjeryweb.repository.Currency;
 import org.infoshare.rekinyfinansjeryweb.repository.CurrencyRepository;
