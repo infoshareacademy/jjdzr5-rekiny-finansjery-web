@@ -144,7 +144,9 @@ public class UserService implements UserDetailsService {
 
     public boolean withdrawalFromWallet(double amount){
         User user = getUser();
-        user.setBillingCurrency(user.getBillingCurrency() - amount);
+        double balance = user.getBillingCurrency() - amount;
+        if (balance < 0) return false;
+        user.setBillingCurrency(balance);
         addOperationHistory(amount,1,OperationEnum.PAYCHECK, user);
         return updateUser(user) != null;
     }
