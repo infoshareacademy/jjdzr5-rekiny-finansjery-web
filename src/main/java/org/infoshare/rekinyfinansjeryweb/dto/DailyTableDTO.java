@@ -12,8 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DailyTableDTO {
-    String no;
-    LocalDate effectiveDate;
-    LocalDate tradingDate;
+    LocalDate date;
     List<ExchangeRateDTO> rates;
 }

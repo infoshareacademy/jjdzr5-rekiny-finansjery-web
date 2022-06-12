@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -14,19 +13,14 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ExchangeRatesTableExchangeRateCurrency {
+public class ExchangeRateCurrency {
     @Id
     @GeneratedValue
     @org.hibernate.annotations.Type(type = "uuid-char")
-    @Column(name = ExchangeRatesTable.COLUMN_PREFIX + "id")
+    @Column(name = ExchangeRate.COLUMN_PREFIX + "id")
     private UUID id;
-    @Column(name = ExchangeRatesTable.COLUMN_PREFIX + "no", unique = true)
-    String no;
-    @Column(name = ExchangeRatesTable.COLUMN_PREFIX + "effective_date")
-    LocalDate effectiveDate;
-    @Column(name = ExchangeRatesTable.COLUMN_PREFIX + "trading_date")
-    LocalDate tradingDate;
-
+    @Column(name = ExchangeRate.COLUMN_PREFIX + "date")
+    private LocalDate date;
     @Column(name = ExchangeRate.COLUMN_PREFIX + "ask_price")
     private Double askPrice;
     @Column(name = ExchangeRate.COLUMN_PREFIX + "bid_price")

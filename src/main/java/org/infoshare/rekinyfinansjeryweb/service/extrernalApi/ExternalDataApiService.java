@@ -1,20 +1,16 @@
 package org.infoshare.rekinyfinansjeryweb.service.extrernalApi;
 
 import org.infoshare.rekinyfinansjeryweb.entity.Currency;
-import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRatesTable;
 import org.infoshare.rekinyfinansjeryweb.entity.LastUpdate;
-import org.infoshare.rekinyfinansjeryweb.repository.*;
-import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ApiRequestResult;
+import org.infoshare.rekinyfinansjeryweb.repository.CurrencyRepository;
+import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRateRepository;
+import org.infoshare.rekinyfinansjeryweb.repository.LastUpdateRepository;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.nbpAdapter.NBPApiAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,8 +18,6 @@ import java.util.Optional;
 public class ExternalDataApiService {
     @Autowired
     CurrencyRepository currencyRepository;
-    @Autowired
-    ExchangeRatesTableRepository exchangeRatesTableRepository;
     @Autowired
     ExchangeRateRepository exchangeRateRepository;
     @Autowired
@@ -36,7 +30,6 @@ public class ExternalDataApiService {
         Optional<LastUpdate> lastUpdate = lastUpdateRepository.findBySourceName(nbpApiAdapter.getApiName());
         ApiRequestResult result = nbpApiAdapter.getResultData(currencies, lastUpdate);
         currencyRepository.saveAll(result.getCurrencies());
-        exchangeRatesTableRepository.saveAll(result.getExchangeRatesTables());
         exchangeRateRepository.saveAll(result.getExchangeRates());
         if(lastUpdate.isPresent()){
             LastUpdate thisUpdate = lastUpdate.get();

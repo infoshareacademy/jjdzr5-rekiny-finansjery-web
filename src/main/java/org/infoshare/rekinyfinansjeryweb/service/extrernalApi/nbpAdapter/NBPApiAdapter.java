@@ -3,7 +3,6 @@ package org.infoshare.rekinyfinansjeryweb.service.extrernalApi.nbpAdapter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRate;
-import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRatesTable;
 import org.infoshare.rekinyfinansjeryweb.entity.LastUpdate;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ApiAdapter;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ApiRequestResult;
@@ -44,9 +43,6 @@ public class NBPApiAdapter extends ApiAdapter {
     }
 
     private void convertDailyExchangeRatesToDatabase(DailyExchangeRates dailyExchangeRate, Map<String, Currency> currenciesMap, ApiRequestResult result){
-        ExchangeRatesTable exchangeRatesTable = new ExchangeRatesTable(null, dailyExchangeRate.getNo(),
-                dailyExchangeRate.getEffectiveDate(), dailyExchangeRate.getTradingDate(), null);
-
         dailyExchangeRate.getRates().forEach(exchangeRate -> {
             Optional<Currency> currency = Optional.ofNullable(currenciesMap.get(exchangeRate.getCode()));
             if(currency.isEmpty()){
@@ -56,10 +52,9 @@ public class NBPApiAdapter extends ApiAdapter {
                 result.getCurrencies().add(newCurrency);
                 currency = Optional.of(newCurrency);
             }
-            ExchangeRate rate = new ExchangeRate(null, currency.get(), exchangeRatesTable, exchangeRate.getAsk(), exchangeRate.getBid());
+            ExchangeRate rate = new ExchangeRate(null, currency.get(), dailyExchangeRate.getEffectiveDate(), exchangeRate.getAsk(), exchangeRate.getBid());
             result.getExchangeRates().add(rate);
         });
-        result.getExchangeRatesTables().add(exchangeRatesTable);
     }
 
     private Map<String, Currency> currencyListToMap(List<Currency> currencies){
