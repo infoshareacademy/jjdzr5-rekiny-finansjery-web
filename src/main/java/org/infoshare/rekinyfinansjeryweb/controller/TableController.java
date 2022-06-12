@@ -2,8 +2,8 @@ package org.infoshare.rekinyfinansjeryweb.controller;
 
 import com.infoshareacademy.domain.DailyExchangeRates;
 import com.infoshareacademy.services.NBPApiManager;
-import org.infoshare.rekinyfinansjeryweb.formData.DailyTableForm;
-import org.infoshare.rekinyfinansjeryweb.formData.ExchangeRateForm;
+import org.infoshare.rekinyfinansjeryweb.dto.DailyTableFormDTO;
+import org.infoshare.rekinyfinansjeryweb.dto.ExchangeRateFormDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,8 +26,8 @@ public class TableController {
         } else {
             model.addAttribute("exchangeRates", null);
         }
-        model.addAttribute("newDailyTable", new DailyTableForm());
-        model.addAttribute("newCurrency", new ExchangeRateForm());
+        model.addAttribute("newDailyTable", new DailyTableFormDTO());
+        model.addAttribute("newCurrency", new ExchangeRateFormDTO());
         Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
         if (inputFlashMap != null) {
             for (Map.Entry<String, ?> entry : inputFlashMap.entrySet()) {

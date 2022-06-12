@@ -1,7 +1,6 @@
 package org.infoshare.rekinyfinansjeryweb.entity.user;
 
 import org.hibernate.annotations.Type;
-import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
