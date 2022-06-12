@@ -3,12 +3,12 @@ package org.infoshare.rekinyfinansjeryweb.service;
 import com.infoshareacademy.domain.DailyExchangeRates;
 import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRate;
 import com.infoshareacademy.services.*;
+import org.infoshare.rekinyfinansjeryweb.dto.PageDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.SearchSettingsDTO;
-import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRatesTable;
-import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRatesTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,10 +18,7 @@ public class SearchService {
     @Autowired
     FiltrationService collectionFiltrationService;
 
-    @Autowired
-    ExchangeRatesTableRepository exchangeRatesTableRepository;
-
-    public List<ExchangeRatesTable> searchInCollection(SearchSettingsDTO settings){
+    public PageDTO searchInCollection(SearchSettingsDTO settings){
         /*DailyExchangeRatesSearchService dailyExchangeRatesSearchService = NBPApiManager.getInstance().getDailyExchangeSearchRatesService();
         List<DailyExchangeRates> result = new ArrayList<>();
         if(settings.getSearchType() == null || settings.getSearchType().equals("") || settings.getSearchPhrase()==null || settings.getSearchPhrase().equals("")){
@@ -40,7 +37,7 @@ public class SearchService {
         dailyExchangeRates.sort((t1, t2)-> t1.getEffectiveDate().compareTo(t2.getEffectiveDate())*-1);
 
         return dailyExchangeRates;*/
-        return exchangeRatesTableRepository.findAll();
+        return  new PageDTO(0, 0, new ArrayList<>());
     }
 
     public ExchangeRatesTable getLastExchangeRates(){

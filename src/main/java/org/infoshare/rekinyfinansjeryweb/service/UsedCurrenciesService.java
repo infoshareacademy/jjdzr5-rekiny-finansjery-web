@@ -4,7 +4,6 @@ import com.infoshareacademy.services.NBPApiManager;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.infoshare.rekinyfinansjeryweb.controller.FiltrationController;
 import org.infoshare.rekinyfinansjeryweb.entity.Currency;
 import org.infoshare.rekinyfinansjeryweb.repository.CurrencyRepository;
 import org.springframework.beans.factory.annotation.Autowired;

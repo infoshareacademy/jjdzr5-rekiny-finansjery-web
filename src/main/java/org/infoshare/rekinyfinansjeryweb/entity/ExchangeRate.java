@@ -3,6 +3,7 @@ package org.infoshare.rekinyfinansjeryweb.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -22,9 +23,8 @@ public class ExchangeRate {
     @ManyToOne
     @JoinColumn(name = COLUMN_PREFIX + "currency")
     private Currency currency;
-    @ManyToOne
-    @JoinColumn(name = COLUMN_PREFIX + "daily_table")
-    private ExchangeRatesTable dailyTable;
+    @Column(name = COLUMN_PREFIX + "date")
+    private LocalDate date;
     @Column(name = COLUMN_PREFIX + "ask_price")
     private Double askPrice;
     @Column(name = COLUMN_PREFIX + "bid_price")

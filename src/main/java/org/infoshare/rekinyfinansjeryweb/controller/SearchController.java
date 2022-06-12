@@ -4,9 +4,9 @@ import com.infoshareacademy.domain.ExchangeRate;
 import com.infoshareacademy.services.NBPApiManager;
 import org.infoshare.rekinyfinansjeryweb.controller.controllerComponents.ListToPagesSplitter;
 import org.infoshare.rekinyfinansjeryweb.dto.DailyTableFormDTO;
-import org.infoshare.rekinyfinansjeryweb.dto.SearchSettingsDTO;
-import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRatesTable;
 import org.infoshare.rekinyfinansjeryweb.entity.user.MyUserPrincipal;
+import org.infoshare.rekinyfinansjeryweb.dto.PageDTO;
+import org.infoshare.rekinyfinansjeryweb.dto.SearchSettingsDTO;
 import org.infoshare.rekinyfinansjeryweb.service.SearchService;
 import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class SearchController {
                                 Model model,
                                 @AuthenticationPrincipal MyUserPrincipal principal) {
 
-        List<ExchangeRatesTable> collection = searchService
+         PageDTO collection = searchService
                 .searchInCollection(settings);
 
         ListToPagesSplitter.splitIntoPages(collection, model, pageable);

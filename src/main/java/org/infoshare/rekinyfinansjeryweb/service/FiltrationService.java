@@ -4,31 +4,42 @@ import com.infoshareacademy.domain.DailyExchangeRates;
 import com.infoshareacademy.services.DailyExchangeRatesFiltrationService;
 import com.infoshareacademy.services.ExchangeRatesFiltrationService;
 import org.infoshare.rekinyfinansjeryweb.dto.DailyTableDTO;
-import org.infoshare.rekinyfinansjeryweb.dto.PageDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.ExchangeRateDTO;
-import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRatesTableExchangeRateCurrency;
 import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
-import org.infoshare.rekinyfinansjeryweb.repository.*;
-import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRatesTable;
+import org.infoshare.rekinyfinansjeryweb.dto.PageDTO;
+import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRateCurrency;
+import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class FiltrationService {
-    @Autowired
-    ExchangeRatesTableRepository exchangeRatesTableRepository;
 
     @Autowired
     ExchangeRateRepository exchangeRateRepository;
 
 
     public PageDTO getFilteredCollection(FiltrationSettingsDTO settings, Pageable pageable) {
-        List<ExchangeRatesTable> exchangeRatesTables = exchangeRatesTableRepository.findExchangeRatesTableByFilterSettings(settings);
+        List<ExchangeRateCurrency> exchangeRateCurrencies =
+                exchangeRateRepository.findExchangeRateJoinCurrencyByFilterSettings(settings, pageable);
+        Map<LocalDate, DailyTableDTO> dailyTables = new HashMap<>();
+        exchangeRateCurrencies.forEach(table -> {
+            dailyTables.putIfAbsent(table.getDate(), new DailyTableDTO(table.getDate(), new ArrayList<>()));
+            if (table.getAskPrice() != null && table.getBidPrice() != null) {
+                dailyTables.get(table.getDate()).getRates().add(new ExchangeRateDTO(table.getAskPrice(), table.getBidPrice(),
+                        table.getCode(), table.getName()));
+            }
+        });
+        return new PageDTO(1, 1,
+                dailyTables.values().stream().sorted((t1, t2) -> t1.getDate().compareTo(t2.getDate()) * -1).toList());
+        /*List<ExchangeRatesTable> exchangeRatesTables = exchangeRatesTableRepository.findExchangeRatesTableByFilterSettings(settings);
         PagedListHolder<ExchangeRatesTable> pagedListHolder = getPage(exchangeRatesTables, pageable);
         List<String> filteredTables = pagedListHolder.getPageList().stream().map(table -> table.getNo()).collect(Collectors.toList());
         List<ExchangeRatesTableExchangeRateCurrency> tables = exchangeRatesTableRepository
@@ -46,13 +57,9 @@ public class FiltrationService {
         int a = pagedListHolder.getPageCount();
         return new PageDTO(pagedListHolder.getPageCount(), exchangeRatesTables.size(),
                 dailyTables.values().stream().sorted((t1, t2) -> t1.getEffectiveDate().compareTo(t2.getEffectiveDate()) * -1).toList());
-    }
 
-    private PagedListHolder<ExchangeRatesTable> getPage(List<ExchangeRatesTable> collection, Pageable pageable){
-        PagedListHolder<ExchangeRatesTable> pageElements = new PagedListHolder<>(collection);
-        pageElements.setPageSize(pageable.getPageSize());
-        pageElements.setPage(pageable.getPageNumber());
-        return pageElements;
+         */
+        //return new PageDTO(0, 0, new ArrayList<>());
     }
 
     public List<DailyExchangeRates> getFilteredCollectionFromList(List<DailyExchangeRates> dailyExchangeRates, FiltrationSettingsDTO settings) {
