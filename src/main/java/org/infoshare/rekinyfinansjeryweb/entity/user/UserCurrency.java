@@ -1,7 +1,7 @@
 package org.infoshare.rekinyfinansjeryweb.entity.user;
 
 import org.hibernate.annotations.Type;
-import org.infoshare.rekinyfinansjeryweb.repository.Currency;
+import org.infoshare.rekinyfinansjeryweb.entity.Currency;
 
 import javax.persistence.*;
 import java.util.ArrayList;

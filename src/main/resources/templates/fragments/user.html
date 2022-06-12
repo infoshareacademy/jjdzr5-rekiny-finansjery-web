@@ -19,7 +19,7 @@
 </div>
 <div th:fragment="button_bid" class="d-inline">
     <!--/*@thymesVar id="rate" type="org.infoshare.rekinyfinansjeryweb.repository.ExchangeRate"*/-->
-    <a  class="btn mx-1 btn-success" th:href="@{/user/buycurrency/{code}(code=${rate.currency.code})}">
+    <a  class="btn mx-1 btn-success" th:href="@{/user/buycurrency/{code}(code=${rate.code})}">
         <i class="bi bi-plus-square"></i></a>
 </div>
 <div th:fragment="button_bid_ask_width" class="d-inline">

@@ -1,10 +1,12 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
+import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
+import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRate;
+import org.infoshare.rekinyfinansjeryweb.entity.Currency;
 import org.infoshare.rekinyfinansjeryweb.entity.user.*;
 import org.infoshare.rekinyfinansjeryweb.repository.CurrencyRepository;
-import com.infoshareacademy.domain.ExchangeRate;
-import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
 import org.infoshare.rekinyfinansjeryweb.repository.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -30,6 +32,8 @@ public class UserService implements UserDetailsService {
     SearchService searchService;
     @Autowired
     private PasswordEncoder encoder;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) {
@@ -179,7 +183,7 @@ public class UserService implements UserDetailsService {
         return new ArrayList<>();
     }
 
-    private UserCurrency getUserCurrency(User user, Currency currency) {
+    private UserCurrency getUserCurrency(User user, org.infoshare.rekinyfinansjeryweb.entity.Currency currency) {
         for (UserCurrency userCurrency :user.getMyCurrencies()){
             if (userCurrency.getCurrency().getCode().equals(currency.getCode())){
                 return userCurrency;
@@ -200,12 +204,30 @@ public class UserService implements UserDetailsService {
                 .collect(toList());
     }
 
-    public List<Map.Entry<String, FiltrationSettingsDTO>> getListOfSavedFiltrationSettings(MyUserPrincipal principal){
-        return principal
-                .getUser()
-                .getSavedFiltrationSettings()
+    public List<Map.Entry<String, FiltrationSettingsDTO>> getListOfSavedFiltrationSettings(){
+        return mapperToFiltrationSettingsDTO()
                 .entrySet()
                 .stream()
                 .toList();
     }
+    public Map<String, FiltrationSettingsDTO> getSavedFiltrationSettings(){
+        return mapperToFiltrationSettingsDTO();
+    }
+
+    private Map<String, FiltrationSettingsDTO> mapperToFiltrationSettingsDTO(){
+        Map<String, FiltrationSettingsDTO> filtrationSettingsDTO = new HashMap<>();
+        getUser().getSavedFiltrationSettings()
+                .entrySet()
+                .forEach( e -> filtrationSettingsDTO.put(e.getKey(),modelMapper.map(e.getValue(),FiltrationSettingsDTO.class)));
+        return filtrationSettingsDTO;
+    }
+    private Map<String, FiltrationSettings> mapperToFiltrationSettings(Map<String, FiltrationSettingsDTO> filtrationSettingsDTO){
+        Map<String, FiltrationSettings> filtrationSettings = new HashMap<>();
+        filtrationSettingsDTO
+                .entrySet()
+                .forEach( e -> filtrationSettings.put(e.getKey(),modelMapper.map(e.getValue(),FiltrationSettings.class)));
+        return filtrationSettings;
+    }
+
+
 }

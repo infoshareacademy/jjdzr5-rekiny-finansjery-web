@@ -1,12 +1,12 @@
 package org.infoshare.rekinyfinansjeryweb.controller;
 
 import com.infoshareacademy.services.NBPApiManager;
+import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRate;
 import org.infoshare.rekinyfinansjeryweb.entity.user.MyUserPrincipal;
 import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.PayMethodFormDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.SaveOfFiltrationSettingsDTO;
 import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
-import com.infoshareacademy.domain.ExchangeRate;
 import org.infoshare.rekinyfinansjeryweb.dto.AmountFormDTO;
 import org.infoshare.rekinyfinansjeryweb.service.SearchService;
 import org.infoshare.rekinyfinansjeryweb.service.UserService;
@@ -46,7 +46,7 @@ public class UserController {
     @GetMapping("/filtration_preferences")
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public String userFiltrationPreferences(@AuthenticationPrincipal MyUserPrincipal principal, Model model) {
-        model.addAttribute("listOfSavedFiltrationSettings", usersService.getListOfSavedFiltrationSettings(principal));
+        model.addAttribute("listOfSavedFiltrationSettings", usersService.getListOfSavedFiltrationSettings());
         return "user_filtration_preferences_list";
     }
 
@@ -84,12 +84,13 @@ public class UserController {
             model.addAttribute("errorMessage", "filters.error.empty");
         }
         else{
-            principal.getUser().getSavedFiltrationSettings().put(filtrationSettings.getPreferenceName(), filtrationSettings);
-            usersService.updateUser(principal.getUser());
+            //todo  to userService
+//            principal.getUser().getSavedFiltrationSettings().put(filtrationSettings.getPreferenceName(), filtrationSettings);
+//            usersService.updateUser(principal.getUser());
             model.addAttribute("successMessage", "filters.saved.success");
         }
 
-        model.addAttribute("listOfSavedFiltrationSettings", usersService.getListOfSavedFiltrationSettings(principal));
+        model.addAttribute("listOfSavedFiltrationSettings", usersService.getListOfSavedFiltrationSettings());
         return "user_filtration_preferences_list";
     }
 
@@ -99,11 +100,9 @@ public class UserController {
         if(principal.getUser().getSavedFiltrationSettings().remove(key)!=null){
             model.addAttribute("successMessage", "filters.remove.success");
         }
-        model.addAttribute("listOfSavedFiltrationSettings", usersService.getListOfSavedFiltrationSettings(principal));
+        model.addAttribute("listOfSavedFiltrationSettings", usersService.getListOfSavedFiltrationSettings());
         return "user_filtration_preferences_list";
     }
-
-
 
     private boolean isFiltrationSettingEmpty(FiltrationSettingsDTO filtrationSettings) {
         if (filtrationSettings.getAskPriceMax() == null &&

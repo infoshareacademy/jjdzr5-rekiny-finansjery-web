@@ -1,7 +1,7 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
 import com.infoshareacademy.domain.DailyExchangeRates;
-import com.infoshareacademy.domain.ExchangeRate;
+import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRate;
 import com.infoshareacademy.services.*;
 import org.infoshare.rekinyfinansjeryweb.dto.SearchSettingsDTO;
 import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRatesTable;
