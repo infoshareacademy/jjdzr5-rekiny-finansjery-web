@@ -14,10 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class FiltrationService {
@@ -27,8 +24,19 @@ public class FiltrationService {
 
 
     public PageDTO getFilteredCollection(FiltrationSettingsDTO settings, Pageable pageable) {
+
+        Optional<Long> totalResultsOfFitler = exchangeRateRepository.countExchangeRatesFromPeriod(settings.getEffectiveDateMin(), settings.getEffectiveDateMax());
+
+        if(totalResultsOfFitler.isEmpty()){
+            return new PageDTO(0, 0, new ArrayList<>());
+        }
+
+        List<LocalDate> requestedPage =
+                exchangeRateRepository.findExchangeRatesFromPeriod(settings.getEffectiveDateMin(), settings.getEffectiveDateMax(), pageable);
+
         List<ExchangeRateCurrency> exchangeRateCurrencies =
-                exchangeRateRepository.findExchangeRateJoinCurrencyByFilterSettings(settings, pageable);
+                exchangeRateRepository.findExchangeRateJoinCurrencyByFilterSettings(settings, requestedPage);
+
         Map<LocalDate, DailyTableDTO> dailyTables = new HashMap<>();
         exchangeRateCurrencies.forEach(table -> {
             dailyTables.putIfAbsent(table.getDate(), new DailyTableDTO(table.getDate(), new ArrayList<>()));
@@ -37,7 +45,7 @@ public class FiltrationService {
                         table.getCode(), table.getName()));
             }
         });
-        return new PageDTO(1, 1,
+        return new PageDTO((int)Math.ceil(totalResultsOfFitler.get()/pageable.getPageSize()), totalResultsOfFitler.get(),
                 dailyTables.values().stream().sorted((t1, t2) -> t1.getDate().compareTo(t2.getDate()) * -1).toList());
         /*List<ExchangeRatesTable> exchangeRatesTables = exchangeRatesTableRepository.findExchangeRatesTableByFilterSettings(settings);
         PagedListHolder<ExchangeRatesTable> pagedListHolder = getPage(exchangeRatesTables, pageable);
