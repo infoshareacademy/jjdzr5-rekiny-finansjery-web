@@ -1,10 +1,14 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
-import com.infoshareacademy.domain.DailyExchangeRates;
-import com.infoshareacademy.domain.ExchangeRate;
-import com.infoshareacademy.services.NBPApiManager;
 import org.infoshare.rekinyfinansjeryweb.formData.ExchangeRateForm;
 import org.infoshare.rekinyfinansjeryweb.formData.DailyTableForm;
+import org.infoshare.rekinyfinansjeryweb.repository.CurrencyRepository;
+import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRateRepository;
+import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRatesTableRepository;
+import org.infoshare.rekinyfinansjeryweb.repository.entity.Currency;
+import org.infoshare.rekinyfinansjeryweb.repository.entity.ExchangeRatesTable;
+import org.infoshare.rekinyfinansjeryweb.repository.entity.ExchangeRate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -12,89 +16,85 @@ import java.util.Optional;
 @Service
 public class AdminService {
 
-    public void addTable(DailyTableForm dailyTableData) {
-        DailyExchangeRates newDailyTable = new DailyExchangeRates();
-        newDailyTable.setTable("C");
-        newDailyTable.setNo(dailyTableData.getNo());
-        newDailyTable.setEffectiveDate(dailyTableData.getEffectiveDate());
-        newDailyTable.setTradingDate(dailyTableData.getTradingDate());
+    @Autowired
+    ExchangeRatesTableRepository exchangeRatesTableRepository;
 
-        if (NBPApiManager.getInstance().addDailyTable(newDailyTable)) {
-            NBPApiManager.getInstance().saveCollection();
-            //TODO Add logger
-        } else {
-            //TODO Add logger
-        }
+    @Autowired
+    ExchangeRateRepository exchangeRateRepository;
+
+    @Autowired
+    CurrencyRepository currencyRepository;
+
+    public void addTable(DailyTableForm dailyTableForm) {
+        ExchangeRatesTable exchangeRatesTable = new ExchangeRatesTable();
+        exchangeRatesTable.setNo(dailyTableForm.getNo());
+        exchangeRatesTable.setEffectiveDate(dailyTableForm.getEffectiveDate());
+        exchangeRatesTable.setTradingDate(dailyTableForm.getTradingDate());
+
+        exchangeRatesTableRepository.save(exchangeRatesTable);
     }
 
     public void deleteTable(String tableNo) {
-        if (NBPApiManager.getInstance().removeDailyTable(tableNo)) {
-            NBPApiManager.getInstance().saveCollection();
-            //TODO Add logger
-        } else {
-            //TODO Add logger
-        }
+        ExchangeRatesTable exchangeRatesTable = exchangeRatesTableRepository.findByNo(tableNo);
+        exchangeRatesTableRepository.delete(exchangeRatesTable);
     }
 
-    public void editTable(String no, DailyTableForm dailyTableData) {
-        Optional<DailyExchangeRates> dailyTable = NBPApiManager.getInstance().findDailyTable(no);
-        dailyTable.ifPresentOrElse(table -> {
-            DailyExchangeRates dailyExchangeRates = dailyTable.get();
-            dailyExchangeRates.setNo(dailyTableData.getNo());
-            dailyExchangeRates.setEffectiveDate(dailyTableData.getEffectiveDate());
-            dailyExchangeRates.setTradingDate(dailyTableData.getTradingDate());
-            NBPApiManager.getInstance().saveCollection();
-            //TODO Add logger
+    public void editTable(String tableNo, DailyTableForm dailyTableForm) {
+        Optional<ExchangeRatesTable> exchangeRatesTable = Optional.of(exchangeRatesTableRepository.findByNo(tableNo));
+        exchangeRatesTable.ifPresentOrElse(table -> {
+            table.setNo(dailyTableForm.getNo());
+            table.setEffectiveDate(dailyTableForm.getEffectiveDate());
+            table.setTradingDate(dailyTableForm.getTradingDate());
+
+            exchangeRatesTableRepository.save(table);
         }, () -> {
             //TODO Add logger
         });
     }
 
-    public void addCurrency(String no, ExchangeRateForm currencyData) {
-        ExchangeRate newExchangeRate = new ExchangeRate();
-        newExchangeRate.setCurrency(currencyData.getCurrency());
-        newExchangeRate.setCode(currencyData.getCode());
-        newExchangeRate.setBid(currencyData.getBid());
-        newExchangeRate.setAsk(currencyData.getAsk());
-
-        if (NBPApiManager.getInstance().addExchangeRate(no, newExchangeRate)) {
-            NBPApiManager.getInstance().saveCollection();
-            //TODO Add logger
-        } else {
-            //TODO Add logger
-        }
+    public void addExchangeRate(String tableNo, ExchangeRateForm exchangeRateForm) {
+        ExchangeRate exchangeRate = new ExchangeRate();
+        Currency currency = saveCurrency(new Currency(), exchangeRateForm);
+        exchangeRate.setDailyTable(exchangeRatesTableRepository.findByNo(tableNo));
+        saveExchangeRate(exchangeRate, currency, exchangeRateForm);
     }
 
-    public void deleteCurrency(String tableNo, String code) {
-        if (NBPApiManager.getInstance().removeExchangeRate(tableNo, code)) {
-            NBPApiManager.getInstance().saveCollection();
-            //TODO Add logger
-        } else {
-            //TODO Add logger
-        }
+    public void deleteExchangeRate(String tableNo, String code) {
+        exchangeRateRepository.delete(getExchangeRate(tableNo, code));
     }
 
-    public void editCurrency(String tableNo, String code, ExchangeRateForm currencyData) {
-        Optional<ExchangeRate> exchangeRate = NBPApiManager.getInstance().findExchangeRate(tableNo, code);
-        exchangeRate.ifPresentOrElse(rate -> {
-            ExchangeRate newExchangeRate = exchangeRate.get();
-            newExchangeRate.setCurrency(currencyData.getCurrency());
-            newExchangeRate.setCode(currencyData.getCode());
-            newExchangeRate.setBid(currencyData.getBid());
-            newExchangeRate.setAsk(currencyData.getAsk());
-            NBPApiManager.getInstance().saveCollection();
-            //TODO Add logger
-        }, () -> {
-            //TODO Add logger
-        });
+    public void editExchangeRate(String tableNo, String code, ExchangeRateForm exchangeRateForm) {
+        ExchangeRate exchangeRate = getExchangeRate(tableNo, code);
+        Currency editedCurrency = saveCurrency(currencyRepository.findByCode(code), exchangeRateForm);
+        saveExchangeRate(exchangeRate, editedCurrency, exchangeRateForm);
     }
 
     public boolean tableExists(String tableNo) {
-        return NBPApiManager.getInstance().findDailyTable(tableNo).isPresent();
+        return exchangeRatesTableRepository.findByNo(tableNo) != null;
     }
 
-    public boolean currencyExists(String tableNo, String code) {
-        Optional<ExchangeRate> exchangeRate = NBPApiManager.getInstance().findExchangeRate(tableNo, code);
-        return exchangeRate.isPresent();
+    public boolean exchangeRateExists(String tableNo, String code) {
+        return getExchangeRate(tableNo, code) != null;
+    }
+
+    private Currency saveCurrency(Currency currency, ExchangeRateForm exchangeRateForm) {
+        currency.setCode(exchangeRateForm.getCode());
+        currency.setName(exchangeRateForm.getCurrency());
+        currency.setCategory("currency");
+        currencyRepository.save(currency);
+        return currency;
+    }
+
+    private void saveExchangeRate(ExchangeRate exchangeRate, Currency currency, ExchangeRateForm exchangeRateForm) {
+        exchangeRate.setBidPrice(exchangeRateForm.getBid());
+        exchangeRate.setAskPrice(exchangeRateForm.getAsk());
+        exchangeRate.setCurrency(currency);
+        exchangeRateRepository.save(exchangeRate);
+    }
+
+    private ExchangeRate getExchangeRate(String tableNo, String code) {
+        ExchangeRatesTable exchangeRatesTable = exchangeRatesTableRepository.findByNo(tableNo);
+        Currency currency = currencyRepository.findByCode(code);
+        return exchangeRateRepository.findByCurrencyAndTable(currency, exchangeRatesTable);
     }
 }

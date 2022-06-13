@@ -1,9 +1,10 @@
 package org.infoshare.rekinyfinansjeryweb.controller;
 
-import com.infoshareacademy.domain.DailyExchangeRates;
-import com.infoshareacademy.services.NBPApiManager;
 import org.infoshare.rekinyfinansjeryweb.formData.DailyTableForm;
 import org.infoshare.rekinyfinansjeryweb.formData.ExchangeRateForm;
+import org.infoshare.rekinyfinansjeryweb.repository.entity.ExchangeRatesTable;
+import org.infoshare.rekinyfinansjeryweb.service.TableService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,9 +19,15 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/table")
 public class TableController {
+
+    @Autowired
+    TableService tableService;
+
     @GetMapping("/{no}")
     public String singleTableView(@PathVariable("no") String no, HttpServletRequest request, Model model) {
-        Optional<DailyExchangeRates> dailyExchangeRates = NBPApiManager.getInstance().findDailyTable(no.replaceAll("_", "/"));
+
+        Optional<ExchangeRatesTable> dailyExchangeRates = tableService.findTable(no.replaceAll("_", "/"));
+
         if (dailyExchangeRates.isPresent()) {
             model.addAttribute("exchangeRates", dailyExchangeRates.get());
         } else {

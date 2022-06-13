@@ -2,9 +2,14 @@ package org.infoshare.rekinyfinansjeryweb.repository;
 
 import org.infoshare.rekinyfinansjeryweb.repository.entity.ExchangeRatesTable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
+
 @Repository
+@Transactional
 public interface ExchangeRatesTableRepository extends JpaRepository<ExchangeRatesTable, Long>, ExchangeRatesTableRepositoryCustom {
 
     /*@Query("SELECT t FROM ExchangeRatesTable t")
@@ -17,4 +22,7 @@ public interface ExchangeRatesTableRepository extends JpaRepository<ExchangeRate
             + " LEFT JOIN Currency c ON r.currency_code = c.code"
             + " WHERE c.code LIKE '%USD%' OR c.code LIKE '%AUD%' ORDER BY t.effective_Date DESC LIMIT 5")
     List<ExchangeRatesTable> findExchangeRatesTableByFilterSettings();*/
+
+    @Query(value = "SELECT t FROM ExchangeRatesTable t WHERE t.no = :tableNo")
+    ExchangeRatesTable findByNo(@Param("tableNo") String tableNo);
 }

@@ -13,12 +13,12 @@ import java.util.List;
 
 @Component
 public class FiltrationService {
+
     @Autowired
     ExchangeRatesTableRepository exchangeRatesTableRepository;
 
     @Autowired
     ExchangeRateRepository exchangeRateRepository;
-
 
     public List<ExchangeRatesTable> getFilteredCollection(FiltrationSettings settings) {
         //List<ExchangeRatesTable> tables = exchangeRatesTableRepository.findAll();

@@ -31,6 +31,6 @@ public class ExchangeRatesTable {
     @NotNull
     @Column(name = COLUMN_PREFIX + "trading_date")
     LocalDate tradingDate;
-    @OneToMany(mappedBy = "dailyTable")
+    @OneToMany(mappedBy = "dailyTable", cascade = CascadeType.ALL, orphanRemoval = true)
     List<ExchangeRate> rates;
 }
