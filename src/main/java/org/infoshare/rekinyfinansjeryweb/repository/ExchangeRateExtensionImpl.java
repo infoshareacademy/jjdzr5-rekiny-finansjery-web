@@ -18,29 +18,30 @@ public class ExchangeRateExtensionImpl implements ExchangeRateExtension {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<ExchangeRateCurrency> findExchangeRateJoinCurrencyByFilterSettings(FiltrationSettingsDTO filtrationSettings, Pageable pageable) {
+    public List<ExchangeRateCurrency> findExchangeRateJoinCurrencyByFilterSettings(FiltrationSettingsDTO filtrationSettings, List<LocalDate> requestedPage) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<ExchangeRateCurrency> cq = cb.createQuery(ExchangeRateCurrency.class);
         Root<ExchangeRate> root = cq.from(ExchangeRate.class);
         Path<Object> path = root.get("date");
 
-        Subquery<ExchangeRate> subquery = cq.subquery(ExchangeRate.class);
+        /*Subquery<ExchangeRate> subquery = cq.subquery(ExchangeRate.class);
         Root<ExchangeRate> subQueryRoot = subquery.from(ExchangeRate.class);
         subquery.select(subQueryRoot.get("date"));
         subquery.where(getPredicationExchangeRatesTableFromFiltrationSettingsDTO(filtrationSettings, cb, subQueryRoot).toArray(Predicate[]::new));
-        subquery.groupBy(subQueryRoot.get("date"));
+        subquery.groupBy(subQueryRoot.get("date"));*/
 
         Join<ExchangeRate, Currency> joinCurrencies = root.join("currency", JoinType.LEFT);
 
         List<Predicate> predicates = getPredicationExchangeRateFromFiltrationSettingsDTO(filtrationSettings, cb, root);
         predicates.addAll(getPredicationCurrenciesFromFiltrationSettingsDTO(filtrationSettings, cb, joinCurrencies));
-        predicates.add(cb.in(path).value(subquery));
+        //predicates.add(cb.in(path).value(subquery));
+        predicates.add(root.get("date").in(requestedPage));
 
         CriteriaQuery<ExchangeRateCurrency> criteriaQuery = cq.select(cb.construct(ExchangeRateCurrency.class,
                         root.get("id"), root.get("date"), root.get("askPrice"),
                         root.get("bidPrice"), joinCurrencies.get("code"), joinCurrencies.get("name"),
                         joinCurrencies.get("category")))
-                .where(predicates.toArray(Predicate[]::new)).orderBy(cb.desc(root.get("date")));
+                .where(predicates.toArray(Predicate[]::new)).orderBy(cb.asc(root.get("date")));
 
         TypedQuery<ExchangeRateCurrency> typedQuery = entityManager.createQuery(criteriaQuery);
         //typedQuery.setFirstResult((int)pageable.getOffset());
