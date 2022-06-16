@@ -18,73 +18,99 @@ public class ExchangeRateExtensionImpl implements ExchangeRateExtension {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<ExchangeRateCurrency> findExchangeRateJoinCurrencyByFilterSettings(FiltrationSettingsDTO filtrationSettings, List<LocalDate> requestedPage) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<ExchangeRateCurrency> cq = cb.createQuery(ExchangeRateCurrency.class);
-        Root<ExchangeRate> root = cq.from(ExchangeRate.class);
-        Path<Object> path = root.get("date");
+    @Override
+    public Long countDatesByFilterSettings(FiltrationSettingsDTO filtrationSettings, List<UUID> searchedCurrencies) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        Root<ExchangeRate> root = criteriaQuery.from(ExchangeRate.class);
 
-        /*Subquery<ExchangeRate> subquery = cq.subquery(ExchangeRate.class);
-        Root<ExchangeRate> subQueryRoot = subquery.from(ExchangeRate.class);
-        subquery.select(subQueryRoot.get("date"));
-        subquery.where(getPredicationExchangeRatesTableFromFiltrationSettingsDTO(filtrationSettings, cb, subQueryRoot).toArray(Predicate[]::new));
-        subquery.groupBy(subQueryRoot.get("date"));*/
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.addAll(getPredicationExchangeRatesTableInPeriod(filtrationSettings, criteriaBuilder, root));
+        predicates.addAll(getPredicationExchangeRateByPrices(filtrationSettings, criteriaBuilder, root));
+        if(searchedCurrencies.size()>0) {
+            predicates.add(criteriaBuilder.in(root.get("currency").get("id")).value(searchedCurrencies));
+        }
 
-        Join<ExchangeRate, Currency> joinCurrencies = root.join("currency", JoinType.LEFT);
+        CriteriaQuery<Long> query = criteriaQuery
+                .select(criteriaBuilder.countDistinct(root.get("date")))
+                .where(predicates.toArray(Predicate[]::new));
+        TypedQuery<Long> typedQuery = entityManager.createQuery(query);
+        return typedQuery.getSingleResult();
+    }
 
-        List<Predicate> predicates = getPredicationExchangeRateFromFiltrationSettingsDTO(filtrationSettings, cb, root);
-        predicates.addAll(getPredicationCurrenciesFromFiltrationSettingsDTO(filtrationSettings, cb, joinCurrencies));
-        //predicates.add(cb.in(path).value(subquery));
-        predicates.add(root.get("date").in(requestedPage));
+    public List<LocalDate> findDatesFromPageByFilterSettings(FiltrationSettingsDTO filtrationSettings, List<UUID> searchedCurrencies, Pageable pageable){
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<LocalDate> criteriaQuery = criteriaBuilder.createQuery(LocalDate.class);
+        Root<ExchangeRate> root = criteriaQuery.from(ExchangeRate.class);
 
-        CriteriaQuery<ExchangeRateCurrency> criteriaQuery = cq.select(cb.construct(ExchangeRateCurrency.class,
-                        root.get("id"), root.get("date"), root.get("askPrice"),
-                        root.get("bidPrice"), joinCurrencies.get("code"), joinCurrencies.get("name"),
-                        joinCurrencies.get("category")))
-                .where(predicates.toArray(Predicate[]::new)).orderBy(cb.asc(root.get("date")));
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.addAll(getPredicationExchangeRatesTableInPeriod(filtrationSettings, criteriaBuilder, root));
+        predicates.addAll(getPredicationExchangeRateByPrices(filtrationSettings, criteriaBuilder, root));
+        if(searchedCurrencies.size()>0) {
+            predicates.add(criteriaBuilder.in(root.get("currency").get("id")).value(searchedCurrencies));
+        }
 
-        TypedQuery<ExchangeRateCurrency> typedQuery = entityManager.createQuery(criteriaQuery);
-        //typedQuery.setFirstResult((int)pageable.getOffset());
-        //typedQuery.setMaxResults(pageable.getPageSize());
+        CriteriaQuery<LocalDate> query = criteriaQuery
+                .select(root.get("date"))
+                .where(predicates.toArray(Predicate[]::new))
+                .groupBy(root.get("date"))
+                .orderBy(criteriaBuilder.desc(root.get("date")));
+        TypedQuery<LocalDate> typedQuery = entityManager.createQuery(query);
+        typedQuery.setFirstResult((int)pageable.getOffset());
+        typedQuery.setMaxResults(pageable.getPageSize());
         return typedQuery.getResultList();
     }
 
-    private List<Predicate> getPredicationExchangeRatesTableFromFiltrationSettingsDTO(FiltrationSettingsDTO filtrationSettings, CriteriaBuilder cb,
-                                                                                      Root<ExchangeRate> root) {
+    @Override
+    public List<ExchangeRateCurrency> findPageByFilterSettings(FiltrationSettingsDTO filtrationSettings, List<UUID> searchedCurrencies, List<LocalDate> dates) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<ExchangeRateCurrency> criteriaQuery = criteriaBuilder.createQuery(ExchangeRateCurrency.class);
+        Root<ExchangeRate> root = criteriaQuery.from(ExchangeRate.class);
+        Join<ExchangeRate, Currency> currencyJoin = root.join("currency", JoinType.LEFT);
+
         List<Predicate> predicates = new ArrayList<>();
-        if (filtrationSettings.getEffectiveDateMin() != null)
-            predicates.add(cb.greaterThanOrEqualTo(root.get("date"), filtrationSettings.getEffectiveDateMin()));
-        if (filtrationSettings.getEffectiveDateMax() != null)
-            predicates.add(cb.lessThanOrEqualTo(root.get("date"), filtrationSettings.getEffectiveDateMax()));
-        return predicates;
+        predicates.addAll(getPredicationExchangeRatesTableInPeriod(filtrationSettings, criteriaBuilder, root));
+        predicates.addAll(getPredicationExchangeRateByPrices(filtrationSettings, criteriaBuilder, root));
+        predicates.add(criteriaBuilder.in(root.get("date")).value(dates));
+        if(searchedCurrencies.size()>0) {
+            predicates.add(criteriaBuilder.in(root.get("currency").get("id")).value(searchedCurrencies));
+        }
+
+        CriteriaQuery<ExchangeRateCurrency> query = criteriaQuery.select(criteriaBuilder.construct(ExchangeRateCurrency.class,
+                        root.get("id"), root.get("date"), root.get("askPrice"),
+                        root.get("bidPrice"), currencyJoin.get("code"), currencyJoin.get("name"),
+                        currencyJoin.get("category")))
+                .where(predicates.toArray(Predicate[]::new)).orderBy(criteriaBuilder.desc(root.get("date")));
+
+        TypedQuery<ExchangeRateCurrency> typedQuery = entityManager.createQuery(query);
+        return typedQuery.getResultList();
     }
-    private List<Predicate> getPredicationExchangeRateFromFiltrationSettingsDTO(FiltrationSettingsDTO filtrationSettings, CriteriaBuilder cb,
-            Root<ExchangeRate> root) {
+
+    private List<Predicate> getPredicationExchangeRatesTableInPeriod(FiltrationSettingsDTO filtrationSettings,
+                                                                     CriteriaBuilder criteriaBuilder, Root<ExchangeRate> root) {
         List<Predicate> predicates = new ArrayList<>();
-        if (filtrationSettings.getAskPriceMin() != null)
-            predicates.add(cb.greaterThanOrEqualTo(root.get("askPrice"), filtrationSettings.getAskPriceMin()));
-        if (filtrationSettings.getAskPriceMax() != null)
-            predicates.add(cb.lessThanOrEqualTo(root.get("askPrice"), filtrationSettings.getAskPriceMax()));
-        if (filtrationSettings.getBidPriceMin() != null)
-            predicates.add(cb.greaterThanOrEqualTo(root.get("bidPrice"), filtrationSettings.getBidPriceMin()));
-        if (filtrationSettings.getBidPriceMax() != null)
-            predicates.add(cb.lessThanOrEqualTo(root.get("bidPrice"), filtrationSettings.getBidPriceMax()));
-        return predicates;
-    }
-    private List<Predicate> getPredicationCurrenciesFromFiltrationSettingsDTO(FiltrationSettingsDTO filtrationSettings, CriteriaBuilder cb,
-            Join<ExchangeRate, Currency> joinCurrencies){
-        List<Predicate> predicates = new ArrayList<>();
-        if(filtrationSettings.getCurrency()!=null && filtrationSettings.getCurrency().size()>0)
-            predicates.add(getSelectedCurrencyPredicate(cb, joinCurrencies, filtrationSettings.getCurrency()));
+        if (filtrationSettings.getDateMin() != null)
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("date"), filtrationSettings.getDateMin()));
+        if (filtrationSettings.getDateMax() != null)
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("date"), filtrationSettings.getDateMax()));
         return predicates;
     }
 
-    private Predicate getSelectedCurrencyPredicate(CriteriaBuilder cb, Join<ExchangeRate, Currency> joinCurrencies, List<String> currencies){
-        List<Predicate> currenciesPredicates = new ArrayList<>();
-        for(String currency : currencies){
-            Predicate singleCurrencyPredicate = cb.equal(joinCurrencies.get("code"), currency);
-            currenciesPredicates.add(singleCurrencyPredicate);
-        }
-        return cb.or(currenciesPredicates.toArray(new Predicate[0]));
+    private List<Predicate> getPredicationExchangeRateByPrices(FiltrationSettingsDTO filtrationSettings,
+                                                               CriteriaBuilder criteriaBuilder, Root<ExchangeRate> root) {
+        List<Predicate> predicates = new ArrayList<>();
+        if (filtrationSettings.getAskPriceMin() != null)
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("askPrice"),
+                    filtrationSettings.getAskPriceMin()));
+        if (filtrationSettings.getAskPriceMax() != null)
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("askPrice"),
+                    filtrationSettings.getAskPriceMax()));
+        if (filtrationSettings.getBidPriceMin() != null)
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("bidPrice"),
+                    filtrationSettings.getBidPriceMin()));
+        if (filtrationSettings.getBidPriceMax() != null)
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("bidPrice"),
+                    filtrationSettings.getBidPriceMax()));
+        return predicates;
     }
 }

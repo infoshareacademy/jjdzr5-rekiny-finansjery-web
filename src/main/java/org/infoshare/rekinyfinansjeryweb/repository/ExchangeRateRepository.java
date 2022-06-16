@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ExchangeRateRepository extends JpaRepository<ExchangeRate, Long>, ExchangeRateExtension {
-    @Query("select count(distinct er.date) from  ExchangeRate er where (:from is null or er.date>=:from) and (:to is null or er.date<=:to)")
+    @Query("select count(distinct er.date) from ExchangeRate er where (:from is null or er.date>=:from) and (:to is null or er.date<=:to)")
     Optional<Long> countExchangeRatesFromPeriod(LocalDate from, LocalDate to);
     @Query("select er.date from ExchangeRate er where (:from is null or er.date>=:from) and (:to is null or er.date<=:to) group by er.date order by er.date desc")
     List<LocalDate> findExchangeRatesFromPeriod(LocalDate from, LocalDate to, Pageable pageable);

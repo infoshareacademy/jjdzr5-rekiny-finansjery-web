@@ -13,13 +13,9 @@ public class FiltrationSettingsDTO {
         currency = new ArrayList<>();
     }
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate effectiveDateMin;
+    private LocalDate dateMin;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate effectiveDateMax;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate tradingDateMin;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate tradingDateMax;
+    private LocalDate dateMax;
     private Double bidPriceMin;
     private Double bidPriceMax;
     private Double askPriceMin;

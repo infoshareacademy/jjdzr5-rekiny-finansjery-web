@@ -109,10 +109,8 @@ public class UserController {
                 filtrationSettings.getAskPriceMin() == null &&
                 filtrationSettings.getBidPriceMax() == null &&
                 filtrationSettings.getBidPriceMin() == null &&
-                filtrationSettings.getTradingDateMax() == null &&
-                filtrationSettings.getTradingDateMin() == null &&
-                filtrationSettings.getEffectiveDateMax() == null &&
-                filtrationSettings.getEffectiveDateMin() == null &&
+                filtrationSettings.getDateMax() == null &&
+                filtrationSettings.getDateMin() == null &&
                 filtrationSettings.getCurrency().size() == 0) {
             return true;
         }

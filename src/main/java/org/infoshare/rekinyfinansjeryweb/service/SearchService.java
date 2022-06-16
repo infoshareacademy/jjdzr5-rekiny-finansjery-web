@@ -5,20 +5,23 @@ import com.infoshareacademy.domain.ExchangeRate;
 import com.infoshareacademy.services.*;
 import org.infoshare.rekinyfinansjeryweb.dto.PageDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.SearchSettingsDTO;
+import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
 public class SearchService {
 
     @Autowired
-    FiltrationService collectionFiltrationService;
-
-    public PageDTO searchInCollection(SearchSettingsDTO settings){
+    ExchangeRateRepository exchangeRateRepository;
+    public PageDTO searchInCollection(SearchSettingsDTO settings, Pageable pageable){
+        List<String> searchedPhrases = List.of(settings.getSearchPhrase().split(" "));
         /*DailyExchangeRatesSearchService dailyExchangeRatesSearchService = NBPApiManager.getInstance().getDailyExchangeSearchRatesService();
         List<DailyExchangeRates> result = new ArrayList<>();
         if(settings.getSearchType() == null || settings.getSearchType().equals("") || settings.getSearchPhrase()==null || settings.getSearchPhrase().equals("")){
