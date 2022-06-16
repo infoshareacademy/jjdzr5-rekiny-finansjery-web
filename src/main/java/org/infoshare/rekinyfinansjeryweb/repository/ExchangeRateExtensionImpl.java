@@ -1,5 +1,6 @@
 package org.infoshare.rekinyfinansjeryweb.repository;
 
+import lombok.Getter;
 import org.infoshare.rekinyfinansjeryweb.entity.*;
 import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
 import org.infoshare.rekinyfinansjeryweb.entity.Currency;
@@ -19,70 +20,54 @@ public class ExchangeRateExtensionImpl implements ExchangeRateExtension {
     private EntityManager entityManager;
 
     @Override
-    public Long countDatesByFilterSettings(FiltrationSettingsDTO filtrationSettings, List<UUID> searchedCurrencies) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
-        Root<ExchangeRate> root = criteriaQuery.from(ExchangeRate.class);
+    public Long countDatesByFilterSettings(FiltrationSettingsDTO filtrationSettings) {
+        ExchangeRateQuery<Long> query = new ExchangeRateQuery(Long.class);
+        Subquery<String> sub = createSubqueryForCurrenciesFromFiltrationSettings(filtrationSettings, query);
 
-        List<Predicate> predicates = new ArrayList<>();
-        predicates.addAll(getPredicationExchangeRatesTableInPeriod(filtrationSettings, criteriaBuilder, root));
-        predicates.addAll(getPredicationExchangeRateByPrices(filtrationSettings, criteriaBuilder, root));
-        if(searchedCurrencies.size()>0) {
-            predicates.add(criteriaBuilder.in(root.get("currency").get("id")).value(searchedCurrencies));
-        }
+        List<Predicate> predicates = createCommonPredicatesForFiltrationSettings(filtrationSettings, query, sub);
 
-        CriteriaQuery<Long> query = criteriaQuery
-                .select(criteriaBuilder.countDistinct(root.get("date")))
+        CriteriaQuery<Long> criteriaQuery = query.getCriteriaQuery()
+                .select(query.getCriteriaBuilder().countDistinct(query.getRoot().get("date")))
                 .where(predicates.toArray(Predicate[]::new));
-        TypedQuery<Long> typedQuery = entityManager.createQuery(query);
+        TypedQuery<Long> typedQuery = entityManager.createQuery(criteriaQuery);
         return typedQuery.getSingleResult();
     }
 
-    public List<LocalDate> findDatesFromPageByFilterSettings(FiltrationSettingsDTO filtrationSettings, List<UUID> searchedCurrencies, Pageable pageable){
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<LocalDate> criteriaQuery = criteriaBuilder.createQuery(LocalDate.class);
-        Root<ExchangeRate> root = criteriaQuery.from(ExchangeRate.class);
+    public List<LocalDate> findDatesFromPageByFilterSettings(FiltrationSettingsDTO filtrationSettings, Pageable pageable){
+        ExchangeRateQuery<LocalDate> query = new ExchangeRateQuery(LocalDate.class);
+        Subquery<String> sub = createSubqueryForCurrenciesFromFiltrationSettings(filtrationSettings, query);
 
-        List<Predicate> predicates = new ArrayList<>();
-        predicates.addAll(getPredicationExchangeRatesTableInPeriod(filtrationSettings, criteriaBuilder, root));
-        predicates.addAll(getPredicationExchangeRateByPrices(filtrationSettings, criteriaBuilder, root));
-        if(searchedCurrencies.size()>0) {
-            predicates.add(criteriaBuilder.in(root.get("currency").get("id")).value(searchedCurrencies));
-        }
+        List<Predicate> predicates = createCommonPredicatesForFiltrationSettings(filtrationSettings, query, sub);
 
-        CriteriaQuery<LocalDate> query = criteriaQuery
-                .select(root.get("date"))
+        CriteriaQuery<LocalDate> criteriaQuery = query.getCriteriaQuery()
+                .select(query.getRoot().get("date"))
                 .where(predicates.toArray(Predicate[]::new))
-                .groupBy(root.get("date"))
-                .orderBy(criteriaBuilder.desc(root.get("date")));
-        TypedQuery<LocalDate> typedQuery = entityManager.createQuery(query);
+                .groupBy(query.getRoot().get("date"))
+                .orderBy(query.getCriteriaBuilder().desc(query.getRoot().get("date")));
+        TypedQuery<LocalDate> typedQuery = entityManager.createQuery(criteriaQuery);
         typedQuery.setFirstResult((int)pageable.getOffset());
         typedQuery.setMaxResults(pageable.getPageSize());
         return typedQuery.getResultList();
     }
 
     @Override
-    public List<ExchangeRateCurrency> findPageByFilterSettings(FiltrationSettingsDTO filtrationSettings, List<UUID> searchedCurrencies, List<LocalDate> dates) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<ExchangeRateCurrency> criteriaQuery = criteriaBuilder.createQuery(ExchangeRateCurrency.class);
-        Root<ExchangeRate> root = criteriaQuery.from(ExchangeRate.class);
-        Join<ExchangeRate, Currency> currencyJoin = root.join("currency", JoinType.LEFT);
+    public List<ExchangeRateCurrency> findPageByFilterSettings(FiltrationSettingsDTO filtrationSettings, List<LocalDate> dates) {
+        ExchangeRateQuery<ExchangeRateCurrency> query = new ExchangeRateQuery(ExchangeRateCurrency.class);
+        Join<ExchangeRate, Currency> currencyJoin = query.getRoot().join("currency", JoinType.LEFT);
+        Subquery<String> sub = createSubqueryForCurrenciesFromFiltrationSettings(filtrationSettings, query);
 
-        List<Predicate> predicates = new ArrayList<>();
-        predicates.addAll(getPredicationExchangeRatesTableInPeriod(filtrationSettings, criteriaBuilder, root));
-        predicates.addAll(getPredicationExchangeRateByPrices(filtrationSettings, criteriaBuilder, root));
-        predicates.add(criteriaBuilder.in(root.get("date")).value(dates));
-        if(searchedCurrencies.size()>0) {
-            predicates.add(criteriaBuilder.in(root.get("currency").get("id")).value(searchedCurrencies));
-        }
+        List<Predicate> predicates = createCommonPredicatesForFiltrationSettings(filtrationSettings, query, sub);
+        predicates.add(query.getCriteriaBuilder().in(query.getRoot().get("date")).value(dates));
 
-        CriteriaQuery<ExchangeRateCurrency> query = criteriaQuery.select(criteriaBuilder.construct(ExchangeRateCurrency.class,
-                        root.get("id"), root.get("date"), root.get("askPrice"),
-                        root.get("bidPrice"), currencyJoin.get("code"), currencyJoin.get("name"),
+        CriteriaQuery<ExchangeRateCurrency> criteriaQuery = query.getCriteriaQuery()
+                .select(query.getCriteriaBuilder().construct(ExchangeRateCurrency.class,
+                        query.getRoot().get("id"), query.getRoot().get("date"), query.getRoot().get("askPrice"),
+                        query.getRoot().get("bidPrice"), currencyJoin.get("code"), currencyJoin.get("name"),
                         currencyJoin.get("category")))
-                .where(predicates.toArray(Predicate[]::new)).orderBy(criteriaBuilder.desc(root.get("date")));
+                .where(predicates.toArray(Predicate[]::new))
+                .orderBy(query.getCriteriaBuilder().desc(query.getRoot().get("date")));
 
-        TypedQuery<ExchangeRateCurrency> typedQuery = entityManager.createQuery(query);
+        TypedQuery<ExchangeRateCurrency> typedQuery = entityManager.createQuery(criteriaQuery);
         return typedQuery.getResultList();
     }
 
@@ -112,5 +97,34 @@ public class ExchangeRateExtensionImpl implements ExchangeRateExtension {
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("bidPrice"),
                     filtrationSettings.getBidPriceMax()));
         return predicates;
+    }
+
+    private Subquery<String> createSubqueryForCurrenciesFromFiltrationSettings(FiltrationSettingsDTO filtrationSettings, ExchangeRateQuery query){
+        Subquery<String> sub = query.getCriteriaQuery().subquery(String.class);
+        Root<Currency> subRoot = sub.from(Currency.class);
+        sub.select(subRoot.get("code")).where(query.getCriteriaBuilder().in(subRoot.get("code")).value(filtrationSettings.getCurrency()));
+        return sub;
+    }
+
+    private List<Predicate> createCommonPredicatesForFiltrationSettings(FiltrationSettingsDTO filtrationSettings, ExchangeRateQuery query, Subquery<String> sub){
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.addAll(getPredicationExchangeRatesTableInPeriod(filtrationSettings, query.getCriteriaBuilder(), query.getRoot()));
+        predicates.addAll(getPredicationExchangeRateByPrices(filtrationSettings, query.getCriteriaBuilder(), query.getRoot()));
+        if(filtrationSettings.getCurrency().size()>0) {
+            predicates.add(query.getCriteriaBuilder().in(query.getRoot().get("currency").get("code")).value(sub));
+        }
+        return predicates;
+    }
+
+    @Getter
+    private class ExchangeRateQuery<T>{
+        private final CriteriaBuilder criteriaBuilder;
+        private final CriteriaQuery<T> criteriaQuery;
+        private final Root<ExchangeRate> root;
+        ExchangeRateQuery(Class<T> tClass){
+            criteriaBuilder = entityManager.getCriteriaBuilder();
+            criteriaQuery = criteriaBuilder.createQuery(tClass);
+            root = criteriaQuery.from(ExchangeRate.class);
+        }
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ExchangeRateExtension {
-    Long countDatesByFilterSettings(FiltrationSettingsDTO filtrationSettings, List<UUID> searchedCurrencies);
-    List<LocalDate> findDatesFromPageByFilterSettings(FiltrationSettingsDTO filtrationSettings, List<UUID> searchedCurrencies, Pageable pageable);
-    List<ExchangeRateCurrency> findPageByFilterSettings(FiltrationSettingsDTO filtrationSettings, List<UUID> searchedCurrencies, List<LocalDate> dates);
+    Long countDatesByFilterSettings(FiltrationSettingsDTO filtrationSettings);
+    List<LocalDate> findDatesFromPageByFilterSettings(FiltrationSettingsDTO filtrationSettings, Pageable pageable);
+    List<ExchangeRateCurrency> findPageByFilterSettings(FiltrationSettingsDTO filtrationSettings, List<LocalDate> dates);
 }
