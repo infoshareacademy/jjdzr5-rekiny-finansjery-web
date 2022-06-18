@@ -1,12 +1,9 @@
 package org.infoshare.rekinyfinansjeryweb.repository;
 
-
 import org.infoshare.rekinyfinansjeryweb.entity.Currency;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.UUID;
 
-@Repository
-public interface CurrencyRepository extends JpaRepository<Currency, String>, CurrencyRepositoryExtension {
+public interface CurrencyRepository extends JpaRepository<Currency, UUID> {
 }

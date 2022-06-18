@@ -1,39 +1,51 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
-import org.infoshare.rekinyfinansjeryweb.dto.DailyTableDTO;
-import org.infoshare.rekinyfinansjeryweb.dto.ExchangeRateDTO;
-import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
-import org.infoshare.rekinyfinansjeryweb.dto.PageDTO;
-import org.infoshare.rekinyfinansjeryweb.entity.Currency;
+import com.infoshareacademy.domain.ExchangeRate;
+import org.infoshare.rekinyfinansjeryweb.dto.*;
 import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRateCurrency;
-import org.infoshare.rekinyfinansjeryweb.repository.CurrencyRepository;
 import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
-public class FiltrationService {
+public class SearchAndFiltrationService {
 
     @Autowired
     ExchangeRateRepository exchangeRateRepository;
-
-    @Autowired
-    CurrencyRepository currencyRepository;
 
     @Transactional
     public PageDTO getFilteredCollection(FiltrationSettingsDTO settings, Pageable pageable) {
         Long totalResultsOfFilter = exchangeRateRepository.countDatesByFilterSettings(settings);
         List<LocalDate> dates = exchangeRateRepository.findDatesFromPageByFilterSettings(settings, pageable);
         List<ExchangeRateCurrency> exchangeRateCurrencies =
-                exchangeRateRepository.findPageByFilterSettings(settings, dates);
+                exchangeRateRepository.findPageBySearchSettings(settings, dates);
 
+        return convertResultsIntoPageDTO(totalResultsOfFilter, exchangeRateCurrencies, pageable);
+    }
+
+    public PageDTO searchInCollection(SearchSettingsDTO settings, Pageable pageable){
+        Long totalResultsOfFilter = exchangeRateRepository.countDatesBySearchSettings(settings);
+        List<LocalDate> dates = exchangeRateRepository.findDatesFromPageBySearchSettings(settings, pageable);
+        List<ExchangeRateCurrency> exchangeRateCurrencies =
+                exchangeRateRepository.findPageBySearchSettings(settings, dates);
+
+        return convertResultsIntoPageDTO(totalResultsOfFilter, exchangeRateCurrencies, pageable);
+    }
+
+    public ExchangeRate getCurrencyOfLastExchangeRates(String currency){
+        return new ExchangeRate("MOCK", "MOCK", 2, 2);
+    }
+
+    public List<ExchangeRate> getLastExchangeRates(){
+        return List.of(new ExchangeRate("MOCK", "MOCK", 2, 2));
+    }
+
+    private PageDTO convertResultsIntoPageDTO(Long totalResultsOfFilter, List<ExchangeRateCurrency> exchangeRateCurrencies, Pageable pageable){
         Map<LocalDate, DailyTableDTO> dailyTables = splitIntoDailyTables(exchangeRateCurrencies);
 
         dailyTables.values().forEach(table -> table.getRates().sort(Comparator.comparing(ExchangeRateDTO::getCode)));

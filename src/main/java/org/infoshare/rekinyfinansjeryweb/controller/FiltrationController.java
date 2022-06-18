@@ -4,7 +4,7 @@ import com.infoshareacademy.services.NBPApiManager;
 import org.infoshare.rekinyfinansjeryweb.controller.controllerComponents.ListToPagesSplitter;
 import org.infoshare.rekinyfinansjeryweb.dto.*;
 import org.infoshare.rekinyfinansjeryweb.data.MyUserPrincipal;
-import org.infoshare.rekinyfinansjeryweb.service.FiltrationService;
+import org.infoshare.rekinyfinansjeryweb.service.SearchAndFiltrationService;
 import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +26,7 @@ public class FiltrationController {
     public static final int ELEMENTS_PER_PAGE = 5;
 
     @Autowired
-    FiltrationService collectionFiltrationService;
+    SearchAndFiltrationService collectionFiltrationService;
 
     @Autowired
     UsedCurrenciesService usedCurrenciesService;

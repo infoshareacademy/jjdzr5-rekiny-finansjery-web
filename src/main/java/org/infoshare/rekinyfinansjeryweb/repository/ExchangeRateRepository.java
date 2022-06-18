@@ -18,4 +18,5 @@ public interface ExchangeRateRepository extends JpaRepository<ExchangeRate, Long
     @Query("select new org.infoshare.rekinyfinansjeryweb.entity.ExchangeRateCurrency(er.id, er.date, er.askPrice, er.bidPrice, c.code, c.name, c.category) " +
             "from ExchangeRate er join er.currency c where er.date = :selectedDate order by c.code")
     List<ExchangeRateCurrency> findExchangeRatesByDate(LocalDate selectedDate);
+
 }
