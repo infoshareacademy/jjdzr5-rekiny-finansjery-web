@@ -5,10 +5,10 @@ import org.infoshare.rekinyfinansjeryweb.data.MyUserPrincipal;
 import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.PayMethodFormDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.SaveOfFiltrationSettingsDTO;
+import org.infoshare.rekinyfinansjeryweb.service.SearchAndFiltrationService;
 import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
 import com.infoshareacademy.domain.ExchangeRate;
 import org.infoshare.rekinyfinansjeryweb.dto.AmountFormDTO;
-import org.infoshare.rekinyfinansjeryweb.service.SearchService;
 import org.infoshare.rekinyfinansjeryweb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -31,7 +31,7 @@ public class UserController {
     @Autowired
     UserService usersService;
     @Autowired
-    SearchService searchService;
+    SearchAndFiltrationService searchAndFiltrationService;
 
     @ModelAttribute
     public void addAttributes(Model model) {
@@ -109,10 +109,8 @@ public class UserController {
                 filtrationSettings.getAskPriceMin() == null &&
                 filtrationSettings.getBidPriceMax() == null &&
                 filtrationSettings.getBidPriceMin() == null &&
-                filtrationSettings.getTradingDateMax() == null &&
-                filtrationSettings.getTradingDateMin() == null &&
-                filtrationSettings.getEffectiveDateMax() == null &&
-                filtrationSettings.getEffectiveDateMin() == null &&
+                filtrationSettings.getDateMax() == null &&
+                filtrationSettings.getDateMin() == null &&
                 filtrationSettings.getCurrency().size() == 0) {
             return true;
         }
@@ -170,14 +168,14 @@ public class UserController {
 
     @GetMapping("/buycurrency")
     public String getLastTradingTable(Model model) {
-        model.addAttribute("exchangeRates", searchService.getLastExchangeRates());
+        model.addAttribute("exchangeRates", searchAndFiltrationService.getLastExchangeRates());
         model.addAttribute("newCurrency", new ExchangeRate());
         return "buycurrency";
     }
 
     @GetMapping("/buycurrency/{code}")
     public String getBuyCurrency(@PathVariable("code") String code, Model model) {
-        ExchangeRate lastCurrencyForTable = searchService.getCurrencyOfLastExchangeRates(code);
+        ExchangeRate lastCurrencyForTable = searchAndFiltrationService.getCurrencyOfLastExchangeRates(code);
         if (lastCurrencyForTable == null) {
             model.addAttribute("errorMessage","msg.error.collectors.currency");
             return "user";
@@ -193,7 +191,7 @@ public class UserController {
                               BindingResult result,
                               ModelMap model) {
         if (result.hasErrors()) {
-            model.addAttribute("rate", searchService.getCurrencyOfLastExchangeRates(code));
+            model.addAttribute("rate", searchAndFiltrationService.getCurrencyOfLastExchangeRates(code));
             return new ModelAndView("ask",model);
         }
         if (usersService.askCurrency(code, amount.getAmount())) {
@@ -207,7 +205,7 @@ public class UserController {
 
     @GetMapping("/sellcurrency/{code}")
     public String getSellCurrency(@PathVariable("code") String code, Model model) {
-        ExchangeRate lastCurrencyForTable = searchService.getCurrencyOfLastExchangeRates(code);
+        ExchangeRate lastCurrencyForTable = searchAndFiltrationService.getCurrencyOfLastExchangeRates(code);
         if (lastCurrencyForTable == null) {
             model.addAttribute("errorMessage","msg.error.collectors.currency");
             return "user";
@@ -223,7 +221,7 @@ public class UserController {
                               BindingResult result,
                               ModelMap model) {
         if (result.hasErrors()) {
-            model.addAttribute("rate", searchService.getCurrencyOfLastExchangeRates(code));
+            model.addAttribute("rate", searchAndFiltrationService.getCurrencyOfLastExchangeRates(code));
             return new ModelAndView("bid", model);
         }
 

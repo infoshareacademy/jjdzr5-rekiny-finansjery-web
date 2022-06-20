@@ -1,11 +1,7 @@
 <div th:fragment="search_bar">
     <div class="bg-secondary mt-1 p-3 border border-2 border-secondary rounded-3">
         <div class="input-group">
-            <input class="form-control form-control w-50" type="text" th:placeholder="#{search.placeholder}" id="search_phrase" name="searchPhrase"  th:value="${filtrationSettings.searchPhrase}"/>
-            <select class="form-select w-25" id="inputGroupSelect01"  name="searchType">
-                <option th:value="'table'" th:text="#{search.option.tables}" th:selected="${filtrationSettings.searchType eq 'table'}"></option>
-                <option th:value="'currency'" th:text="#{search.option.currencies}" th:selected="${filtrationSettings.searchType eq 'currency'}">currency</option>
-            </select>
+            <input class="form-control form-control w-75" type="text" th:placeholder="#{search.placeholder}" id="search_phrase" name="searchPhrase"  th:value="${filtrationSettings.searchPhrase}"/>
             <input class="form-control form-control-sm w-25" type="submit" th:value="#{search.button}"/>
         </div>
     </div>

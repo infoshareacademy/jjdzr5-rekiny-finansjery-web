@@ -5,9 +5,10 @@ import com.infoshareacademy.services.NBPApiManager;
 import org.infoshare.rekinyfinansjeryweb.controller.controllerComponents.ListToPagesSplitter;
 import org.infoshare.rekinyfinansjeryweb.dto.DailyTableFormDTO;
 import org.infoshare.rekinyfinansjeryweb.data.MyUserPrincipal;
+import org.infoshare.rekinyfinansjeryweb.dto.ExchangeRateFormDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.PageDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.SearchSettingsDTO;
-import org.infoshare.rekinyfinansjeryweb.service.SearchService;
+import org.infoshare.rekinyfinansjeryweb.service.SearchAndFiltrationService;
 import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +29,7 @@ public class SearchController {
     public final static int ELEMENTS_PER_PAGE = 5;
 
     @Autowired
-    SearchService searchService;
+    SearchAndFiltrationService searchAndFiltrationService;
     @Autowired
     UsedCurrenciesService usedCurrenciesService;
 
@@ -38,14 +39,13 @@ public class SearchController {
                                 Model model,
                                 @AuthenticationPrincipal MyUserPrincipal principal) {
 
-         PageDTO collection = searchService
-                .searchInCollection(settings);
+        PageDTO collection = searchAndFiltrationService.searchInCollection(settings, pageable);
 
         ListToPagesSplitter.splitIntoPages(collection, model, pageable);
         model.addAttribute("filtrationSettings", settings);
         model.addAttribute("possibleCurrencies", usedCurrenciesService.getShortNamesOfCurrencies(NBPApiManager.getInstance(), settings.getCurrency()));
         model.addAttribute("newDailyTable", new DailyTableFormDTO());
-        model.addAttribute("newCurrency", new ExchangeRate());
+        model.addAttribute("newCurrency", new ExchangeRateFormDTO());
 
         if(principal != null) {
             model.addAttribute("listOfPreferences", new ArrayList<>(principal.getUser().getSavedFiltrationSettings().keySet()));

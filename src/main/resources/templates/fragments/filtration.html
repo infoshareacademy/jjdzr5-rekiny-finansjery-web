@@ -40,10 +40,8 @@
                             <label for="preference_name" class="col-form-label w-50" th:text="#{filtration.filter.name}"></label>
                             <input type="text" class="form-control rounded-4" id="preference_name" name="preferenceName" placeholder="Enter name...">
                         </div>
-                        <input class="hidden_input_element" id="savingEffectiveDateMin" name="effectiveDateMin" type="date"/>
-                        <input class="hidden_input_element" id="savingEffectiveDateMax" name="effectiveDateMax" type="date"/>
-                        <input class="hidden_input_element" id="savingTradingDateMin" name="tradingDateMin" type="date"/>
-                        <input class="hidden_input_element" id="savingTradingDateMax" name="tradingDateMax" type="date"/>
+                        <input class="hidden_input_element" id="savingDateMin" name="dateMin" type="date"/>
+                        <input class="hidden_input_element" id="savingDateMax" name="dateMax" type="date"/>
                         <input class="hidden_input_element" id="savingBidPriceMin" name="bidPriceMin" type="number" step="any"/>
                         <input class="hidden_input_element" id="savingBidPriceMax" name="bidPriceMax" type="number" step="any"/>
                         <input class="hidden_input_element" id="savingAskPriceMin" name="askPriceMin" type="number" step="any"/>
@@ -60,14 +58,10 @@
     <input class="form-control mt-3 bg-primary text-light border-primary" type="submit" th:value="#{filtration.button.filter}"/>
     <button type="button" class="form-control mt-3" onclick="clearFormWithoutSearchBar(); this.blur();" th:text="#{filtration.button.clear}">Clear</button>
 
-    <label for="effectiveDateMin" th:text="#{filtration.option.min.effective.date}">Min effective date</label>
-    <input class="form-control" id="effectiveDateMin" name="effectiveDateMin" type="date" th:value="${filtrationSettings.effectiveDateMin}"/>
-    <label for="effectiveDateMax" th:text="#{filtration.option.max.effective.date}">Max effective date</label>
-    <input class="form-control" id="effectiveDateMax" name="effectiveDateMax" type="date" th:value="${filtrationSettings.effectiveDateMax}"/>
-    <label for="tradingDateMin" th:text="#{filtration.option.min.trading.date}">Min trading date</label>
-    <input class="form-control" id="tradingDateMin" name="tradingDateMin" type="date" th:value="${filtrationSettings.tradingDateMin}"/>
-    <label for="tradingDateMax" th:text="#{filtration.option.max.trading.date}">Max trading date</label>
-    <input class="form-control" id="tradingDateMax" name="tradingDateMax" type="date" th:value="${filtrationSettings.tradingDateMax}"/>
+    <label for="dateMin" th:text="#{filtration.option.min.date}">Min effective date</label>
+    <input class="form-control" id="dateMin" name="dateMin" type="date" th:value="${filtrationSettings.dateMin}"/>
+    <label for="dateMax" th:text="#{filtration.option.max.date}">Max effective date</label>
+    <input class="form-control" id="dateMax" name="dateMax" type="date" th:value="${filtrationSettings.dateMax}"/>
     <label for="bidPriceMin" th:text="#{filtration.option.min.bid.price}">Min bid price</label>
     <input class="form-control" id="bidPriceMin" name="bidPriceMin" type="number" step="any" th:value="${filtrationSettings.bidPriceMin}"/>
     <label for="bidPriceMax" th:text="#{filtration.option.max.bid.price}">Max bid price</label>

@@ -111,7 +111,7 @@ public class UserRepository {
         Map<String, FiltrationSettingsDTO> map = new HashMap<>();
         FiltrationSettingsDTO dolar = new FiltrationSettingsDTO();
         dolar.setCurrency(Arrays.asList("USD"));
-        dolar.setEffectiveDateMin(LocalDate.of(2022,05,01));
+        dolar.setDateMin(LocalDate.of(2022,05,01));
         map.put("Dolary", dolar);
         map.put("Dolarki", dolar);
         user2.setSavedFiltrationSettings(map);

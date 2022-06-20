@@ -12,4 +12,5 @@ public class ExchangeRateDTO {
     private Double bidPrice;
     String code;
     String name;
+    String category;
 }

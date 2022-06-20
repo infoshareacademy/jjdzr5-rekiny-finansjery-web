@@ -8,5 +8,4 @@ public class SearchSettingsDTO extends FiltrationSettingsDTO {
         super();
     }
     private String searchPhrase;
-    private String searchType;
 }
