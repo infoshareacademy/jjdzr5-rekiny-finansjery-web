@@ -8,7 +8,7 @@
                 <span th:text="${numberOfElements}"></span>
             </div>
         </div>
-        <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:insert="fragments/admin :: add_table_buttons"></div>
+        <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:insert="fragments/admin :: add_currency_main_button"></div>
     </div>
     <div th:if="${numberOfElements>0}" th:insert="fragments/general :: pagination"></div>
     <div th:if="${numberOfElements>0}" th:insert="fragments/collectionView :: collection_view"></div>

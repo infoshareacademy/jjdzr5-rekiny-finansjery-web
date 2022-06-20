@@ -1,9 +1,9 @@
 package org.infoshare.rekinyfinansjeryweb.controller;
 
 import org.infoshare.rekinyfinansjeryweb.dto.ExchangeRateFormDTO;
-import org.infoshare.rekinyfinansjeryweb.dto.DailyTableFormDTO;
 import org.infoshare.rekinyfinansjeryweb.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -25,30 +25,14 @@ public class AdminController {
     AdminService adminService;
 
     @PostMapping("/delete-table/{date}")
-    public String deleteTable(@PathVariable("date") LocalDate date, RedirectAttributes attributes) {
+    public String deleteTable(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, RedirectAttributes attributes) {
         adminService.deleteTable(date);
         attributes.addFlashAttribute("successMessage", "delete.table.success");
         return "redirect:/tables";
     }
 
-//    @PostMapping("/edit-table/{date}")
-//    public String editTable(@PathVariable("date") LocalDate date, @Valid @ModelAttribute LocalDate newDate, BindingResult result, RedirectAttributes attributes) {
-//        if (result.hasErrors() || (adminService.tableExists(newDate) && !newDate.equals(date))) {
-//            if (adminService.tableExists(newDate)) {
-//                result.reject("Table not edited", "validation.table.exists");
-//            }
-//            attributes.addFlashAttribute("errorMessage", "edit.table.error");
-//            attributes.addFlashAttribute("errorMessageForEditTable", result.getAllErrors());
-//            attributes.addFlashAttribute("invalidDailyTable", newDate);
-//            return "redirect:/table/" + date;
-//        }
-//        adminService.editTable(date, newDate);
-//        attributes.addFlashAttribute("successMessage", "edit.table.success");
-//        return "redirect:/table/" + newDate;
-//    }
-
     @PostMapping("/add-currency/{date}")
-    public String postNewTable(@PathVariable("date") LocalDate date, @Valid @ModelAttribute ExchangeRateFormDTO newExchangeRate, BindingResult result, RedirectAttributes attributes) {
+    public String postNewCurrency(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @Valid @ModelAttribute ExchangeRateFormDTO newExchangeRate, BindingResult result, RedirectAttributes attributes) {
         if (result.hasErrors() || adminService.exchangeRateExists(date, newExchangeRate.getCode())) {
             if (adminService.exchangeRateExists(date, newExchangeRate.getCode())) {
                 result.reject("Currency not added", "validation.currency.exists");
@@ -63,16 +47,31 @@ public class AdminController {
         return "redirect:/table/" + date;
     }
 
+    @PostMapping("/add-currency")
+    public String postNewCurrencyWithDate(@Valid @ModelAttribute ExchangeRateFormDTO newExchangeRate, BindingResult result, RedirectAttributes attributes) {
+        if (result.hasErrors() || adminService.exchangeRateExists(newExchangeRate.getDate(), newExchangeRate.getCode())) {
+            if (adminService.exchangeRateExists(newExchangeRate.getDate(), newExchangeRate.getCode())) {
+                result.reject("Currency not added", "validation.currency.exists");
+            }
+            attributes.addFlashAttribute("errorMessage", "add.currency.error");
+            attributes.addFlashAttribute("errorMessageForAddCurrency", result.getAllErrors());
+            attributes.addFlashAttribute("invalidExchangeRate", newExchangeRate);
+        } else {
+            adminService.addExchangeRate(newExchangeRate);
+            attributes.addFlashAttribute("successMessage", "add.currency.success");
+        }
+        return "redirect:/table/" + newExchangeRate.getDate();
+    }
+
     @PostMapping("/delete-currency/{date}/{code}")
-    public String deleteCurrency(@PathVariable("date") LocalDate date, @PathVariable("code") String code, RedirectAttributes attributes) {
+    public String deleteCurrency(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @PathVariable("code") String code, RedirectAttributes attributes) {
         adminService.deleteExchangeRate(date, code);
         attributes.addFlashAttribute("successMessage", "delete.currency.success");
-        return "redirect:/table/" + date;
+        return adminService.tableExists(date) ? "redirect:/table/" + date : "redirect:/tables";
     }
 
     @PostMapping("/edit-currency/{date}/{code}")
-    public String editCurrency(@PathVariable("date") LocalDate date, @PathVariable("code") String code, @Valid @ModelAttribute ExchangeRateFormDTO newExchangeRate, BindingResult result, RedirectAttributes attributes) {
-
+    public String editCurrency(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @PathVariable("code") String code, @Valid @ModelAttribute ExchangeRateFormDTO newExchangeRate, BindingResult result, RedirectAttributes attributes) {
         if (result.hasErrors() || (adminService.exchangeRateExists(date, newExchangeRate.getCode()) && !newExchangeRate.getCode().equals(code))) {
             if (adminService.exchangeRateExists(date, newExchangeRate.getCode())) {
                 result.reject("Currency not edited", "validation.currency.exists");

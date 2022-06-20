@@ -23,6 +23,9 @@ public class AdminService {
     public void deleteTable(LocalDate date) {
         List<ExchangeRate> exchangeRates = exchangeRateRepository.findExchangeRatesByDate(date);
         exchangeRateRepository.deleteAll(exchangeRates);
+        for (ExchangeRate exchangeRate : exchangeRates) {
+            deleteCurrencyIfEmpty(exchangeRate.getCurrency().getCode());
+        }
     }
 
     public void editTable(LocalDate date, LocalDate newDate) {
@@ -32,12 +35,16 @@ public class AdminService {
     }
 
     public void addExchangeRate(ExchangeRateFormDTO exchangeRateForm) {
-        Currency currency = saveCurrency(new Currency(), exchangeRateForm);
+        Currency currency = currencyRepository.findByCode(exchangeRateForm.getCode());
+        if (currency == null) {
+            currency = saveCurrency(new Currency(), exchangeRateForm);
+        }
         saveExchangeRate(new ExchangeRate(), currency, exchangeRateForm);
     }
 
     public void deleteExchangeRate(LocalDate date, String code) {
         exchangeRateRepository.delete(getExchangeRate(date, code));
+        deleteCurrencyIfEmpty(code);
     }
 
     public void editExchangeRate(LocalDate date, String code, ExchangeRateFormDTO exchangeRateForm) {
@@ -73,5 +80,14 @@ public class AdminService {
     private ExchangeRate getExchangeRate(LocalDate date, String code) {
         Currency currency = currencyRepository.findByCode(code);
         return exchangeRateRepository.findExchangeRateByCurrencyAndDate(currency, date);
+    }
+
+    private boolean deleteCurrencyIfEmpty(String code) {
+        Currency currency = currencyRepository.findByCode(code);
+        if (currency.getCurrencies().isEmpty()) {
+            currencyRepository.delete(currency);
+            return true;
+        }
+        return false;
     }
 }
