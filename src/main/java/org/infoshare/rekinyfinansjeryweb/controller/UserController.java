@@ -2,12 +2,12 @@ package org.infoshare.rekinyfinansjeryweb.controller;
 
 import com.infoshareacademy.services.NBPApiManager;
 import org.infoshare.rekinyfinansjeryweb.data.MyUserPrincipal;
-import org.infoshare.rekinyfinansjeryweb.formData.FiltrationSettings;
-import org.infoshare.rekinyfinansjeryweb.formData.PayMethodForm;
-import org.infoshare.rekinyfinansjeryweb.formData.SaveOfFiltrationSettings;
+import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
+import org.infoshare.rekinyfinansjeryweb.dto.PayMethodFormDTO;
+import org.infoshare.rekinyfinansjeryweb.dto.SaveOfFiltrationSettingsDTO;
 import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
 import com.infoshareacademy.domain.ExchangeRate;
-import org.infoshare.rekinyfinansjeryweb.formData.AmountForm;
+import org.infoshare.rekinyfinansjeryweb.dto.AmountFormDTO;
 import org.infoshare.rekinyfinansjeryweb.service.SearchService;
 import org.infoshare.rekinyfinansjeryweb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +66,7 @@ public class UserController {
     @PostMapping("/filtration_preferences/add")
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public String addUserFiltrationPreferences(@AuthenticationPrincipal MyUserPrincipal principal,
-                                               @ModelAttribute @Valid SaveOfFiltrationSettings filtrationSettings,
+                                               @ModelAttribute @Valid SaveOfFiltrationSettingsDTO filtrationSettings,
                                                BindingResult result, Model model, @Autowired UsedCurrenciesService usedCurrenciesService) {
         if(result.hasErrors()){
             model.addAttribute("possibleCurrencies",
@@ -104,7 +104,7 @@ public class UserController {
 
 
 
-    private boolean isFiltrationSettingEmpty(FiltrationSettings filtrationSettings) {
+    private boolean isFiltrationSettingEmpty(FiltrationSettingsDTO filtrationSettings) {
         if (filtrationSettings.getAskPriceMax() == null &&
                 filtrationSettings.getAskPriceMin() == null &&
                 filtrationSettings.getBidPriceMax() == null &&
@@ -121,12 +121,12 @@ public class UserController {
 
     @GetMapping("/payment")
     public String getPaymentForm(Model model) {
-        model.addAttribute("amount", new PayMethodForm());
+        model.addAttribute("amount", new PayMethodFormDTO());
         return "pay";
     }
 
     @PostMapping("/payment")
-    public ModelAndView getPayment(@Valid @ModelAttribute("amount") PayMethodForm amount,
+    public ModelAndView getPayment(@Valid @ModelAttribute("amount") PayMethodFormDTO amount,
                                    BindingResult result,
                                    ModelMap model) {
         if (result.hasErrors()) {
@@ -144,14 +144,14 @@ public class UserController {
 
     @GetMapping("/withdrawal")
     public String getWithdrawalForm(Model model) {
-        PayMethodForm amount = new PayMethodForm();
+        PayMethodFormDTO amount = new PayMethodFormDTO();
         amount.setPayMethod("00 0000 0000 0000 0000 0000 0000");
         model.addAttribute("amount", amount);
         return "withdrawal";
     }
 
     @PostMapping("/withdrawal")
-    public ModelAndView getWithdrawal(@Valid @ModelAttribute("amount") PayMethodForm amount,
+    public ModelAndView getWithdrawal(@Valid @ModelAttribute("amount") PayMethodFormDTO amount,
                                 BindingResult result,
                                 ModelMap model) {
 
@@ -182,14 +182,14 @@ public class UserController {
             model.addAttribute("errorMessage","msg.error.collectors.currency");
             return "user";
         }
-        model.addAttribute("amount", new AmountForm());
+        model.addAttribute("amount", new AmountFormDTO());
         model.addAttribute("rate",lastCurrencyForTable);
         return "ask";
     }
 
     @PostMapping("/buycurrency/{code}")
     public ModelAndView askCurrency(@PathVariable("code") String code,
-                              @Valid @ModelAttribute("amount") AmountForm amount,
+                              @Valid @ModelAttribute("amount") AmountFormDTO amount,
                               BindingResult result,
                               ModelMap model) {
         if (result.hasErrors()) {
@@ -212,14 +212,14 @@ public class UserController {
             model.addAttribute("errorMessage","msg.error.collectors.currency");
             return "user";
         }
-        model.addAttribute("amount", new AmountForm());
+        model.addAttribute("amount", new AmountFormDTO());
         model.addAttribute("rate",lastCurrencyForTable);
         return "bid";
     }
 
     @PostMapping("/sellcurrency/{code}")
     public ModelAndView bidCurrency(@PathVariable("code") String code,
-                              @Valid @ModelAttribute("amount") AmountForm amount,
+                              @Valid @ModelAttribute("amount") AmountFormDTO amount,
                               BindingResult result,
                               ModelMap model) {
         if (result.hasErrors()) {

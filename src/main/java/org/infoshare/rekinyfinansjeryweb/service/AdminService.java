@@ -1,13 +1,13 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
-import org.infoshare.rekinyfinansjeryweb.formData.ExchangeRateForm;
-import org.infoshare.rekinyfinansjeryweb.formData.DailyTableForm;
+import com.infoshareacademy.domain.DailyExchangeRates;
+import com.infoshareacademy.domain.ExchangeRate;
+import org.infoshare.rekinyfinansjeryweb.dto.ExchangeRateFormDTO;
+import org.infoshare.rekinyfinansjeryweb.dto.DailyTableFormDTO;
 import org.infoshare.rekinyfinansjeryweb.repository.CurrencyRepository;
 import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRateRepository;
-import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRatesTableRepository;
-import org.infoshare.rekinyfinansjeryweb.repository.entity.Currency;
-import org.infoshare.rekinyfinansjeryweb.repository.entity.ExchangeRatesTable;
-import org.infoshare.rekinyfinansjeryweb.repository.entity.ExchangeRate;
+import org.infoshare.rekinyfinansjeryweb.entity.Currency;
+import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

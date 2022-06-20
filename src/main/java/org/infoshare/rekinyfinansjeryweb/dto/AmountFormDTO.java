@@ -1,13 +1,13 @@
-package org.infoshare.rekinyfinansjeryweb.formData;
+package org.infoshare.rekinyfinansjeryweb.dto;
 
 import javax.validation.constraints.Min;
 
-public class AmountForm {
+public class AmountFormDTO {
 
     @Min(value = 1, message ="{validation.amount.min}")
     private double amount;
 
-    public AmountForm() {
+    public AmountFormDTO() {
     }
 
     public double getAmount() {
@@ -23,7 +23,7 @@ public class AmountForm {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AmountForm that = (AmountForm) o;
+        AmountFormDTO that = (AmountFormDTO) o;
 
         return Double.compare(that.amount, amount) == 0;
     }

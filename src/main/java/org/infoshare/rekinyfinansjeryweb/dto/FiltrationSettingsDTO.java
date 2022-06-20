@@ -1,4 +1,4 @@
-package org.infoshare.rekinyfinansjeryweb.formData;
+package org.infoshare.rekinyfinansjeryweb.dto;
 
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class FiltrationSettings{
-    public FiltrationSettings(){
+public class FiltrationSettingsDTO {
+    public FiltrationSettingsDTO (){
         currency = new ArrayList<>();
     }
     @DateTimeFormat(pattern = "yyyy-MM-dd")

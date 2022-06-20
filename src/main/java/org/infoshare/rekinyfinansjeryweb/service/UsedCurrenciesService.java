@@ -4,7 +4,9 @@ import com.infoshareacademy.services.NBPApiManager;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.infoshare.rekinyfinansjeryweb.controller.FiltrationController;
+import org.infoshare.rekinyfinansjeryweb.entity.Currency;
+import org.infoshare.rekinyfinansjeryweb.repository.CurrencyRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -12,20 +14,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class UsedCurrenciesService {
-    public List<PossibleCurrency> getShortNamesOfCurrencies(NBPApiManager nbpApiManager, List<String> selectedCurrencies){
-        Set<PossibleCurrency> currencySet = new HashSet<>();
-        nbpApiManager
-            .getCollectionsOfExchangeRates()
-            .forEach(dailyExchangeRates -> {
-                currencySet.addAll(
-                    dailyExchangeRates
-                        .getRates()
-                        .stream()
-                        .map(rate -> new PossibleCurrency(rate.getCode(), selectedCurrencies.contains(rate.getCode())))
-                        .collect(Collectors.toSet()));
-            });
 
-        return currencySet.stream().toList();
+    @Autowired
+    private CurrencyRepository currencyRepository;
+    public List<PossibleCurrency> getShortNamesOfCurrencies(NBPApiManager nbpApiManager, List<String> selectedCurrencies){
+        List<Currency> currencies = currencyRepository.findAll();
+        return currencies.stream().map(rate -> new PossibleCurrency(rate.getCode(), selectedCurrencies.contains(rate.getCode())))
+                .collect(Collectors.toList());
     }
 
     @Data
