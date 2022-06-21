@@ -29,7 +29,7 @@ public class UserService implements UserDetailsService {
     @Autowired
     private CurrencyRepository currencyRepository;
     @Autowired
-    SearchService searchService;
+    SearchAndFiltrationService searchAndFiltrationService;
     @Autowired
     private PasswordEncoder encoder;
     @Autowired
@@ -77,7 +77,7 @@ public class UserService implements UserDetailsService {
     }
 
     private boolean subtractCurrency(User user, String currency, double amount) {
-        ExchangeRate exchangeRate = searchService.getCurrencyOfLastExchangeRates(currency);
+        ExchangeRate exchangeRate = searchAndFiltrationService.getCurrencyOfLastExchangeRates(currency);
            return addToBillingCurrency(user, exchangeRate, amount) &&
                    addCurrencyHistory(user, currency, amount, exchangeRate.getBidPrice(), OperationEnum.BID);
     }
@@ -94,7 +94,7 @@ public class UserService implements UserDetailsService {
     }
     
     private boolean addCurrency(User user, String currency, double amount) {
-        ExchangeRate exchangeRate = searchService.getCurrencyOfLastExchangeRates(currency);
+        ExchangeRate exchangeRate = searchAndFiltrationService.getCurrencyOfLastExchangeRates(currency);
         return subtractFromBillingCurrency(user, exchangeRate, amount) &&
             addCurrencyHistory(user, currency, amount, exchangeRate.getAskPrice(), OperationEnum.ASK);
     }
@@ -107,7 +107,7 @@ public class UserService implements UserDetailsService {
     }
 
     private boolean addCurrencyHistory(User user, String currency, double amount, double exchangeRate, OperationEnum operationEnum) {
-        Currency code = currencyRepository.getById(currency);
+        Currency code = currencyRepository.findByCode(currency);
         UserCurrency userCurrency = getUserCurrency(user, code);
         if (operationEnum == OperationEnum.ASK) {
             userCurrency.setAmount(userCurrency.getAmount() + amount);
@@ -167,11 +167,11 @@ public class UserService implements UserDetailsService {
     }
 
     public List<CurrencyOperationHistory> getHistoryOperation(String code) {
-        Optional<Currency> currency = currencyRepository.findById(code);
+        Currency currency = currencyRepository.findByCode(code);
         User user = getUser();
         return sortHistory(
                 convertFromOperationHistory(
-                        getHistoryList(user.getMyCurrencies(), currency.orElse(new Currency())),currency.orElse(new Currency())));
+                        getHistoryList(user.getMyCurrencies(), currency),currency));
     }
 
     private List<OperationHistory> getHistoryList(Set<UserCurrency> userCurrencySet, Currency currency) {
