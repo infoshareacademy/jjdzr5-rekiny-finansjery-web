@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/stats")
 public class CurrencyStatisticsController {
@@ -16,7 +18,8 @@ public class CurrencyStatisticsController {
 
     @RequestMapping()
     public String showStats(Model model){
-        model.addAttribute("result", currencyStatisticsClientService.getResults());
+        currencyStatisticsClientService.increaseCount(List.of("USD"));
+        model.addAttribute("results", currencyStatisticsClientService.getResults());
         return "stats";
     }
 

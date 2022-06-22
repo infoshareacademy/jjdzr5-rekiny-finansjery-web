@@ -5,6 +5,11 @@
     <title>Title</title>
 </head>
 <body>
-<p th:text="${result}"></p>
+<div th:each="result:${results}">
+    <p th:text="${result.code}"></p>
+    <p th:text="${result.date}"></p>
+    <p th:text="${result.counter}"></p>
+</div>
+
 </body>
 </html>
