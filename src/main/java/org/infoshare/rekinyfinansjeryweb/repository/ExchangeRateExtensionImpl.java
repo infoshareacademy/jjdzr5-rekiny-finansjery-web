@@ -127,7 +127,9 @@ public class ExchangeRateExtensionImpl implements ExchangeRateExtension {
         List<Predicate> predicates = new ArrayList<>();
         predicates.addAll(getPredicationExchangeRatesTableInPeriod(filtrationSettings, query.getCriteriaBuilder(), query.getRoot()));
         predicates.addAll(getPredicationExchangeRateByPrices(filtrationSettings, query.getCriteriaBuilder(), query.getRoot()));
-        predicates.add(query.getCriteriaBuilder().in(query.getRoot().get("currency").get("code")).value(sub));
+        if(!filtrationSettings.getCurrency().isEmpty()) {
+            predicates.add(query.getCriteriaBuilder().in(query.getRoot().get("currency").get("code")).value(sub));
+        }
         return predicates;
     }
 
