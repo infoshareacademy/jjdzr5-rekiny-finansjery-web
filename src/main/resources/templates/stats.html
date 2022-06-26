@@ -10,6 +10,48 @@
     <p th:text="${result.date}"></p>
     <p th:text="${result.counter}"></p>
 </div>
+<!--
+
+<div class="col-sm-4">
+    <form action="/add/" method="post" th:object="${formEntry}">
+        <div>
+            <label for="description">Description</label>
+            <textarea id="description" name="description" class="form-control"></textarea>
+            <p th:if="${#fields.hasErrors('description')}">The text needs to be between 2-120 characters.</p>
+        </div>
+
+        <div>
+            <select name="priority" id="priority" class="form-select" aria-label="Default select example">
+                <option selected>Wybierz walutę</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+                <option value="4">Four</option>
+                <option value="5">Five</option>
+            </select>
+            <p th:if="${#fields.hasErrors('priority')}"> Select priority from 1-5.</p>
+        </div>
+
+        <div>
+            <select name="category" id="category" class="form-select" aria-label="Default select example">
+                <option selected>Choose your category</option>
+                <option value="1">Work</option>
+                <option value="2">Personal</option>
+                <option value="3">Other</option>
+            </select>
+            <p th:if="${#fields.hasErrors('category')}">The category field cannot be empty.</p>
+        </div>
+
+        <div>
+            <label for="date">Wybierz datę</label>
+            <input type="date" id="date" name="date" class="form-control" th:min="${#dates.format(#dates.createNow(),'yyyy-MM-dd')}">
+            <p th:if="${#fields.hasErrors('date')}">Please select a date in the future.</p>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+-->
 
 </body>
 </html>

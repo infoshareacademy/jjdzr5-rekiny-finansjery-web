@@ -19,52 +19,57 @@ public class CurrencyStatisticsClientService {
     @Autowired
     RestTemplate restTemplate;
 
-    public List <CurrencyStatisticsDTO> getAllResults(){
+    public List<CurrencyStatisticsDTO> getAllResults() {
+
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        HttpEntity <CurrencyStatisticsDTO[]> entity = new HttpEntity<CurrencyStatisticsDTO[]>(headers);
+        HttpEntity<CurrencyStatisticsDTO[]> entity = new HttpEntity<CurrencyStatisticsDTO[]>(headers);
 
         return Arrays.stream(restTemplate.exchange("http://localhost:8081/api/all", HttpMethod.GET, entity, CurrencyStatisticsDTO[].class).getBody()).toList();
     }
 
-    public List <CurrencyStatisticsDTO> getRecentResults(){
+    public List<CurrencyStatisticsDTO> getRecentResults() {
+
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        HttpEntity <CurrencyStatisticsDTO[]> entity = new HttpEntity<CurrencyStatisticsDTO[]>(headers);
+        HttpEntity<CurrencyStatisticsDTO[]> entity = new HttpEntity<CurrencyStatisticsDTO[]>(headers);
 
         return Arrays.stream(restTemplate.exchange("http://localhost:8081/api", HttpMethod.GET, entity, CurrencyStatisticsDTO[].class).getBody()).toList();
     }
 
-    public List <CurrencyStatisticsDTO> getOneResultByCode(String currency){
+    public List<CurrencyStatisticsDTO> getOneResultByCode(String currency) {
+
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        HttpEntity <CurrencyStatisticsDTO[]> entity = new HttpEntity<CurrencyStatisticsDTO[]>(headers);
+        HttpEntity<CurrencyStatisticsDTO[]> entity = new HttpEntity<CurrencyStatisticsDTO[]>(headers);
 
         return Arrays.stream(restTemplate.exchange("http://localhost:8081/api/currency/" + currency, HttpMethod.GET, entity, CurrencyStatisticsDTO[].class).getBody()).toList();
     }
 
-    public List <CurrencyStatisticsDTO> getOneResultByMonthAndYear(int month, int year){
+    public List<CurrencyStatisticsDTO> getOneResultByMonthAndYear(int month, int year) {
+
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        HttpEntity <CurrencyStatisticsDTO[]> entity = new HttpEntity<CurrencyStatisticsDTO[]>(headers);
+        HttpEntity<CurrencyStatisticsDTO[]> entity = new HttpEntity<CurrencyStatisticsDTO[]>(headers);
 
         return Arrays.stream(restTemplate.exchange("http://localhost:8081/api/history/" + month + "/" + year, HttpMethod.GET, entity, CurrencyStatisticsDTO[].class).getBody()).toList();
     }
 
-    public List <CurrencyStatisticsDTO> getOneResultByCodeAndMonthAndYear(int month, int year, String currency){
+    public List<CurrencyStatisticsDTO> getOneResultByCodeAndMonthAndYear(int month, int year, String currency) {
+
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        HttpEntity <CurrencyStatisticsDTO[]> entity = new HttpEntity<CurrencyStatisticsDTO[]>(headers);
+        HttpEntity<CurrencyStatisticsDTO[]> entity = new HttpEntity<CurrencyStatisticsDTO[]>(headers);
 
         return Arrays.stream(restTemplate.exchange("http://localhost:8081/api/history/" + month + "/" + year + "/" + currency, HttpMethod.GET, entity, CurrencyStatisticsDTO[].class).getBody()).toList();
     }
 
-    public void increaseCount(List <String> incrementedCurrencies){
+    public void increaseCount(List<String> incrementedCurrencies) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         SearchedCurrenciesListDTO searchedCurrenciesListDTO = new SearchedCurrenciesListDTO(incrementedCurrencies);
-        HttpEntity<SearchedCurrenciesListDTO> entity = new HttpEntity<SearchedCurrenciesListDTO>(searchedCurrenciesListDTO,headers);
+        HttpEntity<SearchedCurrenciesListDTO> entity = new HttpEntity<SearchedCurrenciesListDTO>(searchedCurrenciesListDTO, headers);
 
         restTemplate.exchange(
                 "http://localhost:8081/api/increment", HttpMethod.POST, entity, SearchedCurrenciesListDTO.class).getBody();
