@@ -1,9 +1,5 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
-import com.infoshareacademy.domain.DailyExchangeRates;
-import com.infoshareacademy.services.DailyExchangeRatesFiltrationService;
-import com.infoshareacademy.services.ExchangeRatesFiltrationService;
-import com.infoshareacademy.services.NBPApiManager;
 import lombok.Data;
 import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRate;
 import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRateRepository;
@@ -14,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -35,22 +30,25 @@ public class ChartService {
         LocalDate firstDayOfMonth = LocalDate.of(year, month, 1);
         LocalDate lastDayOfMonth = LocalDate.of(year, month, LocalDate.of(year, month, 1).lengthOfMonth());
 
-        return createChartDataSet(exchangeRateRepository.findExchangeRateByCodeAndDateBetweenOrderByDateDesc(code, firstDayOfMonth, lastDayOfMonth));
+        return createChartDataSet(exchangeRateRepository.findExchangeRatesByCurrency_CodeAndDateBetweenOrderByDateDesc(code, firstDayOfMonth, lastDayOfMonth));
     }
 
     public List<ChartData> getChartData(String code) {
-        return createChartDataSet(exchangeRateRepository.findExchangeRatesByCodeOrderByDateDesc(code, LIMIT));
+        return createChartDataSet(exchangeRateRepository.findExchangeRatesByCurrency_CodeOrderByDateDesc(code, PageRequest.of(0, LIMIT)));
     }
 
     public List<ChartsData> getChartsData(List<String> codes) {
 
-        Map<String, ChartsData> chartsData = new HashMap<>();
-        exchangeRateRepository.findMultipleExchangeRatesByCodes(codes, PageRequest.of(0, LIMIT)).forEach(exchangeRate -> {
-            String key = exchangeRate.getCurrency().getCode();
-            chartsData.putIfAbsent(key, new ChartsData(key));
-            chartsData.get(key).addChartData(new ChartData(exchangeRate.getDate(), exchangeRate.getAskPrice(), exchangeRate.getBidPrice()));
-        });
-        return chartsData.values().stream().toList();
+        List<ChartsData> chartsData = new ArrayList<>();
+
+        for (String code : codes) {
+            chartsData.add(new ChartsData(getChartData(code), code));
+        }
+        return chartsData;
+    }
+
+    public List<ChartData> sendExchangeRatesForGivenPage(String code, Pageable pageable){
+        return createChartDataSet(exchangeRateRepository.findExchangeRatesByCurrency_CodeOrderByDateDesc(code, pageable));
     }
 
     @Data
@@ -59,15 +57,10 @@ public class ChartService {
         List<ChartData> chartsData;
         String code;
 
-        public ChartsData(String code) {
+        public ChartsData(List<ChartData> chartsData, String code) {
+            this.chartsData = chartsData;
             this.code = code;
-            chartsData = new ArrayList<>();
         }
-
-        public void addChartData(ChartData chartData) {
-            chartsData.add(chartData);
-        }
-
     }
 
     public record ChartData(
