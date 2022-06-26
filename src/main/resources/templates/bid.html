@@ -25,10 +25,10 @@
                 <div th:insert="fragments/user :: menu"></div>
             </div>
             <div class="col-12 col-md-3 offset-md-3" style="margin-top: 6%;">
-                <form id="form" th:action="@{/user/sellcurrency/{code}(code=${rate.currency.code})}"  th:object="${amount}" method="post">
+                <form id="form" th:action="@{/user/sellcurrency/{code}(code=${rate.code})}"  th:object="${amount}" method="post">
                     <table class="table align-middle">
                         <tr>
-                            <td for="amount" th:text="#{user.sell.currency} +' ' + ${rate.currency.code}">
+                            <td for="amount" th:text="#{user.sell.currency} +' ' + ${rate.code}">
                             </td>
                             <td>
                                 <input class="form-control text-end" id="amount" type="number" step="any"  min="0" name="amount" th:value="${amount.amount}"/>

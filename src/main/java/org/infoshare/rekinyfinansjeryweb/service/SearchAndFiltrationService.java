@@ -1,7 +1,6 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
 import org.infoshare.rekinyfinansjeryweb.dto.*;
-import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRate;
 import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRateCurrency;
 import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +36,24 @@ public class SearchAndFiltrationService {
         return convertResultsIntoPageDTO(totalResultsOfFilter, exchangeRateCurrencies, pageable);
     }
 
-    public ExchangeRate getCurrencyOfLastExchangeRates(String currency){
-        return new ExchangeRate();
+    public ExchangeRateDTO getCurrencyOfLastExchangeRates(String currency){
+        return getLastExchangeRates().getRates()
+                .stream()
+                .filter(e -> e.getCode().equals(currency))
+                .findFirst().orElse(new ExchangeRateDTO());
     }
 
-    public List<ExchangeRate> getLastExchangeRates(){
-        return List.of(new ExchangeRate());
+    public DailyTableDTO getLastExchangeRates(){
+        LocalDate localDate = exchangeRateRepository.findFirstByDateIsBeforeOrderByDateDesc(LocalDate.now()).getDate();
+        List<ExchangeRateCurrency> exchangeRatesByDate = exchangeRateRepository.findExchangeRatesByDate(localDate);
+        DailyTableDTO dailyTableDTO = new DailyTableDTO();
+        dailyTableDTO.setDate(localDate);
+        dailyTableDTO.setRates(
+        exchangeRatesByDate
+                .stream()
+                .map( e -> new ExchangeRateDTO(e.getAskPrice(), e.getBidPrice(), e.getCode(), e.getName(), e.getCategory()))
+                .toList());
+        return dailyTableDTO;
     }
 
     private PageDTO convertResultsIntoPageDTO(Long totalResultsOfFilter, List<ExchangeRateCurrency> exchangeRateCurrencies, Pageable pageable){

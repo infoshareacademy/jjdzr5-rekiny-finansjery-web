@@ -52,13 +52,13 @@ public class User {
     @Column(name = COLUMN_PREFIX + "billing_currency")
     private double billingCurrency;
 
-    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<OperationHistory> historyList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<UserCurrency> myCurrencies = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "filtration_sett_mapping",
             joinColumns = {@JoinColumn(name = COLUMN_PREFIX + "id", referencedColumnName = COLUMN_PREFIX + "id")})//,
     @MapKeyColumn(name = "name")

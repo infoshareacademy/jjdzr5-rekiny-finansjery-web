@@ -1,6 +1,6 @@
 package org.infoshare.rekinyfinansjeryweb.controller;
 
-import org.infoshare.rekinyfinansjeryweb.entity.user.User;
+import org.infoshare.rekinyfinansjeryweb.dto.user.CreateUserFormDTO;
 import org.infoshare.rekinyfinansjeryweb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,19 +20,23 @@ public class SignupController {
 
     @GetMapping("/signup")
     public String signupForm(Model model){
-            model.addAttribute("user", new User());
+            model.addAttribute("user", new CreateUserFormDTO());
         return "signup";
     }
 
     @PostMapping("/signup")
-    public String signup(@Valid @ModelAttribute User user, BindingResult result, Model model){
+    public String signup(@Valid @ModelAttribute("user") CreateUserFormDTO user, BindingResult result, Model model){
         if (result.hasErrors()){
             return "signup";
         } else if (usersService.emailExists(user.getEmail())) {
             result.rejectValue("email", "validation.email");
             return "signup";
         }
-        usersService.addUser(user);
+        if (usersService.addUser(user)) {
+            model.addAttribute("successMessage", "msg.success.signup");
+        } else {
+            model.addAttribute("errorMessage", "msg.error.signup");
+        }
         return "index";
     }
 }

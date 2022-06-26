@@ -17,10 +17,8 @@ public class FiltrationSettings {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
-    private LocalDate effectiveDateMin;
-    private LocalDate effectiveDateMax;
-    private LocalDate tradingDateMin;
-    private LocalDate tradingDateMax;
+    private LocalDate dateMin;
+    private LocalDate dateMax;
     private Double bidPriceMin;
     private Double bidPriceMax;
     private Double askPriceMin;

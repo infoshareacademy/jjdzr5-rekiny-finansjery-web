@@ -1,7 +1,11 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
+import org.infoshare.rekinyfinansjeryweb.dto.ExchangeRateDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
-import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRate;
+import org.infoshare.rekinyfinansjeryweb.dto.SaveOfFiltrationSettingsDTO;
+import org.infoshare.rekinyfinansjeryweb.dto.user.CreateUserFormDTO;
+import org.infoshare.rekinyfinansjeryweb.dto.user.UserCurrencyDTO;
+import org.infoshare.rekinyfinansjeryweb.dto.user.UserDTO;
 import org.infoshare.rekinyfinansjeryweb.entity.Currency;
 import org.infoshare.rekinyfinansjeryweb.entity.user.*;
 import org.infoshare.rekinyfinansjeryweb.repository.CurrencyRepository;
@@ -15,9 +19,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -44,31 +50,40 @@ public class UserService implements UserDetailsService {
         return new MyUserPrincipal(user);
     }
 
-    public User getUser(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        MyUserPrincipal userDetails = (MyUserPrincipal) authentication.getPrincipal();
-        return userDetails.getUser();
+    public UserDTO getUserDTO(){
+        MyUserPrincipal userDetails = getUserPrincipal();
+        return modelMapper.map(userDetails.getUser(), UserDTO.class);
     }
 
     public List<User> getUsers(){
         return userRepository.findAll();
     }
 
-    public User addUser(User user){
+    public Boolean addUser(CreateUserFormDTO createUserFormDTO){
+        User user = modelMapper.map(createUserFormDTO, User.class);
         user.setPassword(encoder.encode(user.getPassword()));
         user.setRole(Set.of(UserEnum.ROLE_USER));
         user.setCreatedAt(LocalDateTime.now());
         user.setEnabled(true);
 
-        return userRepository.save(user);
+        return userRepository.save(user) != null;
     }
 
     public User updateUser(User user){
+        MyUserPrincipal userDetails = getUserPrincipal();
+        userDetails.setBillingCurrency(user.getBillingCurrency());
         return userRepository.save(user);
     }
 
     public void deleteUser(User user) {
         userRepository.delete(user);
+    }
+
+    public Set<UserCurrencyDTO> getMyCurrencies() {
+        User user = getUser();
+        return user.getMyCurrencies()
+                .stream().map(e ->  modelMapper.map(e, UserCurrencyDTO.class))
+                .collect(Collectors.toSet());
     }
 
     public boolean bidCurrency(String currency, double amount){
@@ -77,12 +92,12 @@ public class UserService implements UserDetailsService {
     }
 
     private boolean subtractCurrency(User user, String currency, double amount) {
-        ExchangeRate exchangeRate = searchAndFiltrationService.getCurrencyOfLastExchangeRates(currency);
+        ExchangeRateDTO exchangeRate = searchAndFiltrationService.getCurrencyOfLastExchangeRates(currency);
            return addToBillingCurrency(user, exchangeRate, amount) &&
                    addCurrencyHistory(user, currency, amount, exchangeRate.getBidPrice(), OperationEnum.BID);
     }
 
-    private boolean addToBillingCurrency(User user, ExchangeRate exchangeRate, double amount) {
+    private boolean addToBillingCurrency(User user, ExchangeRateDTO exchangeRate, double amount) {
         double billingCurrency = exchangeRate.getBidPrice() * amount;
         user.setBillingCurrency(user.getBillingCurrency() + billingCurrency);
         return true;
@@ -94,12 +109,12 @@ public class UserService implements UserDetailsService {
     }
     
     private boolean addCurrency(User user, String currency, double amount) {
-        ExchangeRate exchangeRate = searchAndFiltrationService.getCurrencyOfLastExchangeRates(currency);
+        ExchangeRateDTO exchangeRate = searchAndFiltrationService.getCurrencyOfLastExchangeRates(currency);
         return subtractFromBillingCurrency(user, exchangeRate, amount) &&
             addCurrencyHistory(user, currency, amount, exchangeRate.getAskPrice(), OperationEnum.ASK);
     }
 
-    private boolean subtractFromBillingCurrency(User user, ExchangeRate exchangeRate, double amount) {
+    private boolean subtractFromBillingCurrency(User user, ExchangeRateDTO exchangeRate, double amount) {
         double billingCurrency = exchangeRate.getAskPrice() * amount;
         if (user.getBillingCurrency() < billingCurrency) return false;
         user.setBillingCurrency(user.getBillingCurrency() - billingCurrency);
@@ -155,6 +170,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email) != null;
     }
 
+    @Transactional
     public List<CurrencyOperationHistory> getHistoryOperation() {
         List<CurrencyOperationHistory> currencyOperationHistories = new ArrayList<>();
         User user = getUser();
@@ -166,12 +182,16 @@ public class UserService implements UserDetailsService {
         return sortHistory(currencyOperationHistories);
     }
 
+    @Transactional
     public List<CurrencyOperationHistory> getHistoryOperation(String code) {
         Currency currency = currencyRepository.findByCode(code);
         User user = getUser();
         return sortHistory(
                 convertFromOperationHistory(
                         getHistoryList(user.getMyCurrencies(), currency),currency));
+    }
+    private User getUser(){
+        return userRepository.findById(getUserDTO().getId());
     }
 
     private List<OperationHistory> getHistoryList(Set<UserCurrency> userCurrencySet, Currency currency) {
@@ -204,12 +224,29 @@ public class UserService implements UserDetailsService {
                 .collect(toList());
     }
 
+    @Transactional
+    public boolean savedFiltrationSettings(SaveOfFiltrationSettingsDTO filtrationSettings){
+        User user = getUser();
+        user.getSavedFiltrationSettings().put(filtrationSettings.getPreferenceName(), modelMapper.map(filtrationSettings, FiltrationSettings.class));
+        return updateUser(user) != null;
+    }
+
+    @Transactional
     public List<Map.Entry<String, FiltrationSettingsDTO>> getListOfSavedFiltrationSettings(){
         return mapperToFiltrationSettingsDTO()
                 .entrySet()
                 .stream()
                 .toList();
     }
+
+    @Transactional
+    public boolean removeSavedFiltrationSettings(String key) {
+        User user = getUser();
+        user.getSavedFiltrationSettings().remove(key);
+        return updateUser(user) != null;
+    }
+
+    @Transactional
     public Map<String, FiltrationSettingsDTO> getSavedFiltrationSettings(){
         return mapperToFiltrationSettingsDTO();
     }
@@ -221,12 +258,19 @@ public class UserService implements UserDetailsService {
                 .forEach( e -> filtrationSettingsDTO.put(e.getKey(),modelMapper.map(e.getValue(),FiltrationSettingsDTO.class)));
         return filtrationSettingsDTO;
     }
+
+    //todo del
     private Map<String, FiltrationSettings> mapperToFiltrationSettings(Map<String, FiltrationSettingsDTO> filtrationSettingsDTO){
         Map<String, FiltrationSettings> filtrationSettings = new HashMap<>();
         filtrationSettingsDTO
                 .entrySet()
                 .forEach( e -> filtrationSettings.put(e.getKey(),modelMapper.map(e.getValue(),FiltrationSettings.class)));
         return filtrationSettings;
+    }
+
+    private MyUserPrincipal getUserPrincipal(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (MyUserPrincipal) authentication.getPrincipal();
     }
 
 

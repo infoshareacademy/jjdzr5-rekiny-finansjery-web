@@ -17,7 +17,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-10 col-sm-8 col-md-6 col-lg-4 col-xl-3" style="margin-top: 15%;">
-                <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.entity.user.User"*/-->
+                <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.dto.user.CreateUserFormDTO"*/-->
                 <form id="form" th:action="@{/signup}" th:object="${user}" method="post">
                     <label for="name" th:text="#{signup.name}"></label>
                     <input class="form-control" id="name" type="text" th:field="${user.name}"/>

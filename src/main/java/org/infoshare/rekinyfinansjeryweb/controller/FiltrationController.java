@@ -6,6 +6,7 @@ import org.infoshare.rekinyfinansjeryweb.dto.*;
 import org.infoshare.rekinyfinansjeryweb.service.SearchAndFiltrationService;
 import org.infoshare.rekinyfinansjeryweb.entity.user.MyUserPrincipal;
 import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
+import org.infoshare.rekinyfinansjeryweb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,6 +30,9 @@ public class FiltrationController {
     SearchAndFiltrationService collectionFiltrationService;
 
     @Autowired
+    UserService userService;
+
+    @Autowired
     UsedCurrenciesService usedCurrenciesService;
 
     @GetMapping
@@ -48,7 +52,7 @@ public class FiltrationController {
         model.addAttribute("newCurrency", new ExchangeRateFormDTO());
 
         if(principal != null) {
-            model.addAttribute("listOfPreferences", new ArrayList<>(principal.getUser().getSavedFiltrationSettings().keySet()));
+            model.addAttribute("listOfPreferences", new ArrayList<>(userService.getSavedFiltrationSettings().keySet()));
         }
         Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
         if (inputFlashMap != null) {
