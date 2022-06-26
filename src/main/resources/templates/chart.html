@@ -44,9 +44,8 @@
 
         <script th:inline="javascript">
 
-
             let currencies = /*[[${chartData}]]*/;
-            var xValues = currencies.map(currency => currency.tradingDate);
+            var xValues = currencies.map(currency => currency.date);
 
             new Chart("myChart", {
                 type: "line",

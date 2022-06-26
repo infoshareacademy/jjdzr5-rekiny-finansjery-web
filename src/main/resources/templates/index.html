@@ -79,7 +79,7 @@
                         new Chart("myChart" + [[${record.code}]], {
                             type: "line",
                             data: {
-                                labels: currencies.get([[${record.code}]]).map(currency => currency.tradingDate),
+                                labels: currencies.get([[${record.code}]]).map(currency => currency.date),
                                 datasets: [{
                                     data: currencies.get([[${record.code}]]).map(currency => currency.bidPrice),
                                     borderColor: "red",
