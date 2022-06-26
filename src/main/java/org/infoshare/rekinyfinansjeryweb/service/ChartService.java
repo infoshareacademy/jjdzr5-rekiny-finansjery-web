@@ -4,6 +4,7 @@ import com.infoshareacademy.domain.DailyExchangeRates;
 import com.infoshareacademy.services.DailyExchangeRatesFiltrationService;
 import com.infoshareacademy.services.ExchangeRatesFiltrationService;
 import com.infoshareacademy.services.NBPApiManager;
+import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +13,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+
 @Service
 public class ChartService {
 
+    @Autowired
+    ExchangeRateRepository exchangeRateRepository;
+
     public List<ChartData> createChartDataSet(DailyExchangeRatesFiltrationService ratesCollectionProvider, String code){
-        List<DailyExchangeRates> exchangeRateTablesForOneCurrency = ratesCollectionProvider.forEachDay(dailyExchangeRates -> new ExchangeRatesFiltrationService(dailyExchangeRates.
-                getRates()).
-                filterByShortName(Arrays.asList(code))).getDailyExchangeRates();
+        List<DailyExchangeRates> exchangeRateTablesForOneCurrency = ratesCollectionProvider.forEachDay(dailyExchangeRates -> exchangeRateRepository.findExchangeRatesByCode(code);
+//TODO - tu się robi jakiś bajzel
+
+                new ExchangeRatesFiltrationService(dailyExchangeRates
+                .getRates())
+                .filterByShortName(Arrays.asList(code)))
+                .getDailyExchangeRates();
 
 
         return exchangeRateTablesForOneCurrency.stream().map(table -> new ChartData(table.getEffectiveDate(),

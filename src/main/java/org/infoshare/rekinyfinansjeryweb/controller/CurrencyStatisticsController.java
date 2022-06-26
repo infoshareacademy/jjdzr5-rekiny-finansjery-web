@@ -52,6 +52,4 @@ public class CurrencyStatisticsController {
         currencyStatisticsClientService.increaseCount(List.of(code));
         return "stats";
     }
-
 }
-//    currencyStatisticsClientService.increaseCount(List.of("USD"));
