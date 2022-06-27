@@ -1,4 +1,4 @@
-package org.infoshare.rekinyfinansjeryweb.data;
+package org.infoshare.rekinyfinansjeryweb.entity.user;
 
 public enum UserEnum {
     ROLE_ADMIN,

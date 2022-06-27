@@ -19,4 +19,5 @@ public interface ExchangeRateRepository extends JpaRepository<ExchangeRate, Long
             "from ExchangeRate er join er.currency c where er.date = :selectedDate order by c.code")
     List<ExchangeRateCurrency> findExchangeRatesByDate(LocalDate selectedDate);
 
+    ExchangeRate findFirstByDateIsBeforeOrderByDateDesc(LocalDate date);
 }
