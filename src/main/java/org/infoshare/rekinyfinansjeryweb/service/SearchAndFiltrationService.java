@@ -28,6 +28,9 @@ public class SearchAndFiltrationService {
     }
 
     public PageDTO searchInCollection(SearchSettingsDTO settings, Pageable pageable){
+        if(settings.getSearchPhrase().isEmpty()){
+            return new PageDTO(0, 0, List.of());
+        }
         Long totalResultsOfFilter = exchangeRateRepository.countDatesBySearchSettings(settings);
         List<LocalDate> dates = exchangeRateRepository.findDatesFromPageBySearchSettings(settings, pageable);
         List<ExchangeRateCurrency> exchangeRateCurrencies =
