@@ -7,8 +7,10 @@ import org.infoshare.rekinyfinansjeryweb.entity.LastUpdate;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ApiAdapter;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ApiRequestResult;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ExtendedGson;
+import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ExternalApiDataSourceInterface;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.nbpAdapter.data.DailyExchangeRates;
 import org.infoshare.rekinyfinansjeryweb.entity.Currency;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -16,7 +18,8 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
-public class NBPApiAdapter extends ApiAdapter {
+@Component
+public class NBPApiAdapter extends ApiAdapter implements ExternalApiDataSourceInterface {
 
     private final String apiName = "NBP_API_CURRENCY";
     private final String URL_LAST_67_DAYS_TABLES = "https://api.nbp.pl/api/exchangerates/tables/c/last/67/";

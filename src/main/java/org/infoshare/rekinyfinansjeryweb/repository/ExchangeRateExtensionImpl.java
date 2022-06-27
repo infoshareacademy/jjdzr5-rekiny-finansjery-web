@@ -25,7 +25,7 @@ public class ExchangeRateExtensionImpl implements ExchangeRateExtension {
         ExchangeRateQuery<Long> query = new ExchangeRateQuery<>(Long.class);
         Subquery<String> sub = createSubqueryForCurrenciesFromSearchSettings(searchSettings, query);
 
-        List<Predicate> predicates = createCommonPredicatesForFiltrationSettings(searchSettings, query, sub);
+        List<Predicate> predicates = createCommonPredicatesForSearchSettings(searchSettings, query, sub);
 
         return buildAndExecuteCountDatesQuery(query, predicates);
     }
@@ -63,7 +63,7 @@ public class ExchangeRateExtensionImpl implements ExchangeRateExtension {
         ExchangeRateQuery<LocalDate> query = new ExchangeRateQuery<>(LocalDate.class);
         Subquery<String> sub = createSubqueryForCurrenciesFromSearchSettings(searchSettings, query);
 
-        List<Predicate> predicates = createCommonPredicatesForFiltrationSettings(searchSettings, query, sub);
+        List<Predicate> predicates = createCommonPredicatesForSearchSettings(searchSettings, query, sub);
 
         return  buildAndExecuteFindDatesFromPageQuery(query, predicates, pageable);
     }
@@ -81,7 +81,7 @@ public class ExchangeRateExtensionImpl implements ExchangeRateExtension {
     }
 
     @Override
-    public List<ExchangeRateCurrency> findPageBySearchSettings(FiltrationSettingsDTO filtrationSettings, List<LocalDate> dates) {
+    public List<ExchangeRateCurrency> findSelectedDates(FiltrationSettingsDTO filtrationSettings, List<LocalDate> dates) {
         ExchangeRateQuery<ExchangeRateCurrency> query = new ExchangeRateQuery<>(ExchangeRateCurrency.class);
         Join<ExchangeRate, Currency> currencyJoin = query.getRoot().join("currency", JoinType.LEFT);
         Subquery<String> sub = createSubqueryForCurrenciesFromFiltrationSettings(filtrationSettings, query);
@@ -93,12 +93,12 @@ public class ExchangeRateExtensionImpl implements ExchangeRateExtension {
     }
 
     @Override
-    public List<ExchangeRateCurrency> findPageBySearchSettings(SearchSettingsDTO searchSettings, List<LocalDate> dates) {
+    public List<ExchangeRateCurrency> findSelectedDates(SearchSettingsDTO searchSettings, List<LocalDate> dates) {
         ExchangeRateQuery<ExchangeRateCurrency> query = new ExchangeRateQuery<>(ExchangeRateCurrency.class);
         Join<ExchangeRate, Currency> currencyJoin = query.getRoot().join("currency", JoinType.LEFT);
         Subquery<String> sub = createSubqueryForCurrenciesFromSearchSettings(searchSettings, query);
 
-        List<Predicate> predicates = createCommonPredicatesForFiltrationSettings(searchSettings, query, sub);
+        List<Predicate> predicates = createCommonPredicatesForSearchSettings(searchSettings, query, sub);
         predicates.add(query.getCriteriaBuilder().in(query.getRoot().get("date")).value(dates));
 
         return buildAndExecuteFindPageQuery(query, currencyJoin, predicates);
@@ -118,16 +118,21 @@ public class ExchangeRateExtensionImpl implements ExchangeRateExtension {
         return typedQuery.getResultList();
     }
 
-    @Override
-    public List<LastRating> findLastRatingDateForEachCurrency() {
-        return null;
-    }
-
     private List<Predicate> createCommonPredicatesForFiltrationSettings(FiltrationSettingsDTO filtrationSettings, ExchangeRateQuery query, Subquery<String> sub){
         List<Predicate> predicates = new ArrayList<>();
         predicates.addAll(getPredicationExchangeRatesTableInPeriod(filtrationSettings, query.getCriteriaBuilder(), query.getRoot()));
         predicates.addAll(getPredicationExchangeRateByPrices(filtrationSettings, query.getCriteriaBuilder(), query.getRoot()));
         if(!filtrationSettings.getCurrency().isEmpty()) {
+            predicates.add(query.getCriteriaBuilder().in(query.getRoot().get("currency").get("code")).value(sub));
+        }
+        return predicates;
+    }
+
+    private List<Predicate> createCommonPredicatesForSearchSettings(SearchSettingsDTO searchSettings, ExchangeRateQuery query, Subquery<String> sub){
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.addAll(getPredicationExchangeRatesTableInPeriod(searchSettings, query.getCriteriaBuilder(), query.getRoot()));
+        predicates.addAll(getPredicationExchangeRateByPrices(searchSettings, query.getCriteriaBuilder(), query.getRoot()));
+        if(!(searchSettings.getCurrency().isEmpty() && searchSettings.getSearchPhrase().isEmpty())) {
             predicates.add(query.getCriteriaBuilder().in(query.getRoot().get("currency").get("code")).value(sub));
         }
         return predicates;
@@ -143,14 +148,18 @@ public class ExchangeRateExtensionImpl implements ExchangeRateExtension {
     private Subquery<String> createSubqueryForCurrenciesFromSearchSettings(SearchSettingsDTO searchSettings, ExchangeRateQuery query){
         Subquery<String> sub = query.getCriteriaQuery().subquery(String.class);
         Root<Currency> subRoot = sub.from(Currency.class);
-        List<Predicate> predicates = new ArrayList<>();
+        Predicate predicate;
+
         if(!searchSettings.getCurrency().isEmpty()) {
-            predicates.add(query.getCriteriaBuilder().in(subRoot.get("code")).value(searchSettings.getCurrency()));
+            predicate = query.getCriteriaBuilder()
+                    .and(query.getCriteriaBuilder().in(subRoot.get("code")).value(searchSettings.getCurrency()),
+                            createPredicateForSearchedPhrases(searchSettings, query, subRoot));
+        }
+        else{
+            predicate = query.getCriteriaBuilder().and(createPredicateForSearchedPhrases(searchSettings, query, subRoot));
         }
 
-        predicates.add(createPredicateForSearchedPhrases(searchSettings, query, subRoot));
-
-        sub.select(subRoot.get("code")).where(predicates.toArray(Predicate[]::new));
+        sub.select(subRoot.get("code")).where(predicate);
         return sub;
     }
 
@@ -158,9 +167,8 @@ public class ExchangeRateExtensionImpl implements ExchangeRateExtension {
         List<Predicate> searchedPhrases = new ArrayList<>();
         List<String> phrases = Arrays.stream(searchSettings.getSearchPhrase().split(" ")).map(str -> "%"+str+"%").toList();
         phrases.forEach(phrase ->{
-            searchedPhrases.add(query.getCriteriaBuilder().or(
-                    query.getCriteriaBuilder().like(subRoot.get("code"), phrase),
-                    query.getCriteriaBuilder().like(subRoot.get("name"), phrase)));
+            searchedPhrases.add(query.getCriteriaBuilder().like(subRoot.get("code"), phrase));
+            searchedPhrases.add(query.getCriteriaBuilder().like(subRoot.get("name"), phrase));
         });
         return query.getCriteriaBuilder().or(searchedPhrases.toArray(Predicate[]::new));
     }

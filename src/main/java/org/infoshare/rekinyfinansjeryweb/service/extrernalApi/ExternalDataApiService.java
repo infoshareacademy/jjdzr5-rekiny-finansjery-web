@@ -23,12 +23,18 @@ public class ExternalDataApiService {
     @Autowired
     LastUpdateRepository lastUpdateRepository;
 
+    @Autowired
+    ExternalApiDataSourceInterface nbpApi;
+
     @Transactional
     public void getData(){
         List<Currency> currencies = currencyRepository.findAll();
-        NBPApiAdapter nbpApiAdapter = new NBPApiAdapter();
-        Optional<LastUpdate> lastUpdate = lastUpdateRepository.findBySourceName(nbpApiAdapter.getApiName());
-        ApiRequestResult result = nbpApiAdapter.getResultData(currencies, lastUpdate);
+        synchronizeWithDataSource(nbpApi, currencies);
+    }
+
+    public void synchronizeWithDataSource(ExternalApiDataSourceInterface dataSource, List<Currency> currencies){
+        Optional<LastUpdate> lastUpdate = lastUpdateRepository.findBySourceName(dataSource.getApiName());
+        ApiRequestResult result = dataSource.getResultData(currencies, lastUpdate);
         currencyRepository.saveAll(result.getCurrencies());
         exchangeRateRepository.saveAll(result.getExchangeRates());
         if(lastUpdate.isPresent()){
@@ -37,7 +43,7 @@ public class ExternalDataApiService {
             lastUpdateRepository.save(thisUpdate);
         }
         else {
-            LastUpdate thisUpdate = new LastUpdate(null, nbpApiAdapter.getApiName(), LocalDateTime.now());
+            LastUpdate thisUpdate = new LastUpdate(null, dataSource.getApiName(), LocalDateTime.now());
             lastUpdateRepository.save(thisUpdate);
         }
     }
