@@ -7,11 +7,14 @@ import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRateRepository;
 import org.infoshare.rekinyfinansjeryweb.repository.LastUpdateRepository;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.nbpAdapter.NBPApiAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -23,12 +26,18 @@ public class ExternalDataApiService {
     @Autowired
     LastUpdateRepository lastUpdateRepository;
 
+    @Autowired
+    private List<ExternalApiDataSourceInterface> externalApiDataSources;
+
     @Transactional
     public void getData(){
         List<Currency> currencies = currencyRepository.findAll();
-        NBPApiAdapter nbpApiAdapter = new NBPApiAdapter();
-        Optional<LastUpdate> lastUpdate = lastUpdateRepository.findBySourceName(nbpApiAdapter.getApiName());
-        ApiRequestResult result = nbpApiAdapter.getResultData(currencies, lastUpdate);
+        externalApiDataSources.forEach(dataSource -> synchronizeWithDataSource(dataSource, currencies));
+    }
+
+    public void synchronizeWithDataSource(ExternalApiDataSourceInterface dataSource, List<Currency> currencies){
+        Optional<LastUpdate> lastUpdate = lastUpdateRepository.findBySourceName(dataSource.getApiName());
+        ApiRequestResult result = dataSource.getResultData(currencies, lastUpdate);
         currencyRepository.saveAll(result.getCurrencies());
         exchangeRateRepository.saveAll(result.getExchangeRates());
         if(lastUpdate.isPresent()){
@@ -37,7 +46,7 @@ public class ExternalDataApiService {
             lastUpdateRepository.save(thisUpdate);
         }
         else {
-            LastUpdate thisUpdate = new LastUpdate(null, nbpApiAdapter.getApiName(), LocalDateTime.now());
+            LastUpdate thisUpdate = new LastUpdate(null, dataSource.getApiName(), LocalDateTime.now());
             lastUpdateRepository.save(thisUpdate);
         }
     }

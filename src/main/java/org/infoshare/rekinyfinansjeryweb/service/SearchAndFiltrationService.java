@@ -22,16 +22,19 @@ public class SearchAndFiltrationService {
         Long totalResultsOfFilter = exchangeRateRepository.countDatesByFilterSettings(settings);
         List<LocalDate> dates = exchangeRateRepository.findDatesFromPageByFilterSettings(settings, pageable);
         List<ExchangeRateCurrency> exchangeRateCurrencies =
-                exchangeRateRepository.findPageBySearchSettings(settings, dates);
+                exchangeRateRepository.findSelectedDates(settings, dates);
 
         return convertResultsIntoPageDTO(totalResultsOfFilter, exchangeRateCurrencies, pageable);
     }
 
     public PageDTO searchInCollection(SearchSettingsDTO settings, Pageable pageable){
+        if(settings.getSearchPhrase().isEmpty()){
+            return new PageDTO(0, 0, List.of());
+        }
         Long totalResultsOfFilter = exchangeRateRepository.countDatesBySearchSettings(settings);
         List<LocalDate> dates = exchangeRateRepository.findDatesFromPageBySearchSettings(settings, pageable);
         List<ExchangeRateCurrency> exchangeRateCurrencies =
-                exchangeRateRepository.findPageBySearchSettings(settings, dates);
+                exchangeRateRepository.findSelectedDates(settings, dates);
 
         return convertResultsIntoPageDTO(totalResultsOfFilter, exchangeRateCurrencies, pageable);
     }

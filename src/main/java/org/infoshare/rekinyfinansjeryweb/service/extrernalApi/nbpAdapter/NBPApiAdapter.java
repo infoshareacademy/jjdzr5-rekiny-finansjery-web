@@ -7,8 +7,10 @@ import org.infoshare.rekinyfinansjeryweb.entity.LastUpdate;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ApiAdapter;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ApiRequestResult;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ExtendedGson;
+import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ExternalApiDataSourceInterface;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.nbpAdapter.data.DailyExchangeRates;
 import org.infoshare.rekinyfinansjeryweb.entity.Currency;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -16,12 +18,13 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
-public class NBPApiAdapter extends ApiAdapter {
+@Component
+public class NBPApiAdapter extends ApiAdapter implements ExternalApiDataSourceInterface {
 
-    private final String apiName = "NBP_API_CURRENCY";
-    private final String URL_LAST_67_DAYS_TABLES = "https://api.nbp.pl/api/exchangerates/tables/c/last/67/";
-    private final String URL_RANGE_OF_DATE = "https://api.nbp.pl/api/exchangerates/tables/c/%1$s/%2$s/";
-    private final Integer LIMIT_DAYS = 90;
+    private static final String apiName = "NBP_API_CURRENCY";
+    private static final String URL_LAST_67_DAYS_TABLES = "https://api.nbp.pl/api/exchangerates/tables/c/last/67/";
+    private static final String URL_RANGE_OF_DATE = "https://api.nbp.pl/api/exchangerates/tables/c/%1$s/%2$s/";
+    private static  final Integer LIMIT_DAYS = 90;
 
     public String getApiName() {
         return apiName;
@@ -58,9 +61,8 @@ public class NBPApiAdapter extends ApiAdapter {
     }
 
     private Map<String, Currency> currencyListToMap(List<Currency> currencies){
-        Map<String, Currency> map = currencies.stream()
+        return currencies.stream()
                 .collect(Collectors.toMap(Currency::getCode, item -> item));
-        return map;
     }
 
     public ApiRequestResult getResultData(List<Currency> currencies, Optional<LastUpdate> lastUpdate){
