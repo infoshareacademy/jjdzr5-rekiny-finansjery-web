@@ -21,14 +21,10 @@
 </div>
 <div th:fragment="element_view" class="m-3 mt-0 p-3 border border-2 border-secondary rounded-3">
     <div class="d-flex justify-content-between align-items-end p-3 pb-0 mb-0">
-        <a class="link-dark text-decoration-none" th:href="@{'/table/' + ${#strings.replace(exchangeRates.getNo(),'/','_')} }">
-            <h4 th:text="${exchangeRates.getNo()}"></h4>
+        <a class="link-dark text-decoration-none" th:href="@{'/table/' + ${exchangeRates.getDate()} }">
+            <h4 th:text="${exchangeRates.getDate()}"></h4>
         </a>
         <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:insert="fragments/admin :: edit_table_buttons"></div>
-    </div>
-    <div class="d-flex justify-content-start align-items-center mb-5 pb-2 px-3">
-        <span th:text="#{collection.view.effective.date}"></span>:&nbsp<strong class="pe-4" th:text="${exchangeRates.getEffectiveDate()}"></strong>
-        <span th:text="#{collection.view.trading.date}"></span>:&nbsp<strong th:text="${exchangeRates.getTradingDate()}"></strong>
     </div>
     <table class="table table-striped table-sm">
         <thead>
@@ -43,9 +39,9 @@
         <tr th:each="rate : ${exchangeRates.getRates()}">
             <th class="align-middle" scope="row" th:text="${rate.code}"></th>
             <td class="align-middle"
-                th:text="${#messages.msgOrNull('currency.' + #strings.toString(rate.code)) != null} ? #{'currency.'+${rate.code}} : ${rate.currency}"></td>
-            <td class="align-middle" th:text="${rate.bid}"></td>
-            <td class="align-middle" th:text="${rate.ask}"></td>
+                th:text="${#messages.msgOrNull('currency.' + #strings.toString(rate.code)) != null} ? #{'currency.'+${rate.code}} : ${rate.name}"></td>
+            <td class="align-middle" th:text="${rate.bidPrice}"></td>
+            <td class="align-middle" th:text="${rate.askPrice}"></td>
             <td class="text-end">
                 <a th:href="@{'/currency/'+${rate.code}}" class="btn mx-1 btn-primary"><i class="bi bi-eye"></i></a>
                 <div th:replace="fragments/user :: button_bid"></div>

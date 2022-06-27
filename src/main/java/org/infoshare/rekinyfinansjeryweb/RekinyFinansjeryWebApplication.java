@@ -1,31 +1,31 @@
 package org.infoshare.rekinyfinansjeryweb;
 
-import org.infoshare.rekinyfinansjeryweb.hibernate.Crypto;
-import org.infoshare.rekinyfinansjeryweb.hibernate.EntityManagerProvider;
+import org.infoshare.rekinyfinansjeryweb.service.CreateUserService;
+import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ExternalDataApiService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import javax.persistence.EntityManager;
-import java.math.BigDecimal;
+import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class RekinyFinansjeryWebApplication {
 
+	@Autowired
+	ExternalDataApiService externalDataApiService;
+	@Autowired
+	CreateUserService createUserService;
+
 	public static void main(String[] args) {
 		SpringApplication.run(RekinyFinansjeryWebApplication.class, args);
-		final EntityManager entityManager = EntityManagerProvider.get();
-		EntityManagerProvider.startTransaction(entityManager);
-		createCrypto(entityManager);
-		EntityManagerProvider.commitTransaction(entityManager);
 	}
 
-	public static Crypto createCrypto(EntityManager entityManager) {
-		final Crypto crypto = new Crypto();
-		crypto.setName("Sharkcoin");
-		crypto.setCode("SRK");
-		crypto.setBidPrice((float) 23.87);
-		crypto.setAskingPrice((float) 28.34);
-		entityManager.persist(crypto);
-		return crypto;
+	@Bean
+	public CommandLineRunner CommandLineRunnerBean() {
+		return (args) -> {
+			externalDataApiService.getData();
+			createUserService.createUsers();
+		};
 	}
 }
+

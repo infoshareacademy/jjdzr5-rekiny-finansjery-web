@@ -16,8 +16,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        //TODO usunąć h2-console docelowo
         http.authorizeRequests()
-                .antMatchers("/", "/currency/**", "/styles/**", "/assets/**", "/js/**", "/tables", "/search", "/signup", "/login").permitAll()
+                .antMatchers("/h2-console/**", "/", "/currency/**", "/styles/**", "/assets/**", "/js/**", "/tables", "/table/**", "/search", "/signup", "/login").permitAll()
                 .antMatchers("/admin-panel", "/admin", "/admin/**").hasAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated()
                 .and()
@@ -32,6 +33,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .deleteCookies("JSESSIONID")
                 .and()
                 .exceptionHandling().accessDeniedPage("/403");
+
+        //TODO usunąć docelowo przy usuwaniu h2
+        http.csrf().disable();
+        http.headers().frameOptions().disable();
     }
     @Bean
     public PasswordEncoder encoder() {

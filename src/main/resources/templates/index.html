@@ -40,12 +40,8 @@
             <div class="d-md-flex align-items-center justify-content-between">
                 <h3 th:text="#{main.search.currency}" class="mb-3 mb-md-0">Search Currency</h3>
                 <div class="input-group currency-input">
-                    <input class="form-control form-control w-50" type="text" th:placeholder="#{search.placeholder}"
+                    <input class="form-control form-control w-75" type="text" th:placeholder="#{search.placeholder}"
                            name="searchPhrase"/>
-                    <select class="form-select w-25" id="inputGroupSelect01" name="searchType">
-                        <option th:value="'table'" th:text="#{search.option.tables}"></option>
-                        <option th:value="'currency'" th:text="#{search.option.currencies}"></option>
-                    </select>
                     <input class="form-control form-control-sm w-25" type="submit" th:value="#{search.button}"/>
                 </div>
             </div>

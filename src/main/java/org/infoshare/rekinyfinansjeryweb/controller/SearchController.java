@@ -1,13 +1,14 @@
 package org.infoshare.rekinyfinansjeryweb.controller;
 
-import com.infoshareacademy.domain.DailyExchangeRates;
 import com.infoshareacademy.domain.ExchangeRate;
 import com.infoshareacademy.services.NBPApiManager;
 import org.infoshare.rekinyfinansjeryweb.controller.controllerComponents.ListToPagesSplitter;
-import org.infoshare.rekinyfinansjeryweb.formData.DailyTableForm;
-import org.infoshare.rekinyfinansjeryweb.data.MyUserPrincipal;
-import org.infoshare.rekinyfinansjeryweb.formData.SearchSettings;
-import org.infoshare.rekinyfinansjeryweb.service.SearchService;
+import org.infoshare.rekinyfinansjeryweb.dto.DailyTableFormDTO;
+import org.infoshare.rekinyfinansjeryweb.dto.ExchangeRateFormDTO;
+import org.infoshare.rekinyfinansjeryweb.entity.user.MyUserPrincipal;
+import org.infoshare.rekinyfinansjeryweb.dto.PageDTO;
+import org.infoshare.rekinyfinansjeryweb.dto.SearchSettingsDTO;
+import org.infoshare.rekinyfinansjeryweb.service.SearchAndFiltrationService;
 import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -28,24 +29,23 @@ public class SearchController {
     public final static int ELEMENTS_PER_PAGE = 5;
 
     @Autowired
-    SearchService searchService;
+    SearchAndFiltrationService searchAndFiltrationService;
     @Autowired
     UsedCurrenciesService usedCurrenciesService;
 
     @GetMapping
-    public String displayTables(@ModelAttribute SearchSettings settings,
+    public String displayTables(@ModelAttribute SearchSettingsDTO settings,
                                 Pageable pageable,
                                 Model model,
                                 @AuthenticationPrincipal MyUserPrincipal principal) {
 
-        List<DailyExchangeRates> collection = searchService
-                .searchInCollection(settings);
+        PageDTO collection = searchAndFiltrationService.searchInCollection(settings, pageable);
 
         ListToPagesSplitter.splitIntoPages(collection, model, pageable);
         model.addAttribute("filtrationSettings", settings);
         model.addAttribute("possibleCurrencies", usedCurrenciesService.getShortNamesOfCurrencies(NBPApiManager.getInstance(), settings.getCurrency()));
-        model.addAttribute("newDailyTable", new DailyTableForm());
-        model.addAttribute("newCurrency", new ExchangeRate());
+        model.addAttribute("newDailyTable", new DailyTableFormDTO());
+        model.addAttribute("newCurrency", new ExchangeRateFormDTO());
 
         if(principal != null) {
             model.addAttribute("listOfPreferences", new ArrayList<>(principal.getUser().getSavedFiltrationSettings().keySet()));

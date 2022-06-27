@@ -25,10 +25,10 @@
         <div th:insert="fragments/user :: menu"></div>
       </div>
       <div class="col-12 col-md-3 offset-md-3" style="margin-top: 6%;">
-        <form id="form" th:action="@{/user/buycurrency/{code}(code=${rate.getCode()})}" th:object="${amount}" method="post">
+        <form id="form" th:action="@{/user/buycurrency/{code}(code=${rate.code})}" th:object="${amount}" method="post">
           <table class="table align-middle">
             <tr>
-              <td for="amount" th:text="#{user.buy.currency.buy.currency} +' ' + ${rate.getCode()}">
+              <td for="amount" th:text="#{user.buy.currency.buy.currency} +' ' + ${rate.code}">
               </td>
               <td>
                 <input class="form-control text-end" id="amount" type="number" step="any"  min="0" name="amount" th:value="${amount.amount}"/>
@@ -44,7 +44,7 @@
             </tr>
             <tr>
               <td th:text="#{user.buy.currency.buy.exchange.rate}"></td>
-              <td id="rate" class="text-end me-2" th:text="${rate.getAsk()}"></td>
+              <td id="rate" class="text-end me-2" th:text="${rate.askPrice}"></td>
             </tr>
             <tr>
               <td th:text="#{user.buy.currency.buy.cost}"></td>
