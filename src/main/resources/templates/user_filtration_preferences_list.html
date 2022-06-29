@@ -38,21 +38,13 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${setting.value.effectiveDateMin != null}">
-                            <td class="align-middle" th:text="#{filtration.option.min.effective.date}"></td>
-                            <td class="align-middle" th:text="${setting.value.effectiveDateMin}"></td>
+                        <tr th:if="${setting.value.dateMin != null}">
+                            <td class="align-middle" th:text="#{filtration.option.min.date}"></td>
+                            <td class="align-middle" th:text="${setting.value.dateMin}"></td>
                         </tr>
-                        <tr th:if="${setting.value.effectiveDateMax != null}">
-                            <td class="align-middle" th:text="#{filtration.option.max.effective.date}"></td>
-                            <td class="align-middle" th:text="${setting.value.effectiveDateMax}"></td>
-                        </tr>
-                        <tr th:if="${setting.value.tradingDateMin != null}">
-                            <td class="align-middle" th:text="#{filtration.option.min.trading.date}"></td>
-                            <td class="align-middle" th:text="${setting.value.tradingDateMin}"></td>
-                        </tr>
-                        <tr th:if="${setting.value.tradingDateMax != null}">
-                            <td class="align-middle" th:text="#{filtration.option.max.trading.date}"></td>
-                            <td class="align-middle" th:text="${setting.value.tradingDateMax}"></td>
+                        <tr th:if="${setting.value.dateMax != null}">
+                            <td class="align-middle" th:text="#{filtration.option.max.date}"></td>
+                            <td class="align-middle" th:text="${setting.value.dateMax}"></td>
                         </tr>
                         <tr th:if="${setting.value.bidPriceMin != null}">
                             <td class="align-middle" th:text="#{filtration.option.min.bid.price}"></td>

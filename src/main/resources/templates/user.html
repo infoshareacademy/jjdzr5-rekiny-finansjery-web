@@ -33,13 +33,13 @@
                             <th scope="col"> </th>
                         </tr>
                     </thead>
-                    <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.data.User"*/-->
-                    <tr th:if="${user.getMyCurrencies().size()>0}" th:each="currency : ${user.getMyCurrencies().keySet()}">
-                            <td th:text="${currency}"></td>
-                            <td th:text="${#numbers.formatDecimal(user.getMyCurrencies().get(currency).getAmount(), 1, 'WHITESPACE', 2, 'COMMA')}"></td>
+                    <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.dto.user.UserCurrencyDTO"*/-->
+                    <tr th:if="${myCurrencies.size()>0}" th:each="currency : ${myCurrencies}">
+                            <td th:text="${currency.currency.code}"></td>
+                            <td th:text="${#numbers.formatDecimal(currency.amount, 1, 'WHITESPACE', 2, 'COMMA')}"></td>
                             <td class="text-end" th:insert="fragments/user :: button_bid_ask_width"></td>
                     </tr>
-                    <tr th:unless="${user.getMyCurrencies().size()>0}">
+                    <tr th:unless="${myCurrencies.size()>0}">
                         <td colspan="3" th:text="#{user.no.items}"></td>
                     </tr>
                 </table>

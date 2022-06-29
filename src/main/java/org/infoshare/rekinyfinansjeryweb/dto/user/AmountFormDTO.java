@@ -1,4 +1,4 @@
-package org.infoshare.rekinyfinansjeryweb.dto;
+package org.infoshare.rekinyfinansjeryweb.dto.user;
 
 import javax.validation.constraints.Min;
 

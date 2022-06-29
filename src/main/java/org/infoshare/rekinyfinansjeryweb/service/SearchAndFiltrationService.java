@@ -1,6 +1,5 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
-import com.infoshareacademy.domain.ExchangeRate;
 import org.infoshare.rekinyfinansjeryweb.dto.*;
 import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRateCurrency;
 import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRateRepository;
@@ -23,26 +22,41 @@ public class SearchAndFiltrationService {
         Long totalResultsOfFilter = exchangeRateRepository.countDatesByFilterSettings(settings);
         List<LocalDate> dates = exchangeRateRepository.findDatesFromPageByFilterSettings(settings, pageable);
         List<ExchangeRateCurrency> exchangeRateCurrencies =
-                exchangeRateRepository.findPageBySearchSettings(settings, dates);
+                exchangeRateRepository.findSelectedDates(settings, dates);
 
         return convertResultsIntoPageDTO(totalResultsOfFilter, exchangeRateCurrencies, pageable);
     }
 
     public PageDTO searchInCollection(SearchSettingsDTO settings, Pageable pageable){
+        if(settings.getSearchPhrase().isEmpty()){
+            return new PageDTO(0, 0, List.of());
+        }
         Long totalResultsOfFilter = exchangeRateRepository.countDatesBySearchSettings(settings);
         List<LocalDate> dates = exchangeRateRepository.findDatesFromPageBySearchSettings(settings, pageable);
         List<ExchangeRateCurrency> exchangeRateCurrencies =
-                exchangeRateRepository.findPageBySearchSettings(settings, dates);
+                exchangeRateRepository.findSelectedDates(settings, dates);
 
         return convertResultsIntoPageDTO(totalResultsOfFilter, exchangeRateCurrencies, pageable);
     }
 
-    public ExchangeRate getCurrencyOfLastExchangeRates(String currency){
-        return new ExchangeRate("MOCK", "MOCK", 2, 2);
+    public ExchangeRateDTO getCurrencyOfLastExchangeRates(String currency){
+        return getLastExchangeRates().getRates()
+                .stream()
+                .filter(e -> e.getCode().equals(currency))
+                .findFirst().orElse(new ExchangeRateDTO());
     }
 
-    public List<ExchangeRate> getLastExchangeRates(){
-        return List.of(new ExchangeRate("MOCK", "MOCK", 2, 2));
+    public DailyTableDTO getLastExchangeRates(){
+        LocalDate localDate = exchangeRateRepository.findFirstByDateIsBeforeOrderByDateDesc(LocalDate.now()).getDate();
+        List<ExchangeRateCurrency> exchangeRatesByDate = exchangeRateRepository.findExchangeRatesByDate(localDate);
+        DailyTableDTO dailyTableDTO = new DailyTableDTO();
+        dailyTableDTO.setDate(localDate);
+        dailyTableDTO.setRates(
+        exchangeRatesByDate
+                .stream()
+                .map( e -> new ExchangeRateDTO(e.getAskPrice(), e.getBidPrice(), e.getCode(), e.getName(), e.getCategory()))
+                .toList());
+        return dailyTableDTO;
     }
 
     private PageDTO convertResultsIntoPageDTO(Long totalResultsOfFilter, List<ExchangeRateCurrency> exchangeRateCurrencies, Pageable pageable){

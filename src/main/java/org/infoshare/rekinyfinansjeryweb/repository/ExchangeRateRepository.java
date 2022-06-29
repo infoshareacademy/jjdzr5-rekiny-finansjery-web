@@ -23,6 +23,8 @@ public interface ExchangeRateRepository extends JpaRepository<ExchangeRate, Long
             "from ExchangeRate er join er.currency c where er.date = :selectedDate order by c.code")
     List<ExchangeRateCurrency> findExchangeRatesCurrenciesByDate(LocalDate selectedDate);
 
+    ExchangeRate findFirstByDateIsBeforeOrderByDateDesc(LocalDate date);
+
     @Query(value = "SELECT e FROM ExchangeRate e WHERE e.date = :date")
     List<ExchangeRate> findExchangeRatesByDate(@Param("date") LocalDate date);
 
