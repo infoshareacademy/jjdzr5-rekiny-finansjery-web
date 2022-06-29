@@ -3,6 +3,7 @@ package org.infoshare.rekinyfinansjeryweb.service;
 import org.infoshare.rekinyfinansjeryweb.dto.*;
 import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRateCurrency;
 import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRateRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,9 @@ import java.util.*;
 public class SearchAndFiltrationService {
 
     ExchangeRateRepository exchangeRateRepository;
+
+    @Autowired
+    CurrentRatesService currentRatesService;
 
     public SearchAndFiltrationService(ExchangeRateRepository exchangeRateRepository) {
         this.exchangeRateRepository = exchangeRateRepository;
@@ -40,27 +44,7 @@ public class SearchAndFiltrationService {
 
         return convertResultsIntoPageDTO(totalResultsOfFilter, exchangeRateCurrencies, pageable);
     }
-
-    public ExchangeRateDTO getCurrencyOfLastExchangeRates(String currency){
-        return getLastExchangeRates().getRates()
-                .stream()
-                .filter(e -> e.getCode().equals(currency))
-                .findFirst().orElse(new ExchangeRateDTO());
-    }
-
-    public DailyTableDTO getLastExchangeRates(){
-        LocalDate localDate = exchangeRateRepository.findFirstByDateIsBeforeOrderByDateDesc(LocalDate.now()).getDate();
-        List<ExchangeRateCurrency> exchangeRatesByDate = exchangeRateRepository.findExchangeRatesByDate(localDate);
-        DailyTableDTO dailyTableDTO = new DailyTableDTO();
-        dailyTableDTO.setDate(localDate);
-        dailyTableDTO.setRates(
-        exchangeRatesByDate
-                .stream()
-                .map( e -> new ExchangeRateDTO(e.getAskPrice(), e.getBidPrice(), e.getCode(), e.getName(), e.getCategory()))
-                .toList());
-        return dailyTableDTO;
-    }
-
+    
     private PageDTO<DailyTableDTO> convertResultsIntoPageDTO(Long totalResultsOfFilter, List<ExchangeRateCurrency> exchangeRateCurrencies, Pageable pageable){
         Map<LocalDate, DailyTableDTO> dailyTables = splitIntoDailyTables(exchangeRateCurrencies);
 
