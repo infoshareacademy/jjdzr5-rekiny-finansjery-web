@@ -61,12 +61,12 @@ public class SearchAndFiltrationService {
         return dailyTableDTO;
     }
 
-    private PageDTO convertResultsIntoPageDTO(Long totalResultsOfFilter, List<ExchangeRateCurrency> exchangeRateCurrencies, Pageable pageable){
+    private PageDTO<DailyTableDTO> convertResultsIntoPageDTO(Long totalResultsOfFilter, List<ExchangeRateCurrency> exchangeRateCurrencies, Pageable pageable){
         Map<LocalDate, DailyTableDTO> dailyTables = splitIntoDailyTables(exchangeRateCurrencies);
 
         dailyTables.values().forEach(table -> table.getRates().sort(Comparator.comparing(ExchangeRateDTO::getCode)));
 
-        return new PageDTO((int)Math.ceil((double)totalResultsOfFilter/pageable.getPageSize()), totalResultsOfFilter,
+        return new PageDTO<>((int)Math.ceil((double)totalResultsOfFilter/pageable.getPageSize()), totalResultsOfFilter,
                 dailyTables.values().stream().sorted((t1, t2) -> t1.getDate().compareTo(t2.getDate()) * -1).toList());
     }
 

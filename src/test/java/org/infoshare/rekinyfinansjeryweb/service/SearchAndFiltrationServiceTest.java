@@ -1,5 +1,6 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
+import org.infoshare.rekinyfinansjeryweb.dto.DailyTableDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.PageDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.SearchSettingsDTO;
@@ -7,6 +8,8 @@ import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRateCurrency;
 import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRateRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +31,9 @@ class SearchAndFiltrationServiceTest {
     @Mock
     ExchangeRateRepository exchangeRateRepository;
 
+    @Captor
+    ArgumentCaptor<List<LocalDate>> datesCaptor;
+
     @Test
     void getFilteredCollection_returnsRequestedPage_givenFiltrationSettingsAndPageAble(){
         //given
@@ -44,19 +50,23 @@ class SearchAndFiltrationServiceTest {
         given(exchangeRateRepository.countDatesByFilterSettings(filtrationSettingsDTO)).willReturn(5L);
         given(exchangeRateRepository.findDatesFromPageByFilterSettings(filtrationSettingsDTO,pageable))
                 .willReturn(dates);
-        given(exchangeRateRepository.findSelectedDates(eq(filtrationSettingsDTO), anyList()))
+        given(exchangeRateRepository.findSelectedDates(eq(filtrationSettingsDTO), datesCaptor.capture()))
                 .willReturn(rates);
 
         //when
-            PageDTO pageDTO = searchAndFiltrationService.getFilteredCollection(filtrationSettingsDTO, pageable);
+        PageDTO pageDTO = searchAndFiltrationService.getFilteredCollection(filtrationSettingsDTO, pageable);
+        List<DailyTableDTO> page = pageDTO.getTables();
 
         //then
+        assertThat(datesCaptor.getValue()).isEqualTo(dates);
         verify(exchangeRateRepository).countDatesByFilterSettings(filtrationSettingsDTO);
         verify(exchangeRateRepository).findDatesFromPageByFilterSettings(filtrationSettingsDTO, pageable);
         verify(exchangeRateRepository).findSelectedDates(eq(filtrationSettingsDTO), anyList());
         assertThat(pageDTO.getNumberOfPages()).isEqualTo(3);
         assertThat(pageDTO.getTotalDailyTables()).isEqualTo(5);
         assertThat(pageDTO.getTables().size()).isEqualTo(2);
+        assertThat(page.size()).isEqualTo(2);
+        page.forEach(table -> assertThat(table.getRates().size()).isEqualTo(2));
     }
 
     @Test
@@ -75,19 +85,22 @@ class SearchAndFiltrationServiceTest {
         given(exchangeRateRepository.countDatesBySearchSettings(searchSettingsDTO)).willReturn(5L);
         given(exchangeRateRepository.findDatesFromPageBySearchSettings(searchSettingsDTO,pageable))
                 .willReturn(dates);
-        given(exchangeRateRepository.findSelectedDates(eq(searchSettingsDTO), anyList()))
+        given(exchangeRateRepository.findSelectedDates(eq(searchSettingsDTO), datesCaptor.capture()))
                 .willReturn(rates);
 
         //when
         PageDTO pageDTO = searchAndFiltrationService.searchInCollection(searchSettingsDTO, pageable);
+        List<DailyTableDTO> page = pageDTO.getTables();
 
         //then
+        assertThat(datesCaptor.getValue()).isEqualTo(dates);
         verify(exchangeRateRepository).countDatesBySearchSettings(searchSettingsDTO);
         verify(exchangeRateRepository).findDatesFromPageBySearchSettings(searchSettingsDTO, pageable);
         verify(exchangeRateRepository).findSelectedDates(eq(searchSettingsDTO), anyList());
         assertThat(pageDTO.getNumberOfPages()).isEqualTo(3);
         assertThat(pageDTO.getTotalDailyTables()).isEqualTo(5);
-        assertThat(pageDTO.getTables().size()).isEqualTo(2);
+        assertThat(page.size()).isEqualTo(2);
+        page.forEach(table -> assertThat(table.getRates().size()).isEqualTo(1));
     }
 
     @Test
