@@ -48,8 +48,8 @@ public class CurrencyStatisticsController {
     }
 
     @RequestMapping("/increase/{code}")
-    public String increaseCountForSelectedCurrency(@PathVariable String code) {
-        currencyStatisticsClientService.increaseCount(List.of(code));
+    public String increaseCountForSelectedCurrency(@PathVariable String code, Model model) {
+        model.addAttribute("results", currencyStatisticsClientService.increaseCount(List.of(code)));
         return "stats";
     }
 
