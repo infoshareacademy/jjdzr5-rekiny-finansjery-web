@@ -7,6 +7,7 @@ import org.infoshare.rekinyfinansjeryweb.entity.user.MyUserPrincipal;
 import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.user.PayMethodFormDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.SaveOfFiltrationSettingsDTO;
+import org.infoshare.rekinyfinansjeryweb.service.CurrentRatesService;
 import org.infoshare.rekinyfinansjeryweb.service.SearchAndFiltrationService;
 import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
 import org.infoshare.rekinyfinansjeryweb.dto.user.AmountFormDTO;
@@ -33,6 +34,8 @@ public class UserController {
     UserService usersService;
     @Autowired
     SearchAndFiltrationService searchAndFiltrationService;
+    @Autowired
+    CurrentRatesService currentRatesService;
 
     @ModelAttribute
     public void addAttributes(Model model) {
@@ -168,14 +171,14 @@ public class UserController {
 
     @GetMapping("/buycurrency")
     public String getLastTradingTable(Model model) {
-        model.addAttribute("exchangeRates", searchAndFiltrationService.getLastExchangeRates());
+        model.addAttribute("exchangeRates", currentRatesService.getLastExchangeRates());
         model.addAttribute("newCurrency", new ExchangeRate());
         return "buycurrency";
     }
 
     @GetMapping("/buycurrency/{code}")
     public String getBuyCurrency(@PathVariable("code") String code, Model model) {
-        ExchangeRateDTO lastCurrencyForTable = searchAndFiltrationService.getCurrencyOfLastExchangeRates(code);
+        ExchangeRateDTO lastCurrencyForTable = currentRatesService.getCurrencyOfLastExchangeRates(code);
         if (lastCurrencyForTable == null) {
             model.addAttribute("errorMessage","msg.error.collectors.currency");
             return "user";
@@ -191,7 +194,7 @@ public class UserController {
                               BindingResult result,
                               ModelMap model) {
         if (result.hasErrors()) {
-            model.addAttribute("rate", searchAndFiltrationService.getCurrencyOfLastExchangeRates(code));
+            model.addAttribute("rate", currentRatesService.getCurrencyOfLastExchangeRates(code));
             return new ModelAndView("ask",model);
         }
         if (usersService.askCurrency(code, amount.getAmount())) {
@@ -205,7 +208,7 @@ public class UserController {
 
     @GetMapping("/sellcurrency/{code}")
     public String getSellCurrency(@PathVariable("code") String code, Model model) {
-        ExchangeRateDTO lastCurrencyForTable = searchAndFiltrationService.getCurrencyOfLastExchangeRates(code);
+        ExchangeRateDTO lastCurrencyForTable = currentRatesService.getCurrencyOfLastExchangeRates(code);
         if (lastCurrencyForTable == null) {
             model.addAttribute("errorMessage","msg.error.collectors.currency");
             return "user";
@@ -221,7 +224,7 @@ public class UserController {
                               BindingResult result,
                               ModelMap model) {
         if (result.hasErrors()) {
-            model.addAttribute("rate", searchAndFiltrationService.getCurrencyOfLastExchangeRates(code));
+            model.addAttribute("rate", currentRatesService.getCurrencyOfLastExchangeRates(code));
             return new ModelAndView("bid", model);
         }
 

@@ -37,6 +37,8 @@ public class UserService implements UserDetailsService {
     @Autowired
     SearchAndFiltrationService searchAndFiltrationService;
     @Autowired
+    CurrentRatesService currentRatesService;
+    @Autowired
     private PasswordEncoder encoder;
     @Autowired
     private ModelMapper modelMapper;
@@ -92,7 +94,7 @@ public class UserService implements UserDetailsService {
     }
 
     private boolean subtractCurrency(User user, String currency, double amount) {
-        ExchangeRateDTO exchangeRate = searchAndFiltrationService.getCurrencyOfLastExchangeRates(currency);
+        ExchangeRateDTO exchangeRate = currentRatesService.getCurrencyOfLastExchangeRates(currency);
            return addToBillingCurrency(user, exchangeRate, amount) &&
                    addCurrencyHistory(user, currency, amount, exchangeRate.getBidPrice(), OperationEnum.BID);
     }
@@ -109,7 +111,7 @@ public class UserService implements UserDetailsService {
     }
     
     private boolean addCurrency(User user, String currency, double amount) {
-        ExchangeRateDTO exchangeRate = searchAndFiltrationService.getCurrencyOfLastExchangeRates(currency);
+        ExchangeRateDTO exchangeRate = currentRatesService.getCurrencyOfLastExchangeRates(currency);
         return subtractFromBillingCurrency(user, exchangeRate, amount) &&
             addCurrencyHistory(user, currency, amount, exchangeRate.getAskPrice(), OperationEnum.ASK);
     }

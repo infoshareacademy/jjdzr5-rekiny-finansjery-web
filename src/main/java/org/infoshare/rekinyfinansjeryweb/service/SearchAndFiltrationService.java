@@ -14,8 +14,14 @@ import java.util.*;
 @Component
 public class SearchAndFiltrationService {
 
-    @Autowired
     ExchangeRateRepository exchangeRateRepository;
+
+    @Autowired
+    CurrentRatesService currentRatesService;
+
+    public SearchAndFiltrationService(ExchangeRateRepository exchangeRateRepository) {
+        this.exchangeRateRepository = exchangeRateRepository;
+    }
 
     @Transactional
     public PageDTO getFilteredCollection(FiltrationSettingsDTO settings, Pageable pageable) {
@@ -28,7 +34,7 @@ public class SearchAndFiltrationService {
     }
 
     public PageDTO searchInCollection(SearchSettingsDTO settings, Pageable pageable){
-        if(settings.getSearchPhrase().isEmpty()){
+        if(settings.getSearchPhrase()==null || settings.getSearchPhrase().isEmpty()){
             return new PageDTO(0, 0, List.of());
         }
         Long totalResultsOfFilter = exchangeRateRepository.countDatesBySearchSettings(settings);
@@ -38,33 +44,13 @@ public class SearchAndFiltrationService {
 
         return convertResultsIntoPageDTO(totalResultsOfFilter, exchangeRateCurrencies, pageable);
     }
-
-    public ExchangeRateDTO getCurrencyOfLastExchangeRates(String currency){
-        return getLastExchangeRates().getRates()
-                .stream()
-                .filter(e -> e.getCode().equals(currency))
-                .findFirst().orElse(new ExchangeRateDTO());
-    }
-
-    public DailyTableDTO getLastExchangeRates(){
-        LocalDate localDate = exchangeRateRepository.findFirstByDateIsBeforeOrderByDateDesc(LocalDate.now()).getDate();
-        List<ExchangeRateCurrency> exchangeRatesByDate = exchangeRateRepository.findExchangeRatesByDate(localDate);
-        DailyTableDTO dailyTableDTO = new DailyTableDTO();
-        dailyTableDTO.setDate(localDate);
-        dailyTableDTO.setRates(
-        exchangeRatesByDate
-                .stream()
-                .map( e -> new ExchangeRateDTO(e.getAskPrice(), e.getBidPrice(), e.getCode(), e.getName(), e.getCategory()))
-                .toList());
-        return dailyTableDTO;
-    }
-
-    private PageDTO convertResultsIntoPageDTO(Long totalResultsOfFilter, List<ExchangeRateCurrency> exchangeRateCurrencies, Pageable pageable){
+    
+    private PageDTO<DailyTableDTO> convertResultsIntoPageDTO(Long totalResultsOfFilter, List<ExchangeRateCurrency> exchangeRateCurrencies, Pageable pageable){
         Map<LocalDate, DailyTableDTO> dailyTables = splitIntoDailyTables(exchangeRateCurrencies);
 
         dailyTables.values().forEach(table -> table.getRates().sort(Comparator.comparing(ExchangeRateDTO::getCode)));
 
-        return new PageDTO((int)Math.ceil((double)totalResultsOfFilter/pageable.getPageSize())-1, totalResultsOfFilter,
+        return new PageDTO<>((int)Math.ceil((double)totalResultsOfFilter/pageable.getPageSize()), totalResultsOfFilter,
                 dailyTables.values().stream().sorted((t1, t2) -> t1.getDate().compareTo(t2.getDate()) * -1).toList());
     }
 
