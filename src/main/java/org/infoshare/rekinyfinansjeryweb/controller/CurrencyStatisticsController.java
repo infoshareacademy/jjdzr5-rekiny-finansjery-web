@@ -52,6 +52,4 @@ public class CurrencyStatisticsController {
         model.addAttribute("results", currencyStatisticsClientService.increaseCount(List.of(code)));
         return "stats";
     }
-
 }
-//    currencyStatisticsClientService.increaseCount(List.of("USD"));

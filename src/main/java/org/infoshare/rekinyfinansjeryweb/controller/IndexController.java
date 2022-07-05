@@ -28,7 +28,8 @@ public class IndexController {
         model.addAttribute("currencies", currencies);
         model.addAttribute("code", "EUR");
 
-        model.addAttribute("chartsData", chartService.getChartsData(currencies));
+        List<ChartService.ChartsData> chartsDataList = chartService.getChartsData(currencies);
+        model.addAttribute("chartsData", chartsDataList);
         return "index";
     }
 }

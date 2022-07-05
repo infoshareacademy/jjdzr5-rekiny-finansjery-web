@@ -69,7 +69,7 @@
                     }
                 </script>
                 <div class="p-3" th:each="record : ${chartsData}" th:id="'small_chart_'+${record.code}"
-                     th:class="${chartsData.get(0).code == record.code() ? 'chart_transition_visible' : 'chart_transition_hidden'}">
+                     th:class="${chartsData.get(0).code == record.code ? 'chart_transition_visible' : 'chart_transition_hidden'}">
                     <h5 th:text="${record.code} + ' - ' + #{chart.title}">Title</h5>
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
                     <canvas th:id="'myChart' + ${record.code}" style="width:100%"></canvas>
@@ -79,7 +79,7 @@
                         new Chart("myChart" + [[${record.code}]], {
                             type: "line",
                             data: {
-                                labels: currencies.get([[${record.code}]]).map(currency => currency.tradingDate),
+                                labels: currencies.get([[${record.code}]]).map(currency => currency.date),
                                 datasets: [{
                                     data: currencies.get([[${record.code}]]).map(currency => currency.bidPrice),
                                     borderColor: "red",
