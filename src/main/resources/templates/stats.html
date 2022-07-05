@@ -14,11 +14,36 @@
     <p th:text="${result.code}"></p>
     <p th:text="${result.date}"></p>
     <p th:text="${result.counter}"></p>
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+            <canvas id="myChart" style="width:100%"></canvas>
+
+    <script th:inline="javascript">
+
+
+        let currencies = /*[[${result}]]*/;
+        var xValues = currencies.map(currency => result.date);
+
+        new Chart("myChart", {
+            type: "line",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    data: currencies.map(currency => result.counter),
+                    borderColor: "blue",
+                    fill: false
+                },{
+                },
+                    options: {
+            legend: {display: false}
+        }
+        });
+    </script>
 </div>
 
 <header th:insert="fragments/general :: menu"></header>
 
-<!-- ======= Main ======= -->
+<!-- ======= Main =======-->
 <!--<main>-->
 
 <!--    <div class="container p-5">-->
@@ -51,22 +76,18 @@
 <!--        <script th:inline="javascript">-->
 
 
-<!--            let currencies = /*[[${chartData}]]*/;-->
-<!--            var xValues = currencies.map(currency => currency.tradingDate);-->
+<!--            let currencies = /*[[${result}]]*/;-->
+<!--            var xValues = currencies.map(currency => result.date);-->
 
 <!--            new Chart("myChart", {-->
 <!--                type: "line",-->
 <!--                data: {-->
 <!--                    labels: xValues,-->
 <!--                    datasets: [{-->
-<!--                        data: currencies.map(currency => currency.bidPrice),-->
-<!--                        borderColor: "red",-->
-<!--                        fill: false-->
-<!--                    },{-->
-<!--                        data: currencies.map(currency => currency.askPrice),-->
+<!--                        data: currencies.map(currency => result.counter),-->
 <!--                        borderColor: "blue",-->
 <!--                        fill: false-->
-<!--                    }]-->
+<!--                    },{-->
 <!--                },-->
 <!--                options: {-->
 <!--                    legend: {display: false}-->
