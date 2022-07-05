@@ -16,9 +16,6 @@ public class SearchAndFiltrationService {
 
     ExchangeRateRepository exchangeRateRepository;
 
-    @Autowired
-    CurrentRatesService currentRatesService;
-
     public SearchAndFiltrationService(ExchangeRateRepository exchangeRateRepository) {
         this.exchangeRateRepository = exchangeRateRepository;
     }

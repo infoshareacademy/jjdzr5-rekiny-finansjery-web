@@ -61,10 +61,9 @@ class SearchAndFiltrationServiceTest {
         assertThat(datesCaptor.getValue()).isEqualTo(dates);
         verify(exchangeRateRepository).countDatesByFilterSettings(filtrationSettingsDTO);
         verify(exchangeRateRepository).findDatesFromPageByFilterSettings(filtrationSettingsDTO, pageable);
-        verify(exchangeRateRepository).findSelectedDates(eq(filtrationSettingsDTO), anyList());
+        verify(exchangeRateRepository).findSelectedDates(eq(filtrationSettingsDTO), eq(dates));
         assertThat(pageDTO.getNumberOfPages()).isEqualTo(3);
         assertThat(pageDTO.getTotalDailyTables()).isEqualTo(5);
-        assertThat(pageDTO.getTables().size()).isEqualTo(2);
         assertThat(page.size()).isEqualTo(2);
         page.forEach(table -> assertThat(table.getRates().size()).isEqualTo(2));
     }
@@ -96,7 +95,7 @@ class SearchAndFiltrationServiceTest {
         assertThat(datesCaptor.getValue()).isEqualTo(dates);
         verify(exchangeRateRepository).countDatesBySearchSettings(searchSettingsDTO);
         verify(exchangeRateRepository).findDatesFromPageBySearchSettings(searchSettingsDTO, pageable);
-        verify(exchangeRateRepository).findSelectedDates(eq(searchSettingsDTO), anyList());
+        verify(exchangeRateRepository).findSelectedDates(eq(searchSettingsDTO), eq(dates));
         assertThat(pageDTO.getNumberOfPages()).isEqualTo(3);
         assertThat(pageDTO.getTotalDailyTables()).isEqualTo(5);
         assertThat(page.size()).isEqualTo(2);
