@@ -24,7 +24,7 @@ public class CurrencyStatisticsClientService {
     public List<CurrencyStatisticsDTO> getAllResults() {
 
         return Arrays.stream(Optional.ofNullable(restTemplate
-                .getForObject("http://localhost:8081/api/all", CurrencyStatisticsDTO[].class))
+                .getForObject("http://localhost:8081/api/all", CurrencyStatisticsDTO[].class)) //TODO wyrzucić URL do stałej
                 .orElse(new CurrencyStatisticsDTO[0])).toList();
     }
 
