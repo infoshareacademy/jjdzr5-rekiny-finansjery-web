@@ -68,5 +68,3 @@ public class CurrencyStatisticsClientService {
 
 
 }
-//todo interactive chart showing stats
-//todo looks nice and fits the rest of the app's visuals
