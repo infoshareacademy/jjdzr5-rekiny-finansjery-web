@@ -1,5 +1,6 @@
 package org.infoshare.rekinyfinansjeryweb.service.extrernalApi.coinGecko;
 
+import lombok.extern.slf4j.Slf4j;
 import org.infoshare.rekinyfinansjeryweb.entity.Currency;
 import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRate;
 import org.infoshare.rekinyfinansjeryweb.entity.LastUpdate;
@@ -7,6 +8,7 @@ import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ApiRequestResult;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ExternalApiDataSourceInterface;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.coinGecko.dto.CoinData;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
@@ -17,6 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 public abstract class CoinGeckoAdapter implements ExternalApiDataSourceInterface {
 
     RestTemplate restTemplate;
@@ -25,7 +28,7 @@ public abstract class CoinGeckoAdapter implements ExternalApiDataSourceInterface
 
     private final String name;
     private static final String URL_COIN_HISTORY = "https://api.coingecko.com/api/v3/coins/{id}/history?date={date}&localization=false";
-    private static  final Integer LIMIT_DAYS = 10;
+    private static  final Integer LIMIT_DAYS = 90;
 
     public CoinGeckoAdapter(RestTemplate restTemplate, String id, String name) {
         this.restTemplate = restTemplate;
@@ -49,26 +52,35 @@ public abstract class CoinGeckoAdapter implements ExternalApiDataSourceInterface
         LocalDate endDate = LocalDate.now();
         List<CoinData> coinDataList = new ArrayList<>();
 
-        LocalDate nextDate = startDate;
-        while(nextDate.isBefore(endDate)) {
+        LocalDate nextDate = endDate.minusDays(1);
+        while(nextDate.isAfter(startDate) || nextDate.isEqual(startDate)) {
             Optional<CoinData> coinData = Optional
-                    .ofNullable(restTemplate.getForObject(URL_COIN_HISTORY, CoinData.class, id, nextDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))));
+                        .ofNullable(sentRequest(id, nextDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))));
 
             LocalDate finalNextDate = nextDate;
             coinData.ifPresent(data -> {
                 data.setDate(finalNextDate);
                 coinDataList.add(data);
             });
-            nextDate = nextDate.plusDays(1);
+            log.info(getApiName() + " handled request for " + nextDate);
+            nextDate = nextDate.minusDays(1);
+            sleep(3);
+        }
+        return coinDataList;
+    }
 
+    private CoinData sentRequest(String id, String date){
+        CoinData coinData;
+        while(true) {
             try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ie) {
-                Thread.currentThread().interrupt();
+                coinData = restTemplate.getForObject(URL_COIN_HISTORY, CoinData.class, id, date);
+                break;
+            } catch (HttpClientErrorException e) {
+                log.error(getApiName() + ": " + e.getLocalizedMessage());
+                sleep(60);
             }
         }
-
-        return coinDataList;
+        return coinData;
     }
 
     private ApiRequestResult convertToDatabaseStructures(List<CoinData> coinData, List<Currency> currencies){
@@ -85,7 +97,7 @@ public abstract class CoinGeckoAdapter implements ExternalApiDataSourceInterface
                 currency = Optional.of(newCurrency);
             }
             ExchangeRate rate =
-                    new ExchangeRate(null, currency.get(), data.getDate(), data.getMarketData().getCurrentPrice().getPln(),
+                    new ExchangeRate(null, currency.get(), data.getDate().plusDays(1), data.getMarketData().getCurrentPrice().getPln(),
                             data.getMarketData().getCurrentPrice().getPln());
             result.getExchangeRates().add(rate);
         });
@@ -96,5 +108,14 @@ public abstract class CoinGeckoAdapter implements ExternalApiDataSourceInterface
     private Map<String, Currency> currencyListToMap(List<Currency> currencies){
         return currencies.stream()
                 .collect(Collectors.toMap(Currency::getCode, item -> item));
+    }
+
+
+    private void sleep(int seconds){
+        try {
+            Thread.sleep(1000*seconds);
+        } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+        }
     }
 }

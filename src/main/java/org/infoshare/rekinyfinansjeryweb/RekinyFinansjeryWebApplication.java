@@ -10,22 +10,8 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class RekinyFinansjeryWebApplication {
-
-	@Autowired
-	ExternalDataApiService externalDataApiService;
-	@Autowired
-	CreateUserService createUserService;
-
-	public static void main(String[] args) {
+		public static void main(String[] args) {
 		SpringApplication.run(RekinyFinansjeryWebApplication.class, args);
-	}
-
-	@Bean
-	public CommandLineRunner CommandLineRunnerBean() {
-		return (args) -> {
-			externalDataApiService.getData();
-			createUserService.createUsers();
-		};
 	}
 }
 
