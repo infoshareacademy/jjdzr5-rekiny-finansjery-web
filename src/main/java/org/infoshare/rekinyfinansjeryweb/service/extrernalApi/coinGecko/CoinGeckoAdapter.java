@@ -54,9 +54,7 @@ public abstract class CoinGeckoAdapter implements ExternalApiDataSourceInterface
 
         LocalDate nextDate = endDate.minusDays(1);
         while(nextDate.isAfter(startDate) || nextDate.isEqual(startDate)) {
-            Optional<CoinData> coinData = Optional
-                        .ofNullable(sentRequest(id, nextDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))));
-
+            Optional<CoinData> coinData = sendRequest(id, nextDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
             LocalDate finalNextDate = nextDate;
             coinData.ifPresent(data -> {
                 data.setDate(finalNextDate);
@@ -69,7 +67,7 @@ public abstract class CoinGeckoAdapter implements ExternalApiDataSourceInterface
         return coinDataList;
     }
 
-    private CoinData sentRequest(String id, String date){
+    private Optional<CoinData> sendRequest(String id, String date){
         CoinData coinData;
         while(true) {
             try {
@@ -80,7 +78,7 @@ public abstract class CoinGeckoAdapter implements ExternalApiDataSourceInterface
                 sleep(60);
             }
         }
-        return coinData;
+        return Optional.ofNullable(coinData);
     }
 
     private ApiRequestResult convertToDatabaseStructures(List<CoinData> coinData, List<Currency> currencies){
