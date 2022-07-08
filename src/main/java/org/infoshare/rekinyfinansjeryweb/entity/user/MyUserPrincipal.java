@@ -58,7 +58,7 @@ public class MyUserPrincipal implements UserDetails {
     public User getUser(){
         return user;
     }
-    public void setBillingCurrency(double billingCurrency) {
+    public void setBillingCurrency(String billingCurrency) {
         this.user.setBillingCurrency(billingCurrency);
     }
 }
