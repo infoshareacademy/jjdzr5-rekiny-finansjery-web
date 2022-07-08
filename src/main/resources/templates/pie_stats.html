@@ -10,34 +10,26 @@
 </head>
 <body>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-<canvas id="myChart" style="width:100%"></canvas>
+<h3 style="text-align: center; margin-top: 30px; margin-bottom: 25px;">Currency Search Statistics from last 30 days</h3>
 
-<div>
-
-</div>
-<h3>Currency Search Statistics from last 30 days</h3>
-
-<div class="container p-5">
+<div class="container p-5" style="maring:auto; display:block; position: absolute;" >
 
     <form class="form-inline" method="get" th:action="@{'/stats/currency/'}">
-
         <div class="form-check-inline">
-            <label for="code" th:text="#{chart.currency}">Currency</label>
+            <label for="code" th:text="#{chart.currency}" style="padding: 3px">Currency</label>
             <select class="form-control" name="code" id="code" style="width: 70px">
                 <option th:each="code:${codes}" th:value="${code}" th:text="${code}"></option>
             </select>
         </div>
-
         <button class="btn btn-sm m-1 btn-secondary" type="submit" th:text="#{chart.button.submit}">Submit</button>
-
     </form>
 </div>
 
-<div class="container p-5">
+<div style="margin-left: auto; margin-right: auto; display: block; padding: 20px">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <canvas id="myChart" style="width:100%"></canvas>
+
     <script th:inline="javascript">
-
-
         let stats = /*[[${results}]]*/;
         var xValues = stats.map(stat => stat.code);
         var barColors = ['#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe', '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080', '#ffffff', '#000000'
