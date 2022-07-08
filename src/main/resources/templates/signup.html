@@ -43,6 +43,12 @@
                         <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
                         <div th:errors="*{password}"></div>
                     </div>
+                    <label for="repeat-password" th:text="#{signup.repeat.password}"></label>
+                    <input class="form-control" id="repeat-password" type="password" th:field="*{repeatPassword}"/>
+                    <div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${#fields.hasErrors('repeatPassword')}">
+                        <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+                        <div th:errors="*{repeatPassword}"></div>
+                    </div>
                     <div class="d-grid gap-2">
                         <input class="btn btn-sm m-1 btn-primary" type="submit" th:value="#{signup}"/>
                     </div>
