@@ -14,7 +14,7 @@ public class Beans {
 
     @Bean
     public ExecutorService executorService(){
-        return Executors.newFixedThreadPool(10);
+        return Executors.newFixedThreadPool(3);
     }
 
     @Bean
