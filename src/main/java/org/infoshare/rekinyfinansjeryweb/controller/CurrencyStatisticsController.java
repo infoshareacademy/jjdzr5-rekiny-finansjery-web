@@ -8,9 +8,7 @@ import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -28,51 +26,46 @@ public class CurrencyStatisticsController {
     @Autowired
     UsedCurrenciesService usedCurrenciesService;
 
-    SearchSettingsDTO settings;
-
-    String[] currencyCodes = new String[] {"NOK", "GBP", "USD"};
-
-    @RequestMapping("/all")
+    @GetMapping("/all")
     public String showAllStats(Model model) {
         model.addAttribute("results", currencyStatisticsClientService.getAllResults());
         return "chart_stats";
     }
 
-    @RequestMapping()
+    @GetMapping()
     public String showRecentStats(Model model) {
         model.addAttribute("results", currencyStatisticsPieChartService.createPieChartDataSet());
-        model.addAttribute("codes", currencyCodes);
+        model.addAttribute("codes", usedCurrenciesService.getShortNamesOfCurrenciesForStats());
         return "pie_stats";
     }
 
-    @RequestMapping("currency/{code}")
+    @GetMapping("currency/{code}")
     public String showCurrencyStatsForCurrencyUsingPath(Model model, @PathVariable String code) {
         model.addAttribute("results", currencyStatisticsClientService.getOneResultByCode(code));
-        model.addAttribute("codes", currencyCodes);
+        model.addAttribute("codes", usedCurrenciesService.getShortNamesOfCurrenciesForStats());
         return "chart_stats";
     }
 
-    @RequestMapping("currency/")
+    @GetMapping("currency/")
     public String showCurrencyStatsForCurrencyUsingParam(Model model, @RequestParam String code) {
         model.addAttribute("results", currencyStatisticsClientService.getOneResultByCode(code));
-        model.addAttribute("codes", currencyCodes);
-//        model.addAttribute("possibleCurrencies", usedCurrenciesService.getShortNamesOfCurrencies(NBPApiManager.getInstance(), settings.getCurrency()));
+        model.addAttribute("codes", usedCurrenciesService.getShortNamesOfCurrenciesForStats());
         return "chart_stats";
     }
 
-    @RequestMapping("currency/{month}/{year}")
+    @GetMapping("currency/{month}/{year}")
     public String showCurrencyStatsforSelectedMonth(Model model, @PathVariable int month, @PathVariable int year) {
         model.addAttribute("results", currencyStatisticsClientService.getOneResultByMonthAndYear(month, year));
         return "chart_stats";
     }
 
-    @RequestMapping("currency/{month}/{year}/{code}")
+    @GetMapping("currency/{month}/{year}/{code}")
     public String showSingleCurrencyStatsFromSelectedMonthForCurrency(Model model, @PathVariable int month, @PathVariable int year, @PathVariable String code) {
         model.addAttribute("results", currencyStatisticsClientService.getOneResultByCodeAndMonthAndYear(month, year, code));
         return "chart_stats";
     }
 
-    @RequestMapping("/increase/{code}")
+    @GetMapping("/increase/{code}")
     public String increaseCountForSelectedCurrency(@PathVariable String code, Model model) {
         model.addAttribute("results", currencyStatisticsClientService.increaseCount(List.of(code)));
         return "chart_stats";
