@@ -9,8 +9,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PageDTO {
+public class PageDTO<T> {
     private int numberOfPages;
     private long totalDailyTables;
-    private List tables;
+    private List<T> tables;
 }
