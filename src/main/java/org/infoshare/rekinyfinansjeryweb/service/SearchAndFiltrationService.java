@@ -48,7 +48,7 @@ public class SearchAndFiltrationService {
 
     public DailyTableDTO getLastExchangeRates(){
         LocalDate localDate = exchangeRateRepository.findFirstByDateIsBeforeOrderByDateDesc(LocalDate.now()).getDate();
-        List<ExchangeRateCurrency> exchangeRatesByDate = exchangeRateRepository.findExchangeRatesByDate(localDate);
+        List<ExchangeRateCurrency> exchangeRatesByDate = exchangeRateRepository.findExchangeRatesCurrenciesByDate(localDate);
         DailyTableDTO dailyTableDTO = new DailyTableDTO();
         dailyTableDTO.setDate(localDate);
         dailyTableDTO.setRates(

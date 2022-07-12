@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class AdminService {
+public class AdminTableService {
 
     @Autowired
     ExchangeRateRepository exchangeRateRepository;
