@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:margin-bottom="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,13 +9,8 @@
     <link rel="stylesheet" th:href="@{/styles/style.css}">
 </head>
 <body>
-
 <header th:insert="fragments/general :: menu"></header>
-
-<!-- ======= Main =======-->
-
 <main>
-
     <div class="container p-5">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
         <canvas id="myChart" style="width:100%"></canvas>
@@ -41,20 +36,17 @@
             });
         </script>
     </div>
-
-
-    <div class="container p-5">
+    <div class=" container p-5">
         <div th:each="result:${results}">
             <p th:text="${result.code}"></p>
             <p th:text="${result.date}"></p>
             <p th:text="${result.counter}"></p>
         </div>
+        <a href="/stats" th:text="#{chart.back}" style="text-align: right; padding: 50px"></a>
     </div>
-
-
 </main>
 
-<footer th:insert="fragments/general :: footer"></footer>
+<footer th:insert=" fragments/general :: footer"></footer>
 
 <script th:src="@{~/js/bootstrap.bundle.min.js}"></script>
 </body>

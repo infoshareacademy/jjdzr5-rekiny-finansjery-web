@@ -12,7 +12,7 @@
 
 <h3 style="text-align: center; margin-top: 30px; margin-bottom: 25px;">Currency Search Statistics from last 30 days</h3>
 
-<div class="container p-5" style="maring:auto; display:block; position: absolute;" >
+<div class="container p-5" style="margin-left: auto; margin-right: auto; display: block; padding: 20px">
 
     <form class="form-inline" method="get" th:action="@{'/stats/currency/'}">
         <div class="form-check-inline">
@@ -23,9 +23,7 @@
         </div>
         <button class="btn btn-sm m-1 btn-secondary" type="submit" th:text="#{chart.button.submit}">Submit</button>
     </form>
-</div>
 
-<div style="margin-left: auto; margin-right: auto; display: block; padding: 20px">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <canvas id="myChart" style="width:100%"></canvas>
 
