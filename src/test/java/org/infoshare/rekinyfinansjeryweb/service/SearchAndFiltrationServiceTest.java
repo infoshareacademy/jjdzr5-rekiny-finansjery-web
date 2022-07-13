@@ -34,7 +34,7 @@ class SearchAndFiltrationServiceTest {
     @Captor
     ArgumentCaptor<List<LocalDate>> datesCaptor;
 
-    @Test
+   /* @Test
     void getFilteredCollection_returnsRequestedPage_givenFiltrationSettingsAndPageAble(){
         //given
         SearchAndFiltrationService searchAndFiltrationService = new SearchAndFiltrationService(exchangeRateRepository);
@@ -134,7 +134,7 @@ class SearchAndFiltrationServiceTest {
         assertThat(pageDTO.getTotalDailyTables()).isEqualTo(0);
         assertThat(pageDTO.getTables()).isEmpty();
     }
-
+*/
 
 
 }

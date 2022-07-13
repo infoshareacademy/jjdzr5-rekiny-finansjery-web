@@ -1,9 +1,10 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
 import org.infoshare.rekinyfinansjeryweb.dto.*;
+import org.infoshare.rekinyfinansjeryweb.entity.Currency;
 import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRateCurrency;
+import org.infoshare.rekinyfinansjeryweb.repository.CurrencyRepository;
 import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRateRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
@@ -15,29 +16,34 @@ import java.util.*;
 public class SearchAndFiltrationService {
 
     ExchangeRateRepository exchangeRateRepository;
+    CurrencyRepository currencyRepository;
 
-    public SearchAndFiltrationService(ExchangeRateRepository exchangeRateRepository) {
+    public SearchAndFiltrationService(ExchangeRateRepository exchangeRateRepository, CurrencyRepository currencyRepository) {
         this.exchangeRateRepository = exchangeRateRepository;
+        this.currencyRepository = currencyRepository;
     }
 
     @Transactional
     public PageDTO getFilteredCollection(FiltrationSettingsDTO settings, Pageable pageable) {
-        Long totalResultsOfFilter = exchangeRateRepository.countDatesByFilterSettings(settings);
-        List<LocalDate> dates = exchangeRateRepository.findDatesFromPageByFilterSettings(settings, pageable);
+        List<Currency> currencies = currencyRepository.findAllCurrencyByCodeIn(settings);
+        Long totalResultsOfFilter = exchangeRateRepository.countDatesByFilterSettings(settings, currencies);
+        List<LocalDate> dates = exchangeRateRepository.findDatesFromPageByFilterSettings(settings, pageable, currencies);
         List<ExchangeRateCurrency> exchangeRateCurrencies =
-                exchangeRateRepository.findSelectedDates(settings, dates);
+                exchangeRateRepository.findSelectedDates(settings, dates, currencies);
 
         return convertResultsIntoPageDTO(totalResultsOfFilter, exchangeRateCurrencies, pageable);
     }
 
+    @Transactional
     public PageDTO searchInCollection(SearchSettingsDTO settings, Pageable pageable){
         if(settings.getSearchPhrase()==null || settings.getSearchPhrase().isEmpty()){
             return new PageDTO(0, 0, List.of());
         }
-        Long totalResultsOfFilter = exchangeRateRepository.countDatesBySearchSettings(settings);
-        List<LocalDate> dates = exchangeRateRepository.findDatesFromPageBySearchSettings(settings, pageable);
+        List<Currency> currencies = currencyRepository.findAllCurrencyByCodeIn(settings);
+        Long totalResultsOfFilter = exchangeRateRepository.countDatesBySearchSettings(settings, currencies);
+        List<LocalDate> dates = exchangeRateRepository.findDatesFromPageBySearchSettings(settings, pageable, currencies);
         List<ExchangeRateCurrency> exchangeRateCurrencies =
-                exchangeRateRepository.findSelectedDates(settings, dates);
+                exchangeRateRepository.findSelectedDates(settings, dates, currencies);
 
         return convertResultsIntoPageDTO(totalResultsOfFilter, exchangeRateCurrencies, pageable);
     }
