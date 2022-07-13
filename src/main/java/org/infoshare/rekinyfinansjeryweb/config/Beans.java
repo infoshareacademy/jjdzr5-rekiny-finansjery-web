@@ -1,11 +1,9 @@
 package org.infoshare.rekinyfinansjeryweb.config;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
