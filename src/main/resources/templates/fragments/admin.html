@@ -10,10 +10,12 @@
     </div>
 </div>
 
-<div th:fragment="table_admin_modals">
+<div th:fragment="table_admin_modals" th:if="${exchangeRates != null}" >
     <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:insert="fragments/admin :: edit_table_modal"></div>
-    <div th:each="rate : ${exchangeRates.getRates()}">
-        <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:replace="fragments/admin :: edit_currency_modal"></div>
+    <div th:if="${exchangeRates != null}" >
+        <div th:each="rate : ${exchangeRates.getRates()}">
+            <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:replace="fragments/admin :: edit_currency_modal"></div>
+        </div>
     </div>
     <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:insert="fragments/admin :: add_currency_modal"></div>
 </div>
@@ -105,7 +107,7 @@
     </div>
 </div>
 <div th:fragment="edit_table_modal" id="edit_table_modal_fragment">
-    <div th:with="date=${exchangeRates.getDate()}" class="modal modal-alert fade py-5" tabindex="-1" role="dialog"
+    <div th:if="${exchangeRates!=null}" th:with="date=${exchangeRates.getDate()}" class="modal modal-alert fade py-5" tabindex="-1" role="dialog"
          th:id="'delete' + ${#strings.replace(date,'/','_')}">
         <div class="modal-dialog" role="document">
             <div class="modal-content rounded-5 shadow">

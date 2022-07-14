@@ -20,7 +20,7 @@ public class ChartService {
     ExchangeRateRepository exchangeRateRepository;
 
     public List<ChartData> createChartDataSet(List<ExchangeRate> rates) {
-        return rates.stream().map(exchangeRate -> new ChartData(exchangeRate.getDate(), exchangeRate.getAskPrice(), exchangeRate.getBidPrice()))
+        return rates.stream().map(exchangeRate -> new ChartData(exchangeRate.getDate(), exchangeRate.getAskPrice(), exchangeRate.getBidPrice())).sorted(Comparator.comparing(e -> e.date))
                 .toList();
 
     }
@@ -62,6 +62,7 @@ public class ChartService {
             this.code = code;
         }
     }
+
 
     public record ChartData(
             LocalDate date,

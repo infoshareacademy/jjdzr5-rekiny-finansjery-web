@@ -89,7 +89,7 @@ public abstract class CoinGeckoAdapter implements ExternalApiDataSourceInterface
             Optional<Currency> currency = Optional.ofNullable(currenciesMap.get(data.getSymbol().toUpperCase()));
             if(currency.isEmpty()){
                 Currency newCurrency = new Currency(null, data.getSymbol().toUpperCase(),
-                        data.getName(), "cryptocurrency");
+                        data.getName(), "cryptocurrency", new ArrayList<>());
                 currenciesMap.put(newCurrency.getCode().toUpperCase(), newCurrency);
                 result.getCurrencies().add(newCurrency);
                 currency = Optional.of(newCurrency);
