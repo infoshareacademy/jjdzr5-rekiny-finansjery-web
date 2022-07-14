@@ -23,6 +23,12 @@ public class UsedCurrenciesService {
                 .collect(Collectors.toList());
     }
 
+    public List<String> getShortNamesOfCurrenciesForStats(){
+        List<Currency> currencies = currencyRepository.findAll();
+        return currencies.stream().map(Currency::getCode)
+                .collect(Collectors.toList());
+    }
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor

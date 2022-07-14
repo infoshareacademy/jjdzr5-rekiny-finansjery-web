@@ -27,7 +27,7 @@
                             <li><a class="dropdown-item" th:href="@{/user}"><i class="bi bi-wallet2"></i> <span th:text="#{menu.profil.wallet}"></span></a></li>
                             <li><a class="dropdown-item" th:href="@{/user/edit/data}"><i class="bi bi-gear"></i> <span th:text="#{menu.profil.settings}"></span></a></li>
                             <li sec:authorize="hasAnyAuthority('ROLE_ADMIN')"><hr class="dropdown-divider"></li>
-                            <li sec:authorize="hasAnyAuthority('ROLE_ADMIN')"><a class="dropdown-item" th:href="@{/admin}"><i class="bi bi-key"></i> <span th:text="#{menu.profil.admin}"></span></a></li>
+                            <li sec:authorize="hasAnyAuthority('ROLE_ADMIN')"><a class="dropdown-item" th:href="@{/admin/panel}"><i class="bi bi-key"></i> <span th:text="#{menu.profil.admin}"></span></a></li>
                             <li sec:authorize="hasAnyAuthority('ROLE_ADMIN')"><a class="dropdown-item" th:href="@{/stats}"><i class="bi bi-bar-chart-steps"></i> <span th:text="#{menu.profil.stats}"></span></a></li>
                         </ul>
                     </li>

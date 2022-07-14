@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -29,6 +30,6 @@ public class Currency {
     @NotNull
     @Column(name = COLUMN_PREFIX + "category")
     String category;
-    /*@OneToMany(mappedBy = "currency")
-    List<ExchangeRate> currencies;*/
+    @OneToMany(mappedBy = "currency")
+    List<ExchangeRate> currencies;
 }

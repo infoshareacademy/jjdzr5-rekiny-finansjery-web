@@ -7,11 +7,11 @@
 
 <!-- ======= Success Message ======= -->
 <div th:fragment="menu_message">
-    <div th:if="${successMessage != null}" class="alert alert-success d-flex align-items-center justify-content-center" role="alert">
+    <div th:if="${successMessage != null}" class="alert alert-success d-flex align-items-center justify-content-center mb-0" role="alert">
         <div><i class="bi bi-check-circle h3 pe-3"></i></div>
         <div th:text="#{${successMessage}}"></div>
     </div>
-    <div th:if="${errorMessage != null}" class="alert alert-danger d-flex align-items-center justify-content-center" role="alert">
+    <div th:if="${errorMessage != null}" class="alert alert-danger d-flex align-items-center justify-content-center mb-0" role="alert">
         <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
         <div th:text="#{${errorMessage}}"></div>
     </div>
@@ -35,12 +35,6 @@
               class="p-3 pt-4 w-100 border border-1 border-primary rounded-3">
             <h4 class="text-primary" th:text="#{add.new.table}">Add Table</h4>
             <h5 class="mb-4" th:text="#{correct.values}"></h5>
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <label for="addTableNo" class="col-form-label w-50" th:text="#{table.name}"></label>
-                <input type="text" class="form-control rounded-4" id="addTableNo"
-                       th:value="${invalidDailyTable.getNo()}" name="no"
-                       required minlength="3" maxlength="14">
-            </div>
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <label for="addEffectiveDate" class="col-form-label w-50"
                        th:text="#{collection.view.effective.date}"></label>
@@ -83,20 +77,14 @@
                 <li th:each="err : ${errorMessageForEditTable}" th:text="#{${err.getDefaultMessage()}}"/>
             </ul>
         </div>
-        <div class="p-3 pt-4 w-100 border border-1 border-warning rounded-3">
-            <h4 class="text-warning" th:text="#{edit.table}">Edit Table</h4>
+        <div class="p-3 pt-4 w-100 border border-1 border-primary rounded-3">
+            <h4 class="text-primary" th:text="#{edit.table}">Edit Table</h4>
             <h5 class="mb-4" th:text="#{correct.values}"></h5>
             <form th:fragment="edit_table_form"
-                  th:with="no=${exchangeRates.getNo()}"
-                  th:action="@{admin/edit-table/{table}(table=${#strings.replace(no,'/','_')})}"
+                  th:with="date=${exchangeRates.getDate()}"
+                  th:action="@{admin/edit-table/{table}(table=${#strings.replace(date,'/','_')})}"
                   th:object="${invalidDailyTable}"
                   th:method="post">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <label for="editNo" class="col-form-label w-50" th:text="#{table.name}"></label>
-                    <input type="text" class="form-control rounded-4" id="editNo"
-                           th:value="${invalidDailyTable.getNo()}" name="no"
-                           required minlength="3" maxlength="14">
-                </div>
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <label for="editEffectiveDate" class="col-form-label w-50"
                            th:text="#{collection.view.effective.date}"></label>
@@ -116,8 +104,8 @@
                            th:max="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
                 </div>
                 <div class="d-flex justify-content-end">
-                    <a th:with="no=${exchangeRates.getNo()}"
-                       th:href="@{/table/{table}(table=${#strings.replace(no,'/','_')})}"
+                    <a th:with="date=${exchangeRates.getDate()}"
+                       th:href="@{/table/{table}(table=${#strings.replace(date,'/','_')})}"
                        th:text="#{cancel.button}"
                        class="btn btn-lg my-2 mx-1 rounded-4 btn-secondary" style="width: 150px">Cancel</a>
                     <button class="btn btn-lg my-2 mx-1 rounded-4 btn-warning" style="width: 150px" type="submit"
@@ -145,10 +133,18 @@
         <div class="p-3 pt-4 w-100 border border-1 border-primary rounded-3">
             <h4 class="text-primary" th:text="#{add.new.currency}">Add New Currency</h4>
             <h5 class="mb-4" th:text="#{correct.values}"></h5>
-            <form th:with="no=${exchangeRates.getNo()}"
-                  th:action="@{/admin/add-currency/{table}(table=${#strings.replace(no,'/','_')})}"
+            <form th:with="date=${invalidExchangeRate.date}"
+                  th:action="@{/admin/add-currency/{date}(date=${#strings.replace(date,'/','_')})}"
                   th:object="${invalidExchangeRate}"
                   th:method="post">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <label for="addInvalidRateDate" class="col-form-label w-50"
+                           th:text="#{collection.view.date}">Date</label>
+                    <input type="date" class="form-control rounded-4" id="addInvalidRateDate"
+                           th:value="${invalidExchangeRate.date}" name="date" required
+                           th:min="${#dates.format(#dates.create(2022,1,1), 'yyyy-MM-dd')}"
+                           th:max="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
+                </div>
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <label for="addInvalidCurrencyName" class="col-form-label w-50"
                            th:text="#{collection.view.currency.name}">Currency Name</label>
@@ -160,6 +156,11 @@
                            th:text="#{collection.view.code}">Code</label>
                     <input type="text" class="form-control rounded-4" id="addInvalidCurrencyCode"
                            th:value="${invalidExchangeRate.code}" name="code" required maxlength="3">
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <label for="addInvalidCategory" class="col-form-label w-50" th:text="#{collection.view.category}">Category</label>
+                    <input type="text" class="form-control rounded-4" id="addInvalidCategory"
+                           th:value="${invalidExchangeRate.category}" name="category" required maxlength="20">
                 </div>
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <label for="addInvalidCurrencyBid" class="col-form-label w-50"
@@ -174,8 +175,7 @@
                            th:value="${invalidExchangeRate.ask}" step="any" name="ask" required max="100">
                 </div>
                 <div class="d-flex justify-content-end">
-                    <a th:with="no=${exchangeRates.getNo()}"
-                       th:href="@{/table/{table}(table=${#strings.replace(no,'/','_')})}"
+                    <a th:href="@{/table/{table}(table=${#strings.replace(date,'/','_')})}"
                        th:text="#{cancel.button}"
                        class="btn btn-lg my-2 mx-1 rounded-4 btn-secondary" style="width: 150px">Cancel</a>
                     <button class="btn btn-lg my-2 mx-1 rounded-4 btn-primary" style="width: 170px" type="submit"
@@ -200,13 +200,21 @@
                 <li th:each="err : ${errorMessageForEditCurrency}" th:text="#{${err.getDefaultMessage()}}"/>
             </ul>
         </div>
-        <div class="p-3 pt-4 w-100 border border-1 border-warning rounded-3">
-            <h4 class="text-warning" th:text="#{edit.currency}">Edit Currency</h4>
+        <div class="p-3 pt-4 w-100 border border-1 border-primary rounded-3">
+            <h4 class="text-primary" th:text="#{edit.currency}">Edit Currency</h4>
             <h5 class="mb-4" th:text="#{correct.values}"></h5>
-            <form th:with="no=${exchangeRates.getNo()}"
-                  th:action="@{/admin/edit-currency/{table}/{code}(table=${#strings.replace(no,'/','_')}, code=${currencyCode})}"
+            <form th:with="date=${exchangeRates.getDate()}"
+                  th:action="@{/admin/edit-currency/{table}/{code}(table=${#strings.replace(date,'/','_')}, code=${currencyCode})}"
                   th:object="${invalidExchangeRate}"
                   th:method="post">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <label for="editInvalidRateDate" class="col-form-label w-50"
+                           th:text="#{collection.view.date}">Date</label>
+                    <input type="date" class="form-control rounded-4" id="editInvalidRateDate"
+                           th:value="${invalidExchangeRate.date}" name="date" required
+                           th:min="${#dates.format(#dates.create(2022,1,1), 'yyyy-MM-dd')}"
+                           th:max="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
+                </div>
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <label for="editInvalidCurrencyName" class="col-form-label w-50"
                            th:text="#{collection.view.currency.name}">Currency Name</label>
@@ -218,6 +226,11 @@
                            th:text="#{collection.view.code}">Code</label>
                     <input type="text" class="form-control rounded-4" id="editInvalidCurrencyCode"
                            th:value="${invalidExchangeRate.code}" name="code" required maxlength="3">
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <label for="editInvalidCategory" class="col-form-label w-50" th:text="#{collection.view.category}">Category</label>
+                    <input type="text" class="form-control rounded-4" id="editInvalidCategory"
+                           th:value="${invalidExchangeRate.category}" name="category" required maxlength="20">
                 </div>
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <label for="editInvalidCurrencyBid" class="col-form-label w-50"
@@ -232,8 +245,8 @@
                            th:value="${invalidExchangeRate.ask}" step="any" name="ask" required max="100">
                 </div>
                 <div class="d-flex justify-content-end">
-                    <a th:with="no=${exchangeRates.getNo()}"
-                       th:href="@{/table/{table}(table=${#strings.replace(no,'/','_')})}"
+                    <a th:with="date=${exchangeRates.getDate()}"
+                       th:href="@{/table/{table}(table=${#strings.replace(date,'/','_')})}"
                        th:text="#{cancel.button}"
                        class="btn btn-lg my-2 mx-1 rounded-4 btn-secondary" style="width: 150px">Cancel</a>
                     <button class="btn btn-lg my-2 mx-1 rounded-4 btn-warning" style="width: 170px" type="submit"
