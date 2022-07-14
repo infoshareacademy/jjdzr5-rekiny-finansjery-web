@@ -1,5 +1,5 @@
 <div th:fragment="filtration_tool">
-    <div class="bg-secondary mt-1 mb-3 p-3 border border-2 border-secondary rounded-3">
+    <div class="bg-secondary mt-3 mb-3 p-3 rounded-3">
 
         <div class="nav-item" sec:authorize="isAuthenticated()">
             <label for="filtration_preferences" th:text="#{filtration.filter.saved.filters}+':'"></label>
@@ -18,7 +18,7 @@
         </button>
         <hr sec:authorize="isAuthenticated()"/>
 
-        <div class="h4 text-light" th:text="#{filtration.filter.by}">Filter by:</div>
+        <div class="h4" th:text="#{filtration.filter.by}">Filter by:</div>
 
         <form id="filtration_settings_form" name="filtration_settings_form" class="form-group" th:object="${filtrationSettings}" th:insert="fragments/filtration :: filtration_input"></form>
     </div>
@@ -73,7 +73,7 @@
     <div class="mt-2 text-center">
         <span th:each="currency : ${possibleCurrencies}">
             <input type="checkbox" class="btn-check" name="currency" th:id="'currency_' + ${currency.code}" th:value="${currency.code}"  th:checked="${currency.checked}">
-            <label class="btn btn-outline-light m-1" th:for="'currency_' + ${currency.code}" th:text="${currency.code}"></label>
+            <label class="btn btn-outline-dark m-1" th:for="'currency_' + ${currency.code}" th:text="${currency.code}"></label>
         </span>
     </div>
 </div>

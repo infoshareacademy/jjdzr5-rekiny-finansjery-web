@@ -9,13 +9,13 @@
     <link rel="stylesheet" th:href="@{/styles/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/styles/style.css}">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 
 <header th:insert="fragments/general :: menu"></header>
 
 <!-- ======= Main ======= -->
 <main>
-    <div class="container mt-3">
+    <div class="container mt-3 mb-5">
         <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:insert="fragments/messages :: messages"></div>
         <a th:href="@{/tables}" class="btn m-3 btn-primary" th:text="#{table.return.to.list}"></a>
         <div th:if="${exchangeRates != null}" th:insert="fragments/collectionView :: element_view"></div>
@@ -23,7 +23,7 @@
     </div>
 </main>
 <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:insert="fragments/admin :: table_admin_modals"></div>
-<footer th:insert="fragments/general :: footer"></footer>
+<footer class="mt-auto" th:insert="fragments/general :: footer"></footer>
 <script th:src="@{/js/filtrationForm.js}"></script>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 </body>

@@ -1,17 +1,17 @@
 <div th:fragment="menu">
     <div class="bg-secondary mt-1 p-3 border border-2 border-secondary rounded-3 d-grid gap-2">
         <div th:insert="fragments/user :: user"></div>
-        <a class="btn btn-outline-light m-1" th:href="@{/user}" th:text="#{user.menu.wallet}"></a>
-        <a class="btn btn-outline-light m-1" th:href="@{/user/buycurrency}" th:text="#{user.menu.buy_currency}"></a>
-        <a class="btn btn-outline-light m-1" th:href="@{/user/payment}" th:text="#{user.menu.payment}"></a>
-        <a class="btn btn-outline-light m-1" th:href="@{/user/withdrawal}" th:text="#{user.menu.withdrawal}"></a>
-        <a class="btn btn-outline-light m-1" th:href="@{/user/filtration_preferences}" th:text="#{user.menu.saved.filters}"></a>
-        <a class="btn btn-outline-light m-1" th:href="@{/user/history}" th:text="#{user.menu.history}"></a>
+        <a class="btn btn-outline-dark m-1" th:href="@{/user}" th:text="#{user.menu.wallet}"></a>
+        <a class="btn btn-outline-dark m-1" th:href="@{/user/buycurrency}" th:text="#{user.menu.buy_currency}"></a>
+        <a class="btn btn-outline-dark m-1" th:href="@{/user/payment}" th:text="#{user.menu.payment}"></a>
+        <a class="btn btn-outline-dark m-1" th:href="@{/user/withdrawal}" th:text="#{user.menu.withdrawal}"></a>
+        <a class="btn btn-outline-dark m-1" th:href="@{/user/filtration_preferences}" th:text="#{user.menu.saved.filters}"></a>
+        <a class="btn btn-outline-dark m-1" th:href="@{/user/history}" th:text="#{user.menu.history}"></a>
     </div>
 </div>
 <div th:fragment="user">
     <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.entity.user.User"*/-->
-    <div class="h4 text-light">
+    <div class="h4 text-dark">
         <div th:text="${user.getName()}"></div>
         <div th:text="${user.getLastname()}"></div>
         <div class="text-end" th:text="${#numbers.formatDecimal(user.getBillingCurrency(), 1, 'WHITESPACE', 2, 'COMMA')} + ' PLN'"></div>
