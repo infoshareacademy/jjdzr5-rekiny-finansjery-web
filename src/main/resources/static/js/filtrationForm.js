@@ -65,3 +65,24 @@ function fillSavingPreferencesForm(){
     }
 }
 
+function uncheckOrCheckAllInputsInCategory(category){
+    uncheckOrCheckAllInputsInElement("filtration_category_"+category);
+}
+
+function uncheckOrCheckAllInputsInElement(elementId){
+    let inputs = document.getElementById(elementId).getElementsByTagName("input");
+    let checked = false;
+    for(let input of inputs){
+        if(input.type == "checkbox" && input.checked == true) {
+            checked = true;
+        }
+    }
+
+    checked = !checked;
+    for(let input of inputs){
+            if(input.type == "checkbox") {
+                input.checked = checked;
+            }
+    }
+}
+
