@@ -60,7 +60,7 @@ public class AdminTableController {
             adminTableService.addExchangeRate(newExchangeRate);
             attributes.addFlashAttribute("successMessage", "add.currency.success");
         }
-        return "redirect:/table/" + newExchangeRate.getDate();
+        return "redirect:/table/" + newExchangeRate.getDate().toString();
     }
 
     @PostMapping("/delete-currency/{date}/{code}")

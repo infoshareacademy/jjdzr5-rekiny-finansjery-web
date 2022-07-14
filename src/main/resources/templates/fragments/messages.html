@@ -7,11 +7,11 @@
 
 <!-- ======= Success Message ======= -->
 <div th:fragment="menu_message">
-    <div th:if="${successMessage != null}" class="alert alert-success d-flex align-items-center justify-content-center" role="alert">
+    <div th:if="${successMessage != null}" class="alert alert-success d-flex align-items-center justify-content-center mb-0" role="alert">
         <div><i class="bi bi-check-circle h3 pe-3"></i></div>
         <div th:text="#{${successMessage}}"></div>
     </div>
-    <div th:if="${errorMessage != null}" class="alert alert-danger d-flex align-items-center justify-content-center" role="alert">
+    <div th:if="${errorMessage != null}" class="alert alert-danger d-flex align-items-center justify-content-center mb-0" role="alert">
         <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
         <div th:text="#{${errorMessage}}"></div>
     </div>
@@ -77,8 +77,8 @@
                 <li th:each="err : ${errorMessageForEditTable}" th:text="#{${err.getDefaultMessage()}}"/>
             </ul>
         </div>
-        <div class="p-3 pt-4 w-100 border border-1 border-warning rounded-3">
-            <h4 class="text-warning" th:text="#{edit.table}">Edit Table</h4>
+        <div class="p-3 pt-4 w-100 border border-1 border-primary rounded-3">
+            <h4 class="text-primary" th:text="#{edit.table}">Edit Table</h4>
             <h5 class="mb-4" th:text="#{correct.values}"></h5>
             <form th:fragment="edit_table_form"
                   th:with="date=${exchangeRates.getDate()}"
@@ -201,8 +201,8 @@
                 <li th:each="err : ${errorMessageForEditCurrency}" th:text="#{${err.getDefaultMessage()}}"/>
             </ul>
         </div>
-        <div class="p-3 pt-4 w-100 border border-1 border-warning rounded-3">
-            <h4 class="text-warning" th:text="#{edit.currency}">Edit Currency</h4>
+        <div class="p-3 pt-4 w-100 border border-1 border-primary rounded-3">
+            <h4 class="text-primary" th:text="#{edit.currency}">Edit Currency</h4>
             <h5 class="mb-4" th:text="#{correct.values}"></h5>
             <form th:with="date=${exchangeRates.getDate()}"
                   th:action="@{/admin/edit-currency/{table}/{code}(table=${#strings.replace(date,'/','_')}, code=${currencyCode})}"
