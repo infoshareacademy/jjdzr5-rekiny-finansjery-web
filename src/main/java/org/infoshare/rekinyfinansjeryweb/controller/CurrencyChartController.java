@@ -39,7 +39,7 @@ public class CurrencyChartController {
     @GetMapping("/history/{code}")
     public String showHistory(@PathVariable("code") String code, Model model, @PageableDefault(size=25) Pageable pageable) {
 
-        List<ChartService.ChartData> chartData = chartService.getChartData(code);
+        List<ChartService.ChartData> chartData = chartService.sendExchangeRatesForGivenPage(code, pageable);
         ListToPagesSplitter.splitIntoPages(chartData, model, pageable);
         return "history";
     }
