@@ -9,6 +9,14 @@
         <a class="btn btn-outline-light m-1" th:href="@{/user/history}" th:text="#{user.menu.history}"></a>
     </div>
 </div>
+<div th:fragment="setting_menu">
+    <div class="bg-secondary mt-1 p-3 border border-2 border-secondary rounded-3 d-grid gap-2">
+        <div th:insert="fragments/user :: user"></div>
+        <a class="btn btn-outline-light m-1" th:href="@{/user}" th:text="#{user.edit.menu.back}"></a>
+        <a class="btn btn-outline-light m-1" th:href="@{/user/edit/data}" th:text="#{user.edit.menu.user.data}"></a>
+        <a class="btn btn-outline-light m-1" th:href="@{/user/edit/password}" th:text="#{user.edit.menu.change.pass}"></a>
+    </div>
+</div>
 <div th:fragment="user">
     <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.entity.user.User"*/-->
     <div class="h4 text-light">
@@ -18,7 +26,7 @@
     </div>
 </div>
 <div th:fragment="button_bid" class="d-inline">
-    <!--/*@thymesVar id="rate" type="org.infoshare.rekinyfinansjeryweb.repository.ExchangeRate"*/-->
+    <!--/*@thymesVar id="rate" type="org.infoshare.rekinyfinansjeryweb.dto.ExchangeRateDTO"*/-->
     <a  class="btn mx-1 btn-success" th:href="@{/user/buycurrency/{code}(code=${rate.code})}">
         <i class="bi bi-plus-square"></i></a>
 </div>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="#{title} + #{user.edit.menu.user.data}"></title>
+    <link rel="stylesheet" th:href="@{/styles/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/styles/style.css}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<header th:insert="fragments/general :: menu"></header>
+
+<section class="bg-primary text-light p-5 text-center">
+    <div class="container">
+        <h1 th:text="#{user.edit.menu.user.data}"></h1>
+    </div>
+</section>
+<!-- ======= Main ======= -->
+<main>
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div th:insert="fragments/user :: setting_menu"></div>
+            </div>
+            <div class="col-12 col-md-9">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-md-9 col-lg-8 col-xl-5">
+                    <form id="form" th:action="@{/user/edit/data}" th:object="${edituser}" method="post">
+                        <label for="name" th:text="#{signup.name}"></label>
+                        <input class="form-control" id="name" type="text" th:field="${edituser.name}"/>
+                        <div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${#fields.hasErrors('name')}">
+                            <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+                            <div th:errors="*{name}"></div>
+                        </div>
+                        <label for="lastname" th:text="#{signup.lastname}"></label>
+                        <input class="form-control" id="lastname" type="text" th:field="${edituser.lastname}"/>
+                        <div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${#fields.hasErrors('lastname')}">
+                            <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+                            <div th:errors="*{lastname}"></div>
+                        </div>
+                        <label for="email" th:text="#{signup.email}"></label>
+                        <input class="form-control" id="email" type="text" th:field="${edituser.email}"/>
+                        <div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${#fields.hasErrors('email')}">
+                            <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+                            <div th:errors="*{email}"></div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <input class="btn btn-sm m-1 btn-primary" type="submit" th:value="#{save.button}"/>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="mt-auto" th:insert="fragments/general :: footer"></footer>
+
+<script th:src="@{~/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{~/js/passwordStrength.js}"></script>
+</body>
+</html>

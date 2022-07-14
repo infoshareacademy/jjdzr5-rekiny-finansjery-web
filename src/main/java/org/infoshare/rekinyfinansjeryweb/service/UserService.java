@@ -3,9 +3,7 @@ package org.infoshare.rekinyfinansjeryweb.service;
 import org.infoshare.rekinyfinansjeryweb.dto.ExchangeRateDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.SaveOfFiltrationSettingsDTO;
-import org.infoshare.rekinyfinansjeryweb.dto.user.CreateUserFormDTO;
-import org.infoshare.rekinyfinansjeryweb.dto.user.UserCurrencyDTO;
-import org.infoshare.rekinyfinansjeryweb.dto.user.UserDTO;
+import org.infoshare.rekinyfinansjeryweb.dto.user.*;
 import org.infoshare.rekinyfinansjeryweb.entity.Currency;
 import org.infoshare.rekinyfinansjeryweb.entity.user.*;
 import org.infoshare.rekinyfinansjeryweb.repository.CurrencyRepository;
@@ -58,6 +56,24 @@ public class UserService implements UserDetailsService {
         MyUserPrincipal userDetails = getUserPrincipal();
         return modelMapper.map(userDetails.getUser(), UserDTO.class);
     }
+    public EditUserDataFormDTO getEditUserData() {
+        EditUserDataFormDTO editUser = modelMapper.map(getUser(), EditUserDataFormDTO.class);
+        //todo del
+//        editUser.setRepeatPassword(editUser.getPassword());
+//        System.out.println("PASS: " + editUser.getPassword());
+//        System.out.println("PASS2: " + editUser.getRepeatPassword());
+        System.out.println("email: " + editUser.getEmail());
+        System.out.println("Name: " + editUser.getName());
+        return editUser;
+    }
+
+    public boolean saveEditUser(EditUserDataFormDTO editUserDataFormDTO) {
+        User user = getUser();
+        user.setName(editUserDataFormDTO.getName());
+        user.setLastname(editUserDataFormDTO.getLastname());
+        user.setEmail(editUserDataFormDTO.getEmail());
+        return updateUser(user) != null;
+    }
 
     public List<User> getUsers(){
         return userRepository.findAll();
@@ -75,6 +91,8 @@ public class UserService implements UserDetailsService {
 
     public User updateUser(User user){
         MyUserPrincipal userDetails = getUserPrincipal();
+        userDetails.setName(user.getName());
+        userDetails.setLastname(user.getLastname());
         userDetails.setBillingCurrency(user.getBillingCurrency());
         return userRepository.save(user);
     }
@@ -307,4 +325,13 @@ public class UserService implements UserDetailsService {
     }
 
 
+    public boolean changePassword(ChangeUserPasswordFormDTO newPassword) {
+        User user = getUser();
+        boolean result = false;
+        if (encoder.matches(newPassword.getOldPassword(), user.getPassword())){
+            user.setPassword(encoder.encode(newPassword.getNewPassword()));
+            result = updateUser(user) != null;
+        }
+        return result;
+    }
 }

@@ -58,7 +58,17 @@ public class MyUserPrincipal implements UserDetails {
     public User getUser(){
         return user;
     }
+
     public void setBillingCurrency(String billingCurrency) {
         this.user.setBillingCurrency(billingCurrency);
     }
+
+    public void setName(String name) {
+        this.user.setName(name);
+    }
+
+    public void setLastname(String lastname) {
+        this.user.setLastname(lastname);
+    }
+
 }
