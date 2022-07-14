@@ -1,4 +1,4 @@
-package org.infoshare.rekinyfinansjeryweb.data;
+package org.infoshare.rekinyfinansjeryweb.entity.user;
 
 public class CurrencyOperationHistory extends OperationHistory{
     private String currency;
@@ -7,7 +7,7 @@ public class CurrencyOperationHistory extends OperationHistory{
         super();
         setOperation(operationHistory.getOperation());
         setAmount(operationHistory.getAmount());
-        setDateOpreation(operationHistory.getDateOpreation());
+        setDateOperation(operationHistory.getDateOperation());
         setExchangeRate(operationHistory.getExchangeRate());
         this.currency = currency;
     }

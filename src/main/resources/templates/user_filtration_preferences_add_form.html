@@ -25,7 +25,7 @@
                 <div th:insert="fragments/user :: menu"></div>
             </div>
             <div class="col-9 col-md-9 mt-3 mb-3">
-                <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.data.User"*/-->
+                <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.entity.user.User"*/-->
                 <form id="form" th:action="@{/user/filtration_preferences/add}" th:object="${saveOfFiltrationSettings}" method="post">
                     <label for="name" th:text="#{filtration.filter.name}"></label>
                     <input class="form-control" id="name" type="text" th:field="${saveOfFiltrationSettings.preferenceName}"/>

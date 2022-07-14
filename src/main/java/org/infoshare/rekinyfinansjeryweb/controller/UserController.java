@@ -1,14 +1,16 @@
 package org.infoshare.rekinyfinansjeryweb.controller;
 
 import com.infoshareacademy.services.NBPApiManager;
-import org.infoshare.rekinyfinansjeryweb.data.MyUserPrincipal;
+import org.infoshare.rekinyfinansjeryweb.dto.ExchangeRateDTO;
+import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRate;
+import org.infoshare.rekinyfinansjeryweb.entity.user.MyUserPrincipal;
 import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
-import org.infoshare.rekinyfinansjeryweb.dto.PayMethodFormDTO;
+import org.infoshare.rekinyfinansjeryweb.dto.user.PayMethodFormDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.SaveOfFiltrationSettingsDTO;
+import org.infoshare.rekinyfinansjeryweb.service.CurrentRatesService;
 import org.infoshare.rekinyfinansjeryweb.service.SearchAndFiltrationService;
 import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
-import com.infoshareacademy.domain.ExchangeRate;
-import org.infoshare.rekinyfinansjeryweb.dto.AmountFormDTO;
+import org.infoshare.rekinyfinansjeryweb.dto.user.AmountFormDTO;
 import org.infoshare.rekinyfinansjeryweb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -32,21 +34,24 @@ public class UserController {
     UserService usersService;
     @Autowired
     SearchAndFiltrationService searchAndFiltrationService;
+    @Autowired
+    CurrentRatesService currentRatesService;
 
     @ModelAttribute
     public void addAttributes(Model model) {
-        model.addAttribute("user", usersService.getUser());
+        model.addAttribute("user", usersService.getUserDTO());
     }
 
     @GetMapping
     public String getUser(Model model) {
+        model.addAttribute("myCurrencies", usersService.getMyCurrencies());
         return "user";
     }
 
     @GetMapping("/filtration_preferences")
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public String userFiltrationPreferences(@AuthenticationPrincipal MyUserPrincipal principal, Model model) {
-        model.addAttribute("listOfSavedFiltrationSettings", usersService.getListOfSavedFiltrationSettings(principal));
+        model.addAttribute("listOfSavedFiltrationSettings", usersService.getListOfSavedFiltrationSettings());
         return "user_filtration_preferences_list";
     }
 
@@ -73,7 +78,7 @@ public class UserController {
                     usedCurrenciesService.getShortNamesOfCurrencies(NBPApiManager.getInstance(), filtrationSettings.getCurrency()));
             return "user_filtration_preferences_add_form";
         }
-        else if(principal.getUser().getSavedFiltrationSettings().containsKey(filtrationSettings.getPreferenceName())){
+        else if(usersService.getSavedFiltrationSettings().containsKey(filtrationSettings.getPreferenceName())){
             model.addAttribute("errorMessage", "filters.error.name.used");
             model.addAttribute("possibleCurrencies",
                     usedCurrenciesService.getShortNamesOfCurrencies(NBPApiManager.getInstance(), filtrationSettings.getCurrency()));
@@ -83,26 +88,24 @@ public class UserController {
         if(isFiltrationSettingEmpty(filtrationSettings)){
             model.addAttribute("errorMessage", "filters.error.empty");
         }
-        else{
-            principal.getUser().getSavedFiltrationSettings().put(filtrationSettings.getPreferenceName(), filtrationSettings);
+        else if (usersService.savedFiltrationSettings(filtrationSettings)){
             model.addAttribute("successMessage", "filters.saved.success");
         }
 
-        model.addAttribute("listOfSavedFiltrationSettings", usersService.getListOfSavedFiltrationSettings(principal));
+        model.addAttribute("listOfSavedFiltrationSettings", usersService.getListOfSavedFiltrationSettings());
         return "user_filtration_preferences_list";
     }
 
     @PostMapping("/filtration_preferences/delete")
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public String deleteUserFiltrationPreferences(@AuthenticationPrincipal MyUserPrincipal principal, @RequestParam("setting_key") String key, Model model) {
-        if(principal.getUser().getSavedFiltrationSettings().remove(key)!=null){
+
+        if(usersService.removeSavedFiltrationSettings(key)){
             model.addAttribute("successMessage", "filters.remove.success");
         }
-        model.addAttribute("listOfSavedFiltrationSettings", usersService.getListOfSavedFiltrationSettings(principal));
+        model.addAttribute("listOfSavedFiltrationSettings", usersService.getListOfSavedFiltrationSettings());
         return "user_filtration_preferences_list";
     }
-
-
 
     private boolean isFiltrationSettingEmpty(FiltrationSettingsDTO filtrationSettings) {
         if (filtrationSettings.getAskPriceMax() == null &&
@@ -168,14 +171,14 @@ public class UserController {
 
     @GetMapping("/buycurrency")
     public String getLastTradingTable(Model model) {
-        model.addAttribute("exchangeRates", searchAndFiltrationService.getLastExchangeRates());
+        model.addAttribute("exchangeRates", currentRatesService.getLastExchangeRates());
         model.addAttribute("newCurrency", new ExchangeRate());
         return "buycurrency";
     }
 
     @GetMapping("/buycurrency/{code}")
     public String getBuyCurrency(@PathVariable("code") String code, Model model) {
-        ExchangeRate lastCurrencyForTable = searchAndFiltrationService.getCurrencyOfLastExchangeRates(code);
+        ExchangeRateDTO lastCurrencyForTable = currentRatesService.getCurrencyOfLastExchangeRates(code);
         if (lastCurrencyForTable == null) {
             model.addAttribute("errorMessage","msg.error.collectors.currency");
             return "user";
@@ -191,7 +194,7 @@ public class UserController {
                               BindingResult result,
                               ModelMap model) {
         if (result.hasErrors()) {
-            model.addAttribute("rate", searchAndFiltrationService.getCurrencyOfLastExchangeRates(code));
+            model.addAttribute("rate", currentRatesService.getCurrencyOfLastExchangeRates(code));
             return new ModelAndView("ask",model);
         }
         if (usersService.askCurrency(code, amount.getAmount())) {
@@ -205,7 +208,7 @@ public class UserController {
 
     @GetMapping("/sellcurrency/{code}")
     public String getSellCurrency(@PathVariable("code") String code, Model model) {
-        ExchangeRate lastCurrencyForTable = searchAndFiltrationService.getCurrencyOfLastExchangeRates(code);
+        ExchangeRateDTO lastCurrencyForTable = currentRatesService.getCurrencyOfLastExchangeRates(code);
         if (lastCurrencyForTable == null) {
             model.addAttribute("errorMessage","msg.error.collectors.currency");
             return "user";
@@ -221,7 +224,7 @@ public class UserController {
                               BindingResult result,
                               ModelMap model) {
         if (result.hasErrors()) {
-            model.addAttribute("rate", searchAndFiltrationService.getCurrencyOfLastExchangeRates(code));
+            model.addAttribute("rate", currentRatesService.getCurrencyOfLastExchangeRates(code));
             return new ModelAndView("bid", model);
         }
 

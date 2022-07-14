@@ -2,13 +2,11 @@ package org.infoshare.rekinyfinansjeryweb.repository;
 
 import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRate;
 import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRateCurrency;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public interface ExchangeRateRepository extends JpaRepository<ExchangeRate, Long>, ExchangeRateExtension {
 
@@ -28,5 +26,8 @@ public interface ExchangeRateRepository extends JpaRepository<ExchangeRate, Long
 
     @Query("select er from ExchangeRate er join er.currency c where c.code in (:codes)")
     List<ExchangeRate> findMultipleExchangeRatesByCodes(List<String> codes, Pageable pageable);
-
+    @Query("select er from ExchangeRate er join er.currency c where " +
+            "er.date = (select max(er2.date) from ExchangeRate er2 where er.currency = er2.currency group by er2.currency) " +
+            "order by c.code")
+    List<ExchangeRate> findCurrentRatesOfEachCurrency();
 }

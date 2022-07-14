@@ -40,10 +40,8 @@ function loadFiltrationPreferences(response){
     clearFormWithoutSearchBar();
 
     var preferences = JSON.parse(response);
-    document.getElementById("effectiveDateMin").value = preferences.effectiveDateMin;
-    document.getElementById("effectiveDateMax").value = preferences.effectiveDateMax;
-    document.getElementById("tradingDateMin").value = preferences.tradingDateMin;
-    document.getElementById("tradingDateMax").value = preferences.tradingDateMax;
+    document.getElementById("dateMin").value = preferences.dateMin;
+    document.getElementById("dateMax").value = preferences.dateMax;
     document.getElementById("bidPriceMin").value = preferences.bidPriceMin;
     document.getElementById("bidPriceMax").value = preferences.bidPriceMax;
     document.getElementById("askPriceMin").value = preferences.askPriceMin;
