@@ -18,6 +18,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/tables")
@@ -40,8 +41,9 @@ public class FiltrationController {
                                 Pageable pageable,
                                 HttpServletRequest request,
                                 Model model,
-                                @AuthenticationPrincipal MyUserPrincipal principal) {
-        PageDTO collection = collectionFiltrationService.getFilteredCollection(settings, pageable);
+                                @AuthenticationPrincipal MyUserPrincipal principal,
+                                @RequestParam Optional<Long> page) {
+        PageDTO collection = collectionFiltrationService.getFilteredCollection(settings, pageable, page);
 
 
 

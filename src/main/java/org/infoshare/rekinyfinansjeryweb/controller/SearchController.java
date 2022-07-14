@@ -18,9 +18,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/search")
@@ -37,9 +39,10 @@ public class SearchController {
     public String displayTables(@ModelAttribute SearchSettingsDTO settings,
                                 Pageable pageable,
                                 Model model,
-                                @AuthenticationPrincipal MyUserPrincipal principal) {
+                                @AuthenticationPrincipal MyUserPrincipal principal,
+                                @RequestParam Optional<Long> page) {
 
-        PageDTO collection = searchAndFiltrationService.searchInCollection(settings, pageable);
+        PageDTO collection = searchAndFiltrationService.searchInCollection(settings, pageable, page);
 
         ListToPagesSplitter.splitIntoPages(collection, model, pageable);
         model.addAttribute("filtrationSettings", settings);

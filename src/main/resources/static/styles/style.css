@@ -2,6 +2,7 @@ body::before {
     display: block;
     content: "";
     height: 75px;
+    background-color: #0c4128;
 }
 
 @media (min-width: 768px) {
