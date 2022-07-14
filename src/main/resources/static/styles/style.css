@@ -2,6 +2,7 @@ body::before {
     display: block;
     content: "";
     height: 75px;
+    background-color: #0c4128;
 }
 
 @media (min-width: 768px) {
@@ -36,4 +37,8 @@ body::before {
 .chart_transition_hidden {
     visibility: hidden;
     height: 0px;
+}
+
+.btn-primary{
+    background-color: #1a1e21;
 }

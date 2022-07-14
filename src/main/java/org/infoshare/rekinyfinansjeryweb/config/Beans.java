@@ -1,12 +1,20 @@
 package org.infoshare.rekinyfinansjeryweb.config;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
-import org.modelmapper.ModelMapper;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 
 @Configuration
 public class Beans {
+
+    @Bean
+    public ExecutorService executorService() {
+        return Executors.newFixedThreadPool(3);
+    }
 
     @Bean
     public RestTemplate getRestTemplate() {
@@ -17,4 +25,5 @@ public class Beans {
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
+
 }
