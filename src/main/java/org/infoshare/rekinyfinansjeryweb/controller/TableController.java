@@ -1,7 +1,5 @@
 package org.infoshare.rekinyfinansjeryweb.controller;
 
-import com.infoshareacademy.domain.DailyExchangeRates;
-import com.infoshareacademy.services.NBPApiManager;
 import org.infoshare.rekinyfinansjeryweb.dto.DailyTableDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.DailyTableFormDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.ExchangeRateDTO;
@@ -21,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -31,8 +28,8 @@ public class TableController {
     ExchangeRateRepository exchangeRateRepository;
 
     @GetMapping("/{date}")
-    public String singleTableView(@PathVariable("date") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date, HttpServletRequest request, Model model) {
-        List<ExchangeRateCurrency> response = exchangeRateRepository.findExchangeRatesByDate(date);
+    public String singleTableView(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, HttpServletRequest request, Model model) {
+        List<ExchangeRateCurrency> response = exchangeRateRepository.findExchangeRatesCurrenciesByDate(date);
         List<ExchangeRateDTO> exchangeRates = response.stream()
                 .map(rate -> new ExchangeRateDTO(rate.getAskPrice(), rate.getBidPrice(), rate.getCode(), rate.getName(), rate.getCategory()))
                 .collect(Collectors.toList());

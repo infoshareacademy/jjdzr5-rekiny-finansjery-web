@@ -59,7 +59,7 @@ public class SearchAndFiltrationService {
         }
         return convertResultsIntoPageDTO(totalResultsOfFilter, exchangeRateCurrencies, pageable);
     }
-    
+
     private PageDTO<DailyTableDTO> convertResultsIntoPageDTO(Long totalResultsOfFilter, List<ExchangeRateCurrency> exchangeRateCurrencies, Pageable pageable){
         Map<LocalDate, DailyTableDTO> dailyTables = splitIntoDailyTables(exchangeRateCurrencies);
 
