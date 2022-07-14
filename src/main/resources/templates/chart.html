@@ -36,7 +36,8 @@
             </div>
 
             <button class="btn btn-sm m-1 btn-secondary" type="submit" th:text="#{chart.button.submit}">Submit</button>
-            <a class="btn btn-sm m-1 btn-primary" th:href="@{'/currency/history/' + ${code}}" th:text="${code} + ' ' + #{chart.button.history}" style="margin: 8px; position: auto; right: 10%"></a>
+            <a class="btn btn-sm m-1 btn-primary" th:href="@{'/currency/history/' + ${code}}"
+               th:text="${code} + ' ' + #{chart.button.history}" style="margin: 8px; position: auto; right: 10%"></a>
         </form>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
@@ -44,9 +45,8 @@
 
         <script th:inline="javascript">
 
-
             let currencies = /*[[${chartData}]]*/;
-            var xValues = currencies.map(currency => currency.tradingDate);
+            var xValues = currencies.map(currency => currency.date);
 
             new Chart("myChart", {
                 type: "line",
@@ -56,7 +56,7 @@
                         data: currencies.map(currency => currency.bidPrice),
                         borderColor: "red",
                         fill: false
-                    },{
+                    }, {
                         data: currencies.map(currency => currency.askPrice),
                         borderColor: "blue",
                         fill: false

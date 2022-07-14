@@ -26,7 +26,6 @@
             <thead>
             <tr>
                 <th scope="col" th:text="#{collection.view.trading.date}">Trading Date</th>
-                <th scope="col" th:text="#{collection.view.effective.date}">Effective Date</th>
                 <th scope="col" th:text="#{collection.view.ask}">Ask Price</th>
                 <th scope="col" th:text="#{collection.view.bid}">Bid Price</th>
             </tr>
@@ -34,8 +33,7 @@
 
            <tbody>
            <tr th:each="data : ${pageContent}">
-               <td th:text="${data.tradingDate}"></td>
-               <td th:text="${data.effectiveDate}"></td>
+               <td th:text="${data.date}"></td>
                <td th:text="${data.askPrice}"></td>
                <td th:text="${data.bidPrice}"></td>
            </tr>

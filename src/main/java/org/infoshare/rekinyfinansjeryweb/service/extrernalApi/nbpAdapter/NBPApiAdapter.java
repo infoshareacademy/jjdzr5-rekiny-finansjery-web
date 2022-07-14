@@ -50,7 +50,7 @@ public class NBPApiAdapter extends ApiAdapter implements ExternalApiDataSourceIn
             Optional<Currency> currency = Optional.ofNullable(currenciesMap.get(exchangeRate.getCode()));
             if(currency.isEmpty()){
                 Currency newCurrency = new Currency(null, exchangeRate.getCode(),
-                    exchangeRate.getCurrency(), "currency");
+                    exchangeRate.getCode(), "currency");
                 currenciesMap.put(newCurrency.getCode(), newCurrency);
                 result.getCurrencies().add(newCurrency);
                 currency = Optional.of(newCurrency);
