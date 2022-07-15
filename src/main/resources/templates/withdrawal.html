@@ -14,7 +14,7 @@
 
 <section class="bg-primary text-light p-5 text-center">
     <div class="container">
-        <h1 th:text="#{user.withdrawal.title}"></h1>
+        <h1 th:text="#{user.wallet.title}"></h1>
     </div>
 </section>
 <!-- ======= Main ======= -->
@@ -24,26 +24,34 @@
             <div class="col-12 col-md-3">
                 <div th:insert="fragments/user :: menu"></div>
             </div>
-            <div class="col-12 col-md-3 offset-md-3" style="margin-top: 6%;">
-                <form id="form" th:action="@{/user/withdrawal}" th:object="${amount}" method="post">
-                    <label for="amount" th:text="#{user.withdrawal.amount.paidout}"></label>
-                    <input class="form-control" id="amount" type="number" step="any" name="amount" th:value="${amount.amount}"/>
-                    <div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${#fields.hasErrors('amount')}">
-                        <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
-                        <div th:errors="*{amount}"></div>
+            <div class="col-12 col-md-9">
+                <div class="text-start">
+                    <div class="h3 text-secondary ms-3 mb-3">
+                        <i class="bi bi-grid-3x2-gap-fill"></i>
+                        <span th:text="#{user.withdrawal.title}"></span>
                     </div>
-                    <label for="bank_account_number" th:text="#{user.withdrawal.bank.account.number}"></label>
-                    <input class="form-control" id="bank_account_number" type="text"
-                           name="payMethod" th:value="${amount.payMethod}"/>
-                    <div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${#fields.hasErrors('payMethod')}">
-                        <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
-                        <div th:errors="*{payMethod}"></div>
-                    </div>
-                    <div class="d-grid gap-2">
-                        <input class="btn btn-sm m-1 btn-primary" type="submit" th:value="#{user.withdrawal.withdraw}"/>
-                    </div>
-                </form>
+                </div>
+                <div class="col-12 col-md-4 offset-md-4" style="margin-top: 6%;">
+                    <form id="form" th:action="@{/user/withdrawal}" th:object="${amount}" method="post">
+                        <label for="amount" th:text="#{user.withdrawal.amount.paidout}"></label>
+                        <input class="form-control" id="amount" type="number" step="any" name="amount" th:value="${amount.amount}"/>
+                        <div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${#fields.hasErrors('amount')}">
+                            <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+                            <div th:errors="*{amount}"></div>
+                        </div>
+                        <label for="bank_account_number" th:text="#{user.withdrawal.bank.account.number}"></label>
+                        <input class="form-control" id="bank_account_number" type="text"
+                               name="payMethod" th:value="${amount.payMethod}"/>
+                        <div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${#fields.hasErrors('payMethod')}">
+                            <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+                            <div th:errors="*{payMethod}"></div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <input class="btn btn-sm m-1 btn-primary" type="submit" th:value="#{user.withdrawal.withdraw}"/>
+                        </div>
+                    </form>
             </div>
+        </div>
         </div>
     </div>
 </main>

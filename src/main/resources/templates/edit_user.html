@@ -14,7 +14,7 @@
 
 <section class="bg-primary text-light p-5 text-center">
     <div class="container">
-        <h1 th:text="#{user.edit.menu.user.data}"></h1>
+        <h1 th:text="#{menu.profil.settings}"></h1>
     </div>
 </section>
 <!-- ======= Main ======= -->
@@ -25,6 +25,12 @@
                 <div th:insert="fragments/user :: setting_menu"></div>
             </div>
             <div class="col-12 col-md-9">
+                <div class="text-start">
+                    <div class="h3 text-secondary ms-3 mb-3">
+                        <i class="bi bi-grid-3x2-gap-fill"></i>
+                        <span th:text="#{user.edit.menu.user.data}"></span>
+                    </div>
+                </div>
                 <div class="row justify-content-center">
                     <div class="col-12 col-md-9 col-lg-8 col-xl-5">
                     <form id="form" th:action="@{/user/edit/data}" th:object="${edituser}" method="post">
