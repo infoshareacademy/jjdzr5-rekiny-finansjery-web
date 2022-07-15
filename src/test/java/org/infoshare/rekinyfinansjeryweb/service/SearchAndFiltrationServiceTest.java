@@ -101,7 +101,6 @@ class SearchAndFiltrationServiceTest {
         Pageable pageable = PageRequest.of(0, 2);
         List<Currency> currencies = List.of(new Currency(UUID.randomUUID(), "USD", "dolar", "currency", List.of()),
                 new Currency(UUID.randomUUID(), "EUR", "euro", "currency", List.of()));
-        List<String> codes = List.of("USD", "EUR");
         List<LocalDate> dates = List.of(LocalDate.of(2022, 05, 1),
                 LocalDate.of(2022, 05, 2));
         List<ExchangeRateCurrency> rates = List.of(
@@ -174,6 +173,19 @@ class SearchAndFiltrationServiceTest {
         searchSettingsDTO.setSearchPhrase("USD");
         Optional<Long> pageRequestParam = Optional.of(0L);
         Pageable pageable = PageRequest.of(0, 2);
+        List<Currency> currencies = List.of(new Currency(UUID.randomUUID(), "USD", "dolar", "currency", List.of()),
+                new Currency(UUID.randomUUID(), "EUR", "euro", "currency", List.of()));
+        List<LocalDate> dates = List.of(LocalDate.of(2022, 05, 1),
+                LocalDate.of(2022, 05, 2));
+        List<ExchangeRateCurrency> rates = List.of(
+                new ExchangeRateCurrency(UUID.randomUUID(), LocalDate.of(2022, 5, 1), 5d, 4.9d, "USD", "dolar", "currency"),
+                new ExchangeRateCurrency(UUID.randomUUID(), LocalDate.of(2022, 5, 2), 5.1d, 5d, "USD", "dolar", "currency"));
+        given(currencyRepository.findAllCurrencyByCodeIn(eq(searchSettingsDTO))).willReturn(currencies);
+        given(exchangeRateRepository.countDatesBySearchSettings(eq(searchSettingsDTO), currencyCaptor.capture())).willReturn(5L);
+        given(exchangeRateRepository.findDatesFromPageBySearchSettings(eq(searchSettingsDTO), eq(pageable), currencyCaptor.capture()))
+                .willReturn(dates);
+        given(exchangeRateRepository.findSelectedDates(eq(searchSettingsDTO), datesCaptor.capture(), currencyCaptor.capture()))
+                .willReturn(rates);
 
         //when
         PageDTO pageDTO = searchAndFiltrationService.searchInCollection(searchSettingsDTO, pageable, pageRequestParam);
