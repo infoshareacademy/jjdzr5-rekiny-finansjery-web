@@ -36,7 +36,7 @@
         <i class="bi bi-eye"></i></a>
     <a  class="btn mx-1 btn-success" style="width: 120px" th:href="@{/user/buycurrency/{code}(code=${currency.currency.code})}">
         <i class="bi bi-plus-square"></i><span th:text="' '+#{user.wallet.buy}"></span></a>
-    <a  class="btn mx-1 btn-info" style="width: 120px" th:href="@{/user/sellcurrency/{code}(code=${currency.currency.code})}">
+    <a  class="btn mx-1 btn-warning" style="width: 120px" th:href="@{/user/sellcurrency/{code}(code=${currency.currency.code})}">
         <i class="bi bi-dash-square"></i><span th:text="' '+#{user.wallet.sell}"></span></a>
 </div>
 
