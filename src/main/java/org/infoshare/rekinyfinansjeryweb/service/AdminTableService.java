@@ -65,6 +65,7 @@ public class AdminTableService {
         currency.setCode(exchangeRateForm.getCode());
         currency.setName(exchangeRateForm.getCurrency());
         currency.setCategory(exchangeRateForm.getCategory());
+        currency.setTags(exchangeRateForm.getCurrency()+";");
         currencyRepository.save(currency);
         return currency;
     }

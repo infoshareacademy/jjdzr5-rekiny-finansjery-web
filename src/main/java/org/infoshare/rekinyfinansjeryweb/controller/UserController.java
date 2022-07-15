@@ -77,13 +77,13 @@ public class UserController {
                                                BindingResult result, Model model, @Autowired UsedCurrenciesService usedCurrenciesService) {
         if(result.hasErrors()){
             model.addAttribute("possibleCurrencies",
-                    usedCurrenciesService.getShortNamesOfCurrencies(NBPApiManager.getInstance(), filtrationSettings.getCurrency()));
+                    usedCurrenciesService.getShortNamesOfCurrencies(filtrationSettings.getCurrency()));
             return "user_filtration_preferences_add_form";
         }
         else if(usersService.getSavedFiltrationSettings().containsKey(filtrationSettings.getPreferenceName())){
             model.addAttribute("errorMessage", "filters.error.name.used");
             model.addAttribute("possibleCurrencies",
-                    usedCurrenciesService.getShortNamesOfCurrencies(NBPApiManager.getInstance(), filtrationSettings.getCurrency()));
+                    usedCurrenciesService.getShortNamesOfCurrencies(filtrationSettings.getCurrency()));
             return "user_filtration_preferences_add_form";
         }
 

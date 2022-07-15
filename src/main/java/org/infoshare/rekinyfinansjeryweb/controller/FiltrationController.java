@@ -49,7 +49,7 @@ public class FiltrationController {
 
         ListToPagesSplitter.splitIntoPages(collection, model, pageable);
         model.addAttribute("filtrationSettings", settings);
-        model.addAttribute("possibleCurrencies", usedCurrenciesService.getShortNamesOfCurrenciesSplitByCategory(NBPApiManager.getInstance(), settings.getCurrency()));
+        model.addAttribute("possibleCurrencies", usedCurrenciesService.getShortNamesOfCurrenciesSplitByCategory(settings.getCurrency()));
         model.addAttribute("newDailyTable", new DailyTableFormDTO());
         model.addAttribute("newCurrency", new ExchangeRateFormDTO());
 

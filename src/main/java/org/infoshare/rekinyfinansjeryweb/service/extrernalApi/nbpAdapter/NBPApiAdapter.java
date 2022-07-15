@@ -3,9 +3,11 @@ package org.infoshare.rekinyfinansjeryweb.service.extrernalApi.nbpAdapter;
 import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRate;
 import org.infoshare.rekinyfinansjeryweb.entity.LastUpdate;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ApiRequestResult;
+import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.CurrencyTagGenerator;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ExternalApiDataSourceInterface;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.nbpAdapter.dto.DailyExchangeRates;
 import org.infoshare.rekinyfinansjeryweb.entity.Currency;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,10 +20,11 @@ import java.util.stream.Collectors;
 @Component
 public class NBPApiAdapter implements ExternalApiDataSourceInterface {
 
-
+    CurrencyTagGenerator currencyTagGenerator;
     RestTemplate restTemplate;
 
-    public NBPApiAdapter(RestTemplate restTemplate) {
+    public NBPApiAdapter(CurrencyTagGenerator currencyTagGenerator, RestTemplate restTemplate) {
+        this.currencyTagGenerator = currencyTagGenerator;
         this.restTemplate = restTemplate;
     }
 
@@ -49,7 +52,7 @@ public class NBPApiAdapter implements ExternalApiDataSourceInterface {
             Optional<Currency> currency = Optional.ofNullable(currenciesMap.get(exchangeRate.getCode()));
             if(currency.isEmpty()){
                 Currency newCurrency = new Currency(null, exchangeRate.getCode(),
-                    exchangeRate.getCurrency(), "currency", new ArrayList<>());
+                    exchangeRate.getCurrency(), "currency", new ArrayList<>(), currencyTagGenerator.createTag(exchangeRate.getCode()));
                 currenciesMap.put(newCurrency.getCode(), newCurrency);
                 result.getCurrencies().add(newCurrency);
                 currency = Optional.of(newCurrency);

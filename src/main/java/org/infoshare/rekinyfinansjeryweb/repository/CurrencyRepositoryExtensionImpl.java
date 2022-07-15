@@ -60,6 +60,7 @@ public class CurrencyRepositoryExtensionImpl implements CurrencyRepositoryExtens
         phrases.forEach(phrase ->{
             searchedPhrases.add(query.getCriteriaBuilder().like(query.getRoot().get("code"), phrase));
             searchedPhrases.add(query.getCriteriaBuilder().like(query.getRoot().get("name"), phrase));
+            searchedPhrases.add(query.getCriteriaBuilder().like(query.getRoot().get("tags"), phrase));
         });
         return query.getCriteriaBuilder().or(searchedPhrases.toArray(Predicate[]::new));
     }
