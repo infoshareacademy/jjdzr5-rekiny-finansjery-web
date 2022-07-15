@@ -32,16 +32,27 @@
                         <div th:errors="*{lastname}"></div>
                     </div>
                     <label for="email" th:text="#{signup.email}"></label>
-                    <input class="form-control" id="email" type="text" th:field="*{email}"/>
+                    <input class="form-control" id="email" type="text" th:field="${user.email}"/>
                     <div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${#fields.hasErrors('email')}">
                         <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
                         <div th:errors="*{email}"></div>
                     </div>
                     <label for="password" th:text="#{signup.password}"></label>
-                    <input class="form-control" id="password" type="password" th:field="*{password}"/>
+                    <input class="form-control" id="password" type="password" th:field="${user.password}"/>
+                    <div class="progress" style="height:20px;">
+                        <div class="progress-bar bg-danger" role="progressbar" id="poor" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" th:text="#{validation.password.weak}"></div>
+                        <div class="progress-bar bg-warning" role="progressbar" id="weak" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" th:text="#{validation.password.medium}"></div>
+                        <div class="progress-bar bg-success" role="progressbar" id="strong" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" th:text="#{validation.password.strong}"></div>
+                    </div>
                     <div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${#fields.hasErrors('password')}">
                         <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
                         <div th:errors="*{password}"></div>
+                    </div>
+                    <label for="repeat-password" th:text="#{signup.repeat.password}"></label>
+                    <input class="form-control" id="repeat-password" type="password" th:field="${user.repeatPassword}"/>
+                    <div class="alert alert-danger d-flex align-items-center" role="alert" th:if="${#fields.hasErrors('repeatPassword')}">
+                        <div><i class="bi bi-exclamation-triangle h3 pe-3"></i></div>
+                        <div th:errors="*{repeatPassword}"></div>
                     </div>
                     <div class="d-grid gap-2">
                         <input class="btn btn-sm m-1 btn-primary" type="submit" th:value="#{signup}"/>
@@ -55,6 +66,7 @@
 <footer class="mt-auto" th:insert="fragments/general :: footer"></footer>
 
 <script th:src="@{~/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{~/js/passwordStrength.js}"></script>
 </body>
 </html>
 

@@ -3,9 +3,7 @@ package org.infoshare.rekinyfinansjeryweb.service;
 import org.infoshare.rekinyfinansjeryweb.dto.ExchangeRateDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.SaveOfFiltrationSettingsDTO;
-import org.infoshare.rekinyfinansjeryweb.dto.user.CreateUserFormDTO;
-import org.infoshare.rekinyfinansjeryweb.dto.user.UserCurrencyDTO;
-import org.infoshare.rekinyfinansjeryweb.dto.user.UserDTO;
+import org.infoshare.rekinyfinansjeryweb.dto.user.*;
 import org.infoshare.rekinyfinansjeryweb.entity.Currency;
 import org.infoshare.rekinyfinansjeryweb.entity.user.*;
 import org.infoshare.rekinyfinansjeryweb.repository.CurrencyRepository;
@@ -21,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -56,6 +56,24 @@ public class UserService implements UserDetailsService {
         MyUserPrincipal userDetails = getUserPrincipal();
         return modelMapper.map(userDetails.getUser(), UserDTO.class);
     }
+    public EditUserDataFormDTO getEditUserData() {
+        EditUserDataFormDTO editUser = modelMapper.map(getUser(), EditUserDataFormDTO.class);
+        //todo del
+//        editUser.setRepeatPassword(editUser.getPassword());
+//        System.out.println("PASS: " + editUser.getPassword());
+//        System.out.println("PASS2: " + editUser.getRepeatPassword());
+        System.out.println("email: " + editUser.getEmail());
+        System.out.println("Name: " + editUser.getName());
+        return editUser;
+    }
+
+    public boolean saveEditUser(EditUserDataFormDTO editUserDataFormDTO) {
+        User user = getUser();
+        user.setName(editUserDataFormDTO.getName());
+        user.setLastname(editUserDataFormDTO.getLastname());
+        user.setEmail(editUserDataFormDTO.getEmail());
+        return updateUser(user) != null;
+    }
 
     public List<User> getUsers(){
         return userRepository.findAll();
@@ -73,6 +91,8 @@ public class UserService implements UserDetailsService {
 
     public User updateUser(User user){
         MyUserPrincipal userDetails = getUserPrincipal();
+        userDetails.setName(user.getName());
+        userDetails.setLastname(user.getLastname());
         userDetails.setBillingCurrency(user.getBillingCurrency());
         return userRepository.save(user);
     }
@@ -88,48 +108,55 @@ public class UserService implements UserDetailsService {
                 .collect(Collectors.toSet());
     }
 
-    public boolean bidCurrency(String currency, double amount){
+    public boolean bidCurrency(String currency, String amount){
         if (!subtractCurrency(getUser(), currency, amount)) return false;
         return updateUser(getUser()) != null;
     }
 
-    private boolean subtractCurrency(User user, String currency, double amount) {
+    private boolean subtractCurrency(User user, String currency, String amount) {
         ExchangeRateDTO exchangeRate = currentRatesService.getCurrencyOfLastExchangeRates(currency);
            return addToBillingCurrency(user, exchangeRate, amount) &&
                    addCurrencyHistory(user, currency, amount, exchangeRate.getBidPrice(), OperationEnum.BID);
     }
 
-    private boolean addToBillingCurrency(User user, ExchangeRateDTO exchangeRate, double amount) {
-        double billingCurrency = exchangeRate.getBidPrice() * amount;
-        user.setBillingCurrency(user.getBillingCurrency() + billingCurrency);
+    private boolean addToBillingCurrency(User user, ExchangeRateDTO exchangeRate, String amount) {
+        BigDecimal billingCurrency = multiplyAmount(exchangeRate.getBidPrice(), amount,  OperationEnum.BID);
+        //todo dodaj czy ma walute
+        user.setBillingCurrency(addAmount(user.getBillingCurrency(), billingCurrency,  OperationEnum.BID).toString());
         return true;
     }
 
-    public boolean askCurrency(String currency, double amount){
+    public boolean askCurrency(String currency, String amount){
         if (!addCurrency(getUser(), currency, amount)) return false;
         return updateUser(getUser()) != null;
     }
     
-    private boolean addCurrency(User user, String currency, double amount) {
+    private boolean addCurrency(User user, String currency, String amount) {
         ExchangeRateDTO exchangeRate = currentRatesService.getCurrencyOfLastExchangeRates(currency);
         return subtractFromBillingCurrency(user, exchangeRate, amount) &&
             addCurrencyHistory(user, currency, amount, exchangeRate.getAskPrice(), OperationEnum.ASK);
     }
 
-    private boolean subtractFromBillingCurrency(User user, ExchangeRateDTO exchangeRate, double amount) {
-        double billingCurrency = exchangeRate.getAskPrice() * amount;
-        if (user.getBillingCurrency() < billingCurrency) return false;
-        user.setBillingCurrency(user.getBillingCurrency() - billingCurrency);
+    private boolean subtractFromBillingCurrency(User user, ExchangeRateDTO exchangeRate, String amount) {
+        BigDecimal billingCurrency = multiplyAmount(exchangeRate.getAskPrice(), amount, OperationEnum.ASK);
+//        BigDecimal billingCurrency = new BigDecimal(exchangeRate.getAskPrice()).multiply(new BigDecimal(amount));
+        //todo spr
+        BigDecimal userBillingCurrency = convertStringToBigDecimal(user.getBillingCurrency());
+        if (userBillingCurrency.compareTo(billingCurrency) < 0) return false;
+        user.setBillingCurrency(roundAmount(userBillingCurrency.subtract(billingCurrency), OperationEnum.ASK).toString());
         return true;
     }
 
-    private boolean addCurrencyHistory(User user, String currency, double amount, double exchangeRate, OperationEnum operationEnum) {
+    private boolean addCurrencyHistory(User user, String currency, String amount, double exchangeRate, OperationEnum operationEnum) {
         Currency code = currencyRepository.findByCode(currency);
         UserCurrency userCurrency = getUserCurrency(user, code);
+        //todo spr
+        BigDecimal amountDecimal = convertStringToBigDecimal(amount);
+        BigDecimal amountUserCurrency = convertStringToBigDecimal(userCurrency.getAmount());
         if (operationEnum == OperationEnum.ASK) {
-            userCurrency.setAmount(userCurrency.getAmount() + amount);
-        } else if (operationEnum == OperationEnum.BID && userCurrency.getAmount() >= amount){
-            userCurrency.setAmount(userCurrency.getAmount() - amount);
+            userCurrency.setAmount(roundAmount(amountUserCurrency.add(amountDecimal), operationEnum).toString());
+        } else if (operationEnum == OperationEnum.BID && amountUserCurrency.compareTo(amountDecimal) >= 0){
+            userCurrency.setAmount(roundAmount(amountUserCurrency.subtract(amountDecimal), operationEnum).toString());
         } else return false;
         userCurrency.setUser(user);
         userCurrency.setCurrency(code);
@@ -138,7 +165,7 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
-    private void addOperationHistory(double amount, double exchangeRate, OperationEnum operationEnum, Object whereSave ) {
+    private void addOperationHistory(String amount, double exchangeRate, OperationEnum operationEnum, Object whereSave ) {
         List<OperationHistory> operationHistoryList = new ArrayList<>();
         OperationHistory operationHistory = new OperationHistory(LocalDateTime.now(), operationEnum, exchangeRate, amount);
         if (operationEnum.equals(OperationEnum.PAYCHECK) || operationEnum.equals(OperationEnum.PAYMENT)) {
@@ -152,18 +179,20 @@ public class UserService implements UserDetailsService {
         operationHistoryList.add(operationHistory);
     }
 
-    public boolean paymentToWallet(double amount) {
+    public boolean paymentToWallet(String amount) {
         User user = getUser();
-        user.setBillingCurrency(user.getBillingCurrency() + amount);
+        user.setBillingCurrency(addAmount(user.getBillingCurrency(), amount, OperationEnum.PAYMENT).toString());
+//        user.setBillingCurrency(new BigDecimal(user.getBillingCurrency()).add(new BigDecimal(amount)).toString());
         addOperationHistory(amount,1,OperationEnum.PAYMENT, user);
         return updateUser(user) != null;
     }
 
-    public boolean withdrawalFromWallet(double amount){
+    public boolean withdrawalFromWallet(String amount){
         User user = getUser();
-        double balance = user.getBillingCurrency() - amount;
-        if (balance < 0) return false;
-        user.setBillingCurrency(balance);
+        BigDecimal balance = subtractAmount(user.getBillingCurrency(),amount, OperationEnum.PAYCHECK);
+//        BigDecimal balance = new BigDecimal(user.getBillingCurrency()).subtract(new BigDecimal(amount));
+        if (balance.compareTo(new BigDecimal("0")) < 0) return false;
+        user.setBillingCurrency(balance.toString());
         addOperationHistory(amount,1,OperationEnum.PAYCHECK, user);
         return updateUser(user) != null;
     }
@@ -261,19 +290,48 @@ public class UserService implements UserDetailsService {
         return filtrationSettingsDTO;
     }
 
-    //todo del
-    private Map<String, FiltrationSettings> mapperToFiltrationSettings(Map<String, FiltrationSettingsDTO> filtrationSettingsDTO){
-        Map<String, FiltrationSettings> filtrationSettings = new HashMap<>();
-        filtrationSettingsDTO
-                .entrySet()
-                .forEach( e -> filtrationSettings.put(e.getKey(),modelMapper.map(e.getValue(),FiltrationSettings.class)));
-        return filtrationSettings;
-    }
-
     private MyUserPrincipal getUserPrincipal(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (MyUserPrincipal) authentication.getPrincipal();
     }
 
+    private BigDecimal convertStringToBigDecimal(String s) {
+        return new BigDecimal(s);
+    }
 
+    private BigDecimal roundAmount(BigDecimal bigDecimal, OperationEnum operation) {
+        RoundingMode roundingMode;
+        switch (operation) {
+            case ASK -> roundingMode = RoundingMode.HALF_UP;
+            case BID -> roundingMode = RoundingMode.DOWN;
+            default -> roundingMode = RoundingMode.HALF_DOWN;
+        }
+        return bigDecimal.setScale(2, roundingMode);
+    }
+
+    private BigDecimal addAmount(String amount1, String amount2, OperationEnum operation) {
+        return roundAmount(convertStringToBigDecimal(amount1).add(convertStringToBigDecimal(amount2)), operation);
+    }
+    private BigDecimal addAmount(String amount1, BigDecimal amount2, OperationEnum operation) {
+        return roundAmount(convertStringToBigDecimal(amount1).add(amount2),  operation);
+    }
+
+    private BigDecimal subtractAmount(String amount1, String amount2, OperationEnum operation) {
+        return roundAmount(convertStringToBigDecimal(amount1).subtract(convertStringToBigDecimal(amount2)), operation);
+    }
+
+    private BigDecimal multiplyAmount(Double amount1, String amount2, OperationEnum operation) {
+        return roundAmount(BigDecimal.valueOf(amount1).multiply(convertStringToBigDecimal(amount2)), operation);
+    }
+
+
+    public boolean changePassword(ChangeUserPasswordFormDTO newPassword) {
+        User user = getUser();
+        boolean result = false;
+        if (encoder.matches(newPassword.getOldPassword(), user.getPassword())){
+            user.setPassword(encoder.encode(newPassword.getNewPassword()));
+            result = updateUser(user) != null;
+        }
+        return result;
+    }
 }
