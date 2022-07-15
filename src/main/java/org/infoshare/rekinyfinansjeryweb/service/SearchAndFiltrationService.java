@@ -82,8 +82,7 @@ public class SearchAndFiltrationService {
     }
 
     private void uploadRequestStatistics(List<String> currencies){
-        executorService.execute(()->{
-            currencyStatisticsClientService.increaseCount(currencies);
-        });
+        Runnable runnable = ()->currencyStatisticsClientService.increaseCount(currencies);
+        executorService.execute(runnable);
     }
 }
