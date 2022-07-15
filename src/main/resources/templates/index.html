@@ -24,9 +24,9 @@
                     <span th:text="#{main.hero.introduction.1}"></span><br>
                     <span th:text="#{main.hero.introduction.2}"></span><br>
                 </p>
-                <button class="btn btn-primary btn-lg">
+                <a class="btn btn-primary btn-lg" th:href="@{/signup}" type="button">
                     <i class="bi bi-chevron-right"></i> <span th:text="#{main.button.sign.up.for.free}"></span>
-                </button>
+                </a>
             </div>
             <img class="img-fluid w-75 d-none d-md-block" th:src="@{assets/img/rekin.png}" alt="Rekiny Finansjery">
         </div>
@@ -170,7 +170,7 @@
                              alt="Maciej Chyla">
                         <h3 class="card-title mb-3">Maciej Chyła</h3>
                         <p class="card-text">Java Developer</p>
-                        <a href="#"><i class="bi bi-linkedin text-dark mx-1"></i></a>
+                        <a href="https://www.linkedin.com/in/maciej-chyla/"><i class="bi bi-linkedin text-dark mx-1"></i></a>
                         <a href="https://github.com/maciejchyla"><i class="bi bi-github text-dark mx-1"></i></a>
                     </div>
                 </div>
