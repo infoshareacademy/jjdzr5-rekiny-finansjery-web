@@ -62,7 +62,7 @@ public class AdminPanelService {
         user.setEmail(userAdminPanelDTO.getEmail());
         user.setName(userAdminPanelDTO.getName());
         user.setLastname(userAdminPanelDTO.getLastname());
-        user.setBillingCurrency(userAdminPanelDTO.getBillingCurrency());
+        user.setBillingCurrency(String.valueOf(userAdminPanelDTO.getBillingCurrency()));
         user.setRole(userAdminPanelDTO.getRole());
         user.setEnabled(userAdminPanelDTO.isEnabled());
         userRepository.save(user);

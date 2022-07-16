@@ -46,7 +46,9 @@
                         <input class="hidden_input_element" id="savingBidPriceMax" name="bidPriceMax" type="number" step="any"/>
                         <input class="hidden_input_element" id="savingAskPriceMin" name="askPriceMin" type="number" step="any"/>
                         <input class="hidden_input_element" id="savingAskPriceMax" name="askPriceMax" type="number" step="any"/>
-                        <input class="hidden_input_element" th:each="currency : ${possibleCurrencies}" type="checkbox" name="currency" th:id="'savingCurrency_' + ${currency.code}" th:value="${currency.code}">
+                        <div th:each="category : ${possibleCurrencies}">
+                            <input class="hidden_input_element" th:each="currency : ${category.possibleCurrencies}" type="checkbox" name="currency" th:id="'savingCurrency_' + ${currency.code}" th:value="${currency.code}">
+                        </div>
                         <button type="submit" class="form-control mt-4 btn-primary" th:text="#{filtration.filter.save}">Save</button>
                     </form>
                 </div>
@@ -71,9 +73,15 @@
     <label for="askPriceMax" th:text="#{filtration.option.max.ask.price}">Max ask price</label>
     <input class="form-control" id="askPriceMax" name="askPriceMax" type="number" step="any" th:value="${filtrationSettings.askPriceMax}"/>
     <div class="mt-2 text-center">
-        <span th:each="currency : ${possibleCurrencies}">
-            <input type="checkbox" class="btn-check" name="currency" th:id="'currency_' + ${currency.code}" th:value="${currency.code}"  th:checked="${currency.checked}">
-            <label class="btn btn-outline-dark m-1" th:for="'currency_' + ${currency.code}" th:text="${currency.code}"></label>
-        </span>
+        <div th:each="category : ${possibleCurrencies}">
+            <button type="button" class="form-control mt-3 bg-primary text-light border-primary" th:text="#{'currency.category.'+${category.category}}"
+                    th:onclick="uncheckOrCheckAllInputsInCategory([[${category.category}]]);"></button>
+            <div th:id="${'filtration_category_'+category.category}">
+                <span th:each="currency : ${category.possibleCurrencies}">
+                    <input type="checkbox" class="btn-check" name="currency" th:id="'currency_' + ${currency.code}" th:value="${currency.code}"  th:checked="${currency.checked}">
+                    <label class="btn btn-outline-dark m-1" th:for="'currency_' + ${currency.code}" th:text="${currency.code}"></label>
+                </span>
+            </div>
+        </div>
     </div>
 </div>

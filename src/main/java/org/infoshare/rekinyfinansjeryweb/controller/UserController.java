@@ -2,6 +2,8 @@ package org.infoshare.rekinyfinansjeryweb.controller;
 
 import com.infoshareacademy.services.NBPApiManager;
 import org.infoshare.rekinyfinansjeryweb.dto.ExchangeRateDTO;
+import org.infoshare.rekinyfinansjeryweb.dto.user.ChangeUserPasswordFormDTO;
+import org.infoshare.rekinyfinansjeryweb.dto.user.EditUserDataFormDTO;
 import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRate;
 import org.infoshare.rekinyfinansjeryweb.entity.user.MyUserPrincipal;
 import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
@@ -75,13 +77,13 @@ public class UserController {
                                                BindingResult result, Model model, @Autowired UsedCurrenciesService usedCurrenciesService) {
         if(result.hasErrors()){
             model.addAttribute("possibleCurrencies",
-                    usedCurrenciesService.getShortNamesOfCurrencies(NBPApiManager.getInstance(), filtrationSettings.getCurrency()));
+                    usedCurrenciesService.getShortNamesOfCurrencies(filtrationSettings.getCurrency()));
             return "user_filtration_preferences_add_form";
         }
         else if(usersService.getSavedFiltrationSettings().containsKey(filtrationSettings.getPreferenceName())){
             model.addAttribute("errorMessage", "filters.error.name.used");
             model.addAttribute("possibleCurrencies",
-                    usedCurrenciesService.getShortNamesOfCurrencies(NBPApiManager.getInstance(), filtrationSettings.getCurrency()));
+                    usedCurrenciesService.getShortNamesOfCurrencies(filtrationSettings.getCurrency()));
             return "user_filtration_preferences_add_form";
         }
 
@@ -247,5 +249,58 @@ public class UserController {
     public String getHistoryOperationCurrency(@PathVariable("code") String code, Model model) {
         model.addAttribute("operationhistory", usersService.getHistoryOperation(code));
         return "historyoperation";
+    }
+
+    @GetMapping("/edit/data")
+    public String getEditUser(Model model) {
+        model.addAttribute("edituser", usersService.getEditUserData());
+        return "edit_user";
+    }
+    @PostMapping("/edit/data")
+    public ModelAndView saveEditUser(@Valid @ModelAttribute("edituser") EditUserDataFormDTO user,
+                                     BindingResult result,
+                                     ModelMap model) {
+
+        if (!usersService.getUserDTO().getEmail().equals(user.getEmail()) ) {
+            if (usersService.emailExists(user.getEmail()) ) {
+                result.rejectValue("email", "validation.email");
+            }
+        }
+        if (result.hasErrors()) {
+            return new ModelAndView("edit_user", model);
+        }
+        if(usersService.saveEditUser(user)) {
+            model.addAttribute("successMessage", "msg.success.edit.user.data");
+        } else {
+            model.addAttribute("errorMessage", "msg.error.edit.user.data");
+            //todo LOG
+        }
+        return new ModelAndView("redirect:/user/edit/data", model);
+    }
+
+    @GetMapping("/edit/password")
+    public String getEditUserPassword(Model model) {
+        model.addAttribute("userpassword", new ChangeUserPasswordFormDTO());
+        return "edit_user_password";
+    }
+
+    @PostMapping("/edit/password")
+    public ModelAndView changePassword(@Valid @ModelAttribute("userpassword") ChangeUserPasswordFormDTO newPassword,
+                                       BindingResult result,
+                                       ModelMap model) {
+
+        if (!newPassword.getNewPassword().equals(newPassword.getRepeatNewPassword())) {
+            result.rejectValue("repeatNewPassword", "validation.repeat.password");
+        }
+        if (result.hasErrors()) {
+            return new ModelAndView("edit_user_password", model);
+        }
+        if(usersService.changePassword(newPassword)) {
+            model.addAttribute("successMessage", "msg.success.edit.change.pass");
+        } else {
+            model.addAttribute("errorMessage", "msg.error.edit.change.pass");
+            //todo LOG
+        }
+        return new ModelAndView("redirect:/user/edit/password", model);
     }
 }

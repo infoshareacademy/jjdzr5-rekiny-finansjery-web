@@ -25,7 +25,7 @@ public class UserCurrency {
     private Currency currency;
 
     @Column(name = COLUMN_PREFIX + "amount")
-    private double amount;
+    private String amount = "0";
 
     @ManyToOne
     @JoinColumn(name = User.COLUMN_PREFIX + "id")
@@ -37,7 +37,7 @@ public class UserCurrency {
     public UserCurrency() {
     }
 
-    public UserCurrency(Currency currency, double amount, User user, List<OperationHistory> historyList) {
+    public UserCurrency(Currency currency, String amount, User user, List<OperationHistory> historyList) {
         this.currency = currency;
         this.amount = amount;
         this.user = user;
@@ -60,11 +60,11 @@ public class UserCurrency {
         this.currency = currency;
     }
 
-    public double getAmount() {
+    public String getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(String amount) {
         this.amount = amount;
     }
 

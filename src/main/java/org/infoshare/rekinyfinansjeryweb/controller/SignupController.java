@@ -31,6 +31,9 @@ public class SignupController {
         } else if (usersService.emailExists(user.getEmail())) {
             result.rejectValue("email", "validation.email");
             return "signup";
+        } else if (!user.getPassword().equals(user.getRepeatPassword())) {
+            result.rejectValue("repeatPassword", "validation.repeat.password");
+            return "signup";
         }
         if (usersService.addUser(user)) {
             model.addAttribute("successMessage", "msg.success.signup");

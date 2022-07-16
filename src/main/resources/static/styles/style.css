@@ -189,6 +189,19 @@ input.bg-primary:hover {
     border-color: #426180 !important;
 }
 
+button.bg-primary:hover {
+    background-color: #426180 !important;
+    border-color: #426180 !important;
+}
+
+button.bg-primary {
+    background-color: #48729a !important;
+}
+
+button.bg-primary:focus {
+    box-shadow: none;
+}
+
 .btn-outline-dark {
     color: #48729a;
     border-color: #48729a;

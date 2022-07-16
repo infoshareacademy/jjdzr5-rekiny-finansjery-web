@@ -29,6 +29,7 @@
     <table class="table table-striped table-sm">
         <thead>
         <tr>
+            <th scope="col" ></th>
             <th scope="col" th:text="#{collection.view.code}"></th>
             <th scope="col" th:text="#{collection.view.currency.name}"></th>
             <th scope="col" th:text="#{collection.view.bid}"></th>
@@ -37,11 +38,14 @@
         </thead>
         <tbody>
         <tr th:each="rate : ${exchangeRates.getRates()}">
+            <th class="align-middle" scope="row" th:if="${rate.category=='currency'}"><i class="bi bi-currency-dollar"></i></th>
+            <th class="align-middle" scope="row" th:if="${rate.category=='cryptocurrency'}"><i class="bi bi-currency-bitcoin"></i></th>
+            <th class="align-middle" scope="row" th:if="${rate.category!='cryptocurrency' && rate.category!='currency'}"></th>
             <th class="align-middle" scope="row" th:text="${rate.code}"></th>
             <td class="align-middle"
                 th:text="${#messages.msgOrNull('currency.' + #strings.toString(rate.code)) != null} ? #{'currency.'+${rate.code}} : ${rate.name}"></td>
-            <td class="align-middle" th:text="${rate.bidPrice}"></td>
-            <td class="align-middle" th:text="${rate.askPrice}"></td>
+            <td class="align-middle" th:text="${#numbers.formatDecimal(rate.bidPrice, 1, 'COMMA', 4, 'POINT')}"></td>
+            <td class="align-middle" th:text="${#numbers.formatDecimal(rate.askPrice, 1, 'COMMA', 4, 'POINT')}"></td>
             <td class="text-end">
                 <a th:href="@{'/currency/'+${rate.code}}" class="btn mx-1 btn-primary"><i class="bi bi-eye"></i></a>
                 <div th:replace="fragments/user :: button_bid"></div>
