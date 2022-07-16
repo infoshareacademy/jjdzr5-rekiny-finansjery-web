@@ -10,18 +10,22 @@
 </head>
 <body>
 
-<h3 style="text-align: center; margin-top: 30px; margin-bottom: 25px;">Currency Search Statistics from last 30 days</h3>
+<section class="bg-primary text-light p-5 text-center">
+    <div class="container">
+        <h1 th:text="#{pie.stats.header}"></h1>
+    </div>
+</section>
 
 <div class="container p-5" style="margin-left: auto; margin-right: auto; display: block; padding: 20px">
 
     <form class="form-inline" method="get" th:action="@{'/stats/currency/'}">
         <div class="form-check-inline">
             <label for="code" th:text="#{chart.currency}" style="padding: 3px">Currency</label>
-            <select class="form-control" name="code" id="code" style="width: 70px">
+            <select class="form-control" name="code" id="code" style="width: 70px; display: inline">
                 <option th:each="code:${codes}" th:value="${code}" th:text="${code}"></option>
             </select>
         </div>
-        <button class="btn btn-sm m-1 btn-secondary" type="submit" th:text="#{chart.button.submit}">Submit</button>
+        <button class="btn btn-sm m-1 btn-secondary" type="submit" th:text="#{chart.stats.submit}">Submit</button>
     </form>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
