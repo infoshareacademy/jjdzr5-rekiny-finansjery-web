@@ -158,9 +158,14 @@
                            th:value="${invalidExchangeRate.code}" name="code" required maxlength="3">
                 </div>
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <label for="addInvalidCategory" class="col-form-label w-50" th:text="#{collection.view.category}">Category</label>
-                    <input type="text" class="form-control rounded-4" id="addInvalidCategory"
-                           th:value="${invalidExchangeRate.category}" name="category" required maxlength="20">
+                    <label for="addCurrencyCategory" class="w-50"
+                           th:text="#{collection.view.category}">Category</label>
+                    <select id="addCurrencyCategory" class="form-select w-100 pt-2" name="category">
+                        <option value="currency" th:text="#{currency.category.currency}">Currency</option>
+                        <option value="cryptocurrency" th:text="#{currency.category.cryptocurrency}">
+                            Cryptocurrency
+                        </option>
+                    </select>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <label for="addInvalidCurrencyBid" class="col-form-label w-50"
@@ -228,9 +233,14 @@
                            th:value="${invalidExchangeRate.code}" name="code" required maxlength="3">
                 </div>
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <label for="editInvalidCategory" class="col-form-label w-50" th:text="#{collection.view.category}">Category</label>
-                    <input type="text" class="form-control rounded-4" id="editInvalidCategory"
-                           th:value="${invalidExchangeRate.category}" name="category" required maxlength="20">
+                    <label for="editCurrencyCategory" class="w-50"
+                           th:text="#{collection.view.category}">Category</label>
+                    <select id="editCurrencyCategory" class="form-select w-100 pt-2" name="category">
+                        <option value="currency" th:text="#{currency.category.currency}">Currency</option>
+                        <option value="cryptocurrency" th:text="#{currency.category.cryptocurrency}">
+                            Cryptocurrency
+                        </option>
+                    </select>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <label for="editInvalidCurrencyBid" class="col-form-label w-50"
