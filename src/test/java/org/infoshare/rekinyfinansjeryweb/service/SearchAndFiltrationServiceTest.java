@@ -55,8 +55,8 @@ class SearchAndFiltrationServiceTest {
         FiltrationSettingsDTO filtrationSettingsDTO = new FiltrationSettingsDTO();
         Optional<Long> pageRequestParam = Optional.of(0L);
         Pageable pageable = PageRequest.of(0, 2);
-        List<Currency> currencies = List.of(new Currency(UUID.randomUUID(), "USD", "dolar", "currency", List.of()),
-                new Currency(UUID.randomUUID(), "EUR", "euro", "currency", List.of()));
+        List<Currency> currencies = List.of(new Currency(UUID.randomUUID(), "USD", "dolar", "currency", List.of(), ""),
+                new Currency(UUID.randomUUID(), "EUR", "euro", "currency", List.of(), ""));
         List<LocalDate> dates = List.of(LocalDate.of(2022, 05, 1),
                 LocalDate.of(2022, 05, 2));
         List<ExchangeRateCurrency> rates = List.of(
@@ -99,8 +99,8 @@ class SearchAndFiltrationServiceTest {
         FiltrationSettingsDTO filtrationSettingsDTO = new FiltrationSettingsDTO();
         Optional<Long> pageRequestParam = Optional.empty();
         Pageable pageable = PageRequest.of(0, 2);
-        List<Currency> currencies = List.of(new Currency(UUID.randomUUID(), "USD", "dolar", "currency", List.of()),
-                new Currency(UUID.randomUUID(), "EUR", "euro", "currency", List.of()));
+        List<Currency> currencies = List.of(new Currency(UUID.randomUUID(), "USD", "dolar", "currency", List.of(), ""),
+                new Currency(UUID.randomUUID(), "EUR", "euro", "currency", List.of(), ""));
         List<LocalDate> dates = List.of(LocalDate.of(2022, 05, 1),
                 LocalDate.of(2022, 05, 2));
         List<ExchangeRateCurrency> rates = List.of(
@@ -130,8 +130,8 @@ class SearchAndFiltrationServiceTest {
         searchSettingsDTO.setSearchPhrase("USD");
         Optional<Long> pageRequestParam = Optional.empty();
         Pageable pageable = PageRequest.of(0, 2);
-        List<Currency> currencies = List.of(new Currency(UUID.randomUUID(), "USD", "dolar", "currency", List.of()),
-                new Currency(UUID.randomUUID(), "EUR", "euro", "currency", List.of()));
+        List<Currency> currencies = List.of(new Currency(UUID.randomUUID(), "USD", "dolar", "currency", List.of(), ""),
+                new Currency(UUID.randomUUID(), "EUR", "euro", "currency", List.of(), ""));
         List<LocalDate> dates = List.of(LocalDate.of(2022, 05, 1),
                 LocalDate.of(2022, 05, 2));
         List<ExchangeRateCurrency> rates = List.of(
@@ -173,8 +173,8 @@ class SearchAndFiltrationServiceTest {
         searchSettingsDTO.setSearchPhrase("USD");
         Optional<Long> pageRequestParam = Optional.of(0L);
         Pageable pageable = PageRequest.of(0, 2);
-        List<Currency> currencies = List.of(new Currency(UUID.randomUUID(), "USD", "dolar", "currency", List.of()),
-                new Currency(UUID.randomUUID(), "EUR", "euro", "currency", List.of()));
+        List<Currency> currencies = List.of(new Currency(UUID.randomUUID(), "USD", "dolar", "currency", List.of(), ""),
+                new Currency(UUID.randomUUID(), "EUR", "euro", "currency", List.of(), ""));
         List<LocalDate> dates = List.of(LocalDate.of(2022, 05, 1),
                 LocalDate.of(2022, 05, 2));
         List<ExchangeRateCurrency> rates = List.of(
