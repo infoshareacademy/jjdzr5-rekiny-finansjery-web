@@ -166,13 +166,13 @@
                     <label for="addInvalidCurrencyBid" class="col-form-label w-50"
                            th:text="#{collection.view.bid}">Bid</label>
                     <input type="number" class="form-control rounded-4" id="addInvalidCurrencyBid"
-                           th:value="${invalidExchangeRate.bid}" step="any" name="bid" required max="100">
+                           th:value="${invalidExchangeRate.bid}" step="any" name="bid" required>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <label for="addInvalidCurrencyAsk" class="col-form-label w-50"
                            th:text="#{collection.view.ask}">Ask</label>
                     <input type="number" class="form-control rounded-4" id="addInvalidCurrencyAsk"
-                           th:value="${invalidExchangeRate.ask}" step="any" name="ask" required max="100">
+                           th:value="${invalidExchangeRate.ask}" step="any" name="ask" required>
                 </div>
                 <div class="d-flex justify-content-end">
                     <a th:href="@{/table/{table}(table=${#strings.replace(date,'/','_')})}"
@@ -236,13 +236,13 @@
                     <label for="editInvalidCurrencyBid" class="col-form-label w-50"
                            th:text="#{collection.view.bid}">Bid</label>
                     <input type="number" class="form-control rounded-4" id="editInvalidCurrencyBid"
-                           th:value="${invalidExchangeRate.bid}" step="any" name="bid" required max="100">
+                           th:value="${invalidExchangeRate.bid}" step="any" name="bid" required>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <label for="editInvalidCurrencyAsk" class="col-form-label w-50"
                            th:text="#{collection.view.ask}">Ask</label>
                     <input type="number" class="form-control rounded-4" id="editInvalidCurrencyAsk"
-                           th:value="${invalidExchangeRate.ask}" step="any" name="ask" required max="100">
+                           th:value="${invalidExchangeRate.ask}" step="any" name="ask" required>
                 </div>
                 <div class="d-flex justify-content-end">
                     <a th:with="date=${exchangeRates.getDate()}"

@@ -32,11 +32,11 @@
                 </div>
                 <div class="modal-body pb-4 pt-0 text-center">
                     <div class="d-flex justify-content-between align-items-center px-5">
-                        <i class="bi bi-archive" style="font-size: 85px"></i>
-                        <h2 class="fw-bold mb-0" th:text="#{filtration.filter.save.preference}">Edit Table</h2>
+                        <i class="bi bi-archive text-primary" style="font-size: 85px"></i>
+                        <h3 class="fw-bold mb-0" th:text="#{filtration.filter.save.preference}">Save Filter</h3>
                     </div>
                     <form id="saving_preference_form" th:action="@{/user/filtration_preferences/add}" method="POST">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3 mt-2">
                             <label for="preference_name" class="col-form-label w-50" th:text="#{filtration.filter.name}"></label>
                             <input type="text" class="form-control rounded-4" id="preference_name" name="preferenceName" placeholder="Enter name...">
                         </div>
@@ -47,7 +47,7 @@
                         <input class="hidden_input_element" id="savingAskPriceMin" name="askPriceMin" type="number" step="any"/>
                         <input class="hidden_input_element" id="savingAskPriceMax" name="askPriceMax" type="number" step="any"/>
                         <input class="hidden_input_element" th:each="currency : ${possibleCurrencies}" type="checkbox" name="currency" th:id="'savingCurrency_' + ${currency.code}" th:value="${currency.code}">
-                        <button type="submit" class="form-control mt-3" th:text="#{filtration.filter.save}">Save</button>
+                        <button type="submit" class="form-control mt-4 btn-primary" th:text="#{filtration.filter.save}">Save</button>
                     </form>
                 </div>
             </div>

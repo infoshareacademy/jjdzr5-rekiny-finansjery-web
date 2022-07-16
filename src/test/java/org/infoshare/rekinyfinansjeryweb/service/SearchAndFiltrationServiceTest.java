@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -53,8 +54,8 @@ class SearchAndFiltrationServiceTest {
                 new SearchAndFiltrationService(exchangeRateRepository, currencyRepository, currencyStatisticsClientService, executorService);
         FiltrationSettingsDTO filtrationSettingsDTO = new FiltrationSettingsDTO();
         Pageable pageable = PageRequest.of(0, 2);
-        List<Currency> currencies = List.of(new Currency(UUID.randomUUID(), "USD", "dolar", "currency"),
-                new Currency(UUID.randomUUID(), "EUR", "euro", "currency"));
+        List<Currency> currencies = List.of(new Currency(UUID.randomUUID(), "USD", "dolar", "currency", new ArrayList<>()),
+                new Currency(UUID.randomUUID(), "EUR", "euro", "currency", new ArrayList<>()));
 
         List<LocalDate> dates = List.of(LocalDate.of(2022, 05, 1),
                 LocalDate.of(2022, 05, 2));

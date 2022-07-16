@@ -27,10 +27,8 @@ public class ExchangeRateFormDTO {
     private String category;
 
     @Min(value = 0, message = "validation.bid.size")
-    @Max(value = 100, message = "validation.bid.size")
     private double bid;
 
     @Min(value = 0, message = "validation.ask.size")
-    @Max(value = 100, message = "validation.ask.size")
     private double ask;
 }

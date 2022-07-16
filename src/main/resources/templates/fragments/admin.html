@@ -73,12 +73,12 @@
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <label for="bid" class="col-form-label w-50" th:text="#{collection.view.bid}">Bid</label>
                             <input type="number" class="form-control rounded-4" id="bid"
-                                   value="0" step="any" th:field="*{bid}" required max="100">
+                                   value="0" step="any" th:field="*{bid}" required>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <label for="ask" class="col-form-label w-50" th:text="#{collection.view.ask}">Ask</label>
                             <input type="number" class="form-control rounded-4" id="ask"
-                                   value="0" step="any" th:field="*{ask}" required max="100">
+                                   value="0" step="any" th:field="*{ask}" required>
                         </div>
                         <button class="btn btn-lg my-2 mx-1 rounded-4 btn-secondary" style="width: 170px" type="button"
                                 th:text="#{cancel.button}" data-bs-dismiss="modal">
@@ -195,12 +195,12 @@
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <label for="bid" class="col-form-label w-50" th:text="#{collection.view.bid}">Bid</label>
                             <input type="number" class="form-control rounded-4" id="bid"
-                                   value="0" step="any" th:field="*{bid}" required max="100">
+                                   value="0" step="any" th:field="*{bid}" required>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <label for="ask" class="col-form-label w-50" th:text="#{collection.view.ask}">Ask</label>
                             <input type="number" class="form-control rounded-4" id="ask"
-                                   value="0" step="any" th:field="*{ask}" required max="100">
+                                   value="0" step="any" th:field="*{ask}" required>
                         </div>
                         <button class="btn btn-lg my-2 mx-1 rounded-4 btn-secondary" style="width: 170px" type="button"
                                 th:text="#{cancel.button}" data-bs-dismiss="modal">
@@ -280,13 +280,13 @@
                             <label for="editCurrencyBid" class="col-form-label w-50"
                                    th:text="#{collection.view.bid}">Bid</label>
                             <input type="number" class="form-control rounded-4" id="editCurrencyBid"
-                                   th:value="${rate.bidPrice}" step="any" name="bid" required max="100">
+                                   th:value="${rate.bidPrice}" step="any" name="bid" required>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <label for="editCurrencyAsk" class="col-form-label w-50"
                                    th:text="#{collection.view.ask}">Ask</label>
                             <input type="number" class="form-control rounded-4" id="editCurrencyAsk"
-                                   th:value="${rate.askPrice}" step="any" name="ask" required max="100">
+                                   th:value="${rate.askPrice}" step="any" name="ask" required>
                         </div>
                         <button class="btn btn-lg my-2 mx-1 rounded-4 btn-secondary" style="width: 150px" type="button"
                                 th:text="#{cancel.button}" data-bs-dismiss="modal">
