@@ -40,7 +40,7 @@
                th:text="${code} + ' ' + #{chart.button.history}" style="margin: 8px; position: auto; right: 10%"></a>
         </form>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <canvas id="myChart" style="width:100%"></canvas>
 
         <script th:inline="javascript">
@@ -53,17 +53,28 @@
                 data: {
                     labels: xValues,
                     datasets: [{
+                        label: "Bid",
                         data: currencies.map(currency => currency.bidPrice),
                         borderColor: "red",
                         fill: false
                     }, {
+                        label: "Ask",
                         data: currencies.map(currency => currency.askPrice),
                         borderColor: "blue",
                         fill: false
                     }]
                 },
                 options: {
-                    legend: {display: false}
+                    scales: {
+                        x: {
+                            ticks: {
+                                callback: function(val, index) {
+                                    return index % 2 === 0 ? this.getLabelForValue(val) : '';
+                                }
+                            }
+                        }
+                    },
+                    legend: {display: true}
                 }
             });
         </script>
