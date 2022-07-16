@@ -12,33 +12,44 @@
 
 <header th:insert="fragments/general :: menu"></header>
 
+<section class="bg-primary text-light p-5 text-center">
+    <div class="container">
+        <h1 th:text="${#messages.msgOrNull('currency.' + #strings.toString(code)) != null} ? #{'currency.'+${code}} : ${code}"></h1>
+    </div>
+</section>
+
 <!-- ======= Main ======= -->
 <main>
 
     <div class="container p-5">
 
-        <form class="form-inline" th:action="@{'/currency/' + ${code} + '/monthly'}" method="get">
+        <div style="padding-left: 55px">
+            <form class="form-inline" th:action="@{'/currency/' + ${code} + '/monthly'}" method="get">
 
-            <div class="form-check-inline">
-                <label for="month" th:text="#{chart.month}">Month</label>
-                <select class="form-control" name="month" id="month" th:with="months=${#numbers.sequence(1,12)}"
-                        style="width: 40px">
-                    <option th:each="month:${months}" th:value="${month}" th:text="${month}"></option>
-                </select>
+                <div class="form-check-inline">
+                    <label for="month" th:text="#{chart.month}">Month</label>
+                    <select class="form-control" name="month" id="month" th:with="months=${#numbers.sequence(1,12)}"
+                            style="width: 40px; display: inline">
+                        <option th:each="month:${months}" th:value="${month}" th:text="${month}"></option>
+                    </select>
 
-            </div>
-            <div class="form-check-inline">
-                <label for="year" th:text="#{chart.year}">Year</label>
-                <select class="form-control" name="year" id="year" th:with="years=${#numbers.sequence(2020,2022)}"
-                        style="width: 70px">
-                    <option th:each="year:${years}" th:value="${year}" th:text="${year}"></option>
-                </select>
-            </div>
 
-            <button class="btn btn-sm m-1 btn-secondary" type="submit" th:text="#{chart.button.submit}">Submit</button>
-            <a class="btn btn-sm m-1 btn-primary" th:href="@{'/currency/history/' + ${code}}"
-               th:text="${code} + ' ' + #{chart.button.history}" style="margin: 8px; position: auto; right: 10%"></a>
-        </form>
+                </div>
+                <div class="form-check-inline">
+                    <label for="year" th:text="#{chart.year}">Year</label>
+                    <select class="form-control" name="year" id="year" th:with="years=${#numbers.sequence(2020,2022)}"
+                            style="width: 70px; display: inline">
+                        <option th:each="year:${years}" th:value="${year}" th:text="${year}"></option>
+                    </select>
+                </div>
+
+                <button class="btn btn-sm m-1 btn-secondary" type="submit" th:text="#{chart.button.submit}">Submit
+                </button>
+
+                <a class="btn btn-sm m-1 btn-primary" th:href="@{'/currency/history/' + ${code}}"  th:text="${code} + ' ' + #{chart.button.history}" style="margin: 8px; position: auto; right: 10%"></a>
+            </form>
+        </div>
+
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <canvas id="myChart" style="width:100%"></canvas>
@@ -68,7 +79,7 @@
                     scales: {
                         x: {
                             ticks: {
-                                callback: function(val, index) {
+                                callback: function (val, index) {
                                     return index % 2 === 0 ? this.getLabelForValue(val) : '';
                                 }
                             }
