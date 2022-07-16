@@ -181,7 +181,6 @@ public class UserService implements UserDetailsService {
     public boolean paymentToWallet(String amount) {
         User user = getUser();
         user.setBillingCurrency(addAmount(user.getBillingCurrency(), amount, OperationEnum.PAYMENT).toString());
-//        user.setBillingCurrency(new BigDecimal(user.getBillingCurrency()).add(new BigDecimal(amount)).toString());
         addOperationHistory(amount,1,OperationEnum.PAYMENT, user);
         return updateUser(user) != null;
     }
@@ -189,7 +188,6 @@ public class UserService implements UserDetailsService {
     public boolean withdrawalFromWallet(String amount){
         User user = getUser();
         BigDecimal balance = subtractAmount(user.getBillingCurrency(),amount, OperationEnum.PAYCHECK);
-//        BigDecimal balance = new BigDecimal(user.getBillingCurrency()).subtract(new BigDecimal(amount));
         if (balance.compareTo(new BigDecimal("0")) < 0) return false;
         user.setBillingCurrency(balance.toString());
         addOperationHistory(amount,1,OperationEnum.PAYCHECK, user);
@@ -340,5 +338,8 @@ public class UserService implements UserDetailsService {
             result = updateUser(user) != null;
         }
         return result;
+    }
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }
