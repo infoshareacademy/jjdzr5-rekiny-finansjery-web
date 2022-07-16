@@ -10,10 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CurrencyStatisticsClientService {
@@ -25,21 +22,21 @@ public class CurrencyStatisticsClientService {
 
         return Arrays.stream(Optional.ofNullable(restTemplate
                 .getForObject("http://localhost:8081/api/all", CurrencyStatisticsDTO[].class)) //TODO wyrzucić URL do stałej
-                .orElse(new CurrencyStatisticsDTO[0])).toList();
+                .orElse(new CurrencyStatisticsDTO[0])).sorted(Comparator.comparing(CurrencyStatisticsDTO::getDate)).toList();
     }
 
     public List<CurrencyStatisticsDTO> getRecentResults() {
 
         return Arrays.stream(Optional.ofNullable(restTemplate
                         .getForObject("http://localhost:8081/api", CurrencyStatisticsDTO[].class))
-                .orElse(new CurrencyStatisticsDTO[0])).toList();
+                .orElse(new CurrencyStatisticsDTO[0])).sorted(Comparator.comparing(CurrencyStatisticsDTO::getDate)).toList();
     }
 
     public List<CurrencyStatisticsDTO> getOneResultByCode(String currency) {
 
         return Arrays.stream(Optional.ofNullable(restTemplate
                         .getForObject("http://localhost:8081/api/currency/{currency}", CurrencyStatisticsDTO[].class, currency))
-                .orElse(new CurrencyStatisticsDTO[0])).toList();
+                .orElse(new CurrencyStatisticsDTO[0])).sorted(Comparator.comparing(CurrencyStatisticsDTO::getDate)).toList();
 
     }
 
@@ -47,7 +44,7 @@ public class CurrencyStatisticsClientService {
 
         return Arrays.stream(Optional.ofNullable(restTemplate
                         .getForObject("http://localhost:8081/api/history/{month}/{year}", CurrencyStatisticsDTO[].class, month, year))
-                .orElse(new CurrencyStatisticsDTO[0])).toList();
+                .orElse(new CurrencyStatisticsDTO[0])).sorted(Comparator.comparing(CurrencyStatisticsDTO::getDate)).toList();
 
     }
 
@@ -55,7 +52,7 @@ public class CurrencyStatisticsClientService {
 
         return Arrays.stream(Optional.ofNullable(restTemplate
                         .getForObject("http://localhost:8081/api/history/{month}/{year}/{currency}", CurrencyStatisticsDTO[].class, month, year, currency))
-                .orElse(new CurrencyStatisticsDTO[0])).toList();
+                .orElse(new CurrencyStatisticsDTO[0])).sorted(Comparator.comparing(CurrencyStatisticsDTO::getDate)).toList();
 
     }
 
@@ -63,7 +60,7 @@ public class CurrencyStatisticsClientService {
 
         return Arrays.stream(Optional.ofNullable(restTemplate.
                 postForObject("http://localhost:8081/api/requested_currencies/", incrementedCurrencies, CurrencyStatisticsDTO[].class))
-                .orElse(new CurrencyStatisticsDTO[0])).toList();
+                .orElse(new CurrencyStatisticsDTO[0])).sorted(Comparator.comparing(CurrencyStatisticsDTO::getDate)).toList();
     }
 
 

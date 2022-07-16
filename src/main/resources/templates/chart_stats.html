@@ -11,8 +11,15 @@
 <body>
 <header th:insert="fragments/general :: menu"></header>
 <main>
+
+    <section class="bg-primary text-light p-5 text-center">
+        <div class="container">
+            <h1 th:text="${#messages.msgOrNull('currency.' + #strings.toString(results.get(0).code)) != null} ? #{'currency.'+${results.get(0).code}} : ${results.get(0).code}"></h1>
+        </div>
+    </section>
+
     <div class="container p-5">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <canvas id="myChart" style="width:100%"></canvas>
 
         <script th:inline="javascript">
@@ -32,7 +39,18 @@
                         fill: false
                     }]
                 },
-                options: {}
+                options: {
+                    scales: {
+                        x: {
+                            ticks: {
+                                callback: function(val, index) {
+                                    return index % 2 === 0 ? this.getLabelForValue(val) : '';
+                                }
+                            }
+                        }
+                    },
+                    legend: {display: true}
+                }
             });
         </script>
     </div>
