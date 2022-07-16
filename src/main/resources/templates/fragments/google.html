@@ -1,7 +1,7 @@
 <div th:fragment="button">
   <div class="text-center mt-4">
-    <h6>or</h6>
-    <h5>Continue with</h5>
+    <h6 th:text="#{login.or}"></h6>
+    <h5 th:text="#{login.continue}"></h5>
     <a th:href="@{/oauth2/authorization/google}"><img class="w-25" th:src="@{assets/img/google-logo.png}"></a>
   </div>
 </div>

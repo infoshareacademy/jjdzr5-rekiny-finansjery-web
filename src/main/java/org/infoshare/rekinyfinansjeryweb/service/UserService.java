@@ -124,7 +124,6 @@ public class UserService implements UserDetailsService {
 
     private boolean addToBillingCurrency(User user, ExchangeRateDTO exchangeRate, String amount) {
         BigDecimal billingCurrency = multiplyAmount(exchangeRate.getBidPrice(), amount,  OperationEnum.BID);
-        //todo dodaj czy ma walute
         user.setBillingCurrency(addAmount(user.getBillingCurrency(), billingCurrency,  OperationEnum.BID).toString());
         return true;
     }
@@ -142,8 +141,6 @@ public class UserService implements UserDetailsService {
 
     private boolean subtractFromBillingCurrency(User user, ExchangeRateDTO exchangeRate, String amount) {
         BigDecimal billingCurrency = multiplyAmount(exchangeRate.getAskPrice(), amount, OperationEnum.ASK);
-//        BigDecimal billingCurrency = new BigDecimal(exchangeRate.getAskPrice()).multiply(new BigDecimal(amount));
-        //todo spr
         BigDecimal userBillingCurrency = convertStringToBigDecimal(user.getBillingCurrency());
         if (userBillingCurrency.compareTo(billingCurrency) < 0) return false;
         user.setBillingCurrency(roundAmount(userBillingCurrency.subtract(billingCurrency), OperationEnum.ASK).toString());
@@ -153,7 +150,6 @@ public class UserService implements UserDetailsService {
     private boolean addCurrencyHistory(User user, String currency, String amount, double exchangeRate, OperationEnum operationEnum) {
         Currency code = currencyRepository.findByCode(currency);
         UserCurrency userCurrency = getUserCurrency(user, code);
-        //todo spr
         BigDecimal amountDecimal = convertStringToBigDecimal(amount);
         BigDecimal amountUserCurrency = convertStringToBigDecimal(userCurrency.getAmount());
         if (operationEnum == OperationEnum.ASK) {
