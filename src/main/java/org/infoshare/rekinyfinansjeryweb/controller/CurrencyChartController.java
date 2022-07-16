@@ -1,14 +1,19 @@
 package org.infoshare.rekinyfinansjeryweb.controller;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.infoshare.rekinyfinansjeryweb.controller.controllerComponents.ListToPagesSplitter;
 import org.infoshare.rekinyfinansjeryweb.service.ChartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @Controller
@@ -37,12 +42,26 @@ public class CurrencyChartController {
     }
 
     @GetMapping("/history/{code}")
-    public String showHistory(@PathVariable("code") String code, Model model, @PageableDefault(size=25) Pageable pageable) {
+    public String showHistory(@PathVariable("code") String code, Model model, @PageableDefault(size = 25) Pageable pageable) {
 
         List<ChartService.ChartData> chartData = chartService.sendExchangeRatesForGivenPage(code, pageable);
         ListToPagesSplitter.splitIntoPages(chartData, model, pageable);
         return "history";
     }
 
+    @ControllerAdvice
+    public class ControllerExceptionHandler {
+        @ExceptionHandler(Exception.class)
+        public ResponseEntity<ErrorCause> handle(Exception e) {
+            return ResponseEntity.internalServerError().body(new ErrorCause(e.getMessage()));
+        }
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public class ErrorCause {
+        private String cause;
+    }
 
 }
