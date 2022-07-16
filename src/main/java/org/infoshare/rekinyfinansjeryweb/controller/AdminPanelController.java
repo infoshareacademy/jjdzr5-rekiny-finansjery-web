@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.util.UUID;
 
 @Controller
 @RequestMapping(value = {"/admin", "*/admin"})
@@ -25,7 +24,6 @@ public class AdminPanelController {
     @GetMapping("/panel")
     public String getPanel(Model model) {
         model.addAttribute("userList", adminPanelService.getAllUsers());
-//        model.addAttribute("user", new UserDTO());
         model.addAttribute("userAdminPanel", new UserAdminPanelDTO());
         return "panel";
     }
