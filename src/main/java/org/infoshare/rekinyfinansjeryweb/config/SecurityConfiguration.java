@@ -1,30 +1,41 @@
 package org.infoshare.rekinyfinansjeryweb.config;
 
-import org.springframework.context.annotation.Bean;
+import org.infoshare.rekinyfinansjeryweb.service.CustomOAuth2UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
+//@EnableWebSecurity
 @EnableGlobalMethodSecurity(
         prePostEnabled = true,
         securedEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private CustomOAuth2UserService oAuth2UserService;
+    @Autowired
+    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/", "/currency/**", "/styles/**", "/assets/**", "/js/**", "/tables", "/table/**", "/search", "/signup", "/login", "/stats/**").permitAll()
+                .antMatchers("/", "/oauth2/**", "/currency/**", "/styles/**", "/assets/**", "/js/**", "/tables", "/table/**", "/search", "/signup", "/login", "/stats/**").permitAll()
                 .antMatchers("/admin-panel", "/admin", "/admin/**").hasAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login").permitAll()
-                .defaultSuccessUrl("/user", false)
-                .failureUrl("/login?error=true")
+                    .loginPage("/login").permitAll()
+                    .defaultSuccessUrl("/user", false)
+                    .failureUrl("/login?error=true")
+                .and()
+                .oauth2Login()
+                    .loginPage("/login")
+                    .userInfoEndpoint().userService(oAuth2UserService)
+                    .and()
+                    .successHandler(oAuth2LoginSuccessHandler)
                 .and()
                 .logout()
                 .logoutUrl("/logout").permitAll()
@@ -32,9 +43,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .deleteCookies("JSESSIONID")
                 .and()
                 .exceptionHandling().accessDeniedPage("/403");
-    }
-    @Bean
-    public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder(11);
     }
 }

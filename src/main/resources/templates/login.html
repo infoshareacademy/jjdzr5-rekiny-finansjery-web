@@ -16,7 +16,7 @@
 <main>
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-10 col-sm-8 col-md-6 col-lg-4 col-xl-3" style="margin-top: 20%;">
+            <div class="col-10 col-sm-8 col-md-6 col-lg-4 col-xl-3" style="margin-top: 15%;">
                 <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.entity.user.User"*/-->
                 <form id="form" th:action="@{/login}" method="post">
                     <label for="email" th:text="#{login.email}"></label>
@@ -31,6 +31,7 @@
                         <input class="btn btn-sm m-1 btn-primary" type="submit" th:value="#{signin}"/>
                     </div>
                 </form>
+                <div th:insert="fragments/google :: button"></div>
             </div>
         </div>
     </div>

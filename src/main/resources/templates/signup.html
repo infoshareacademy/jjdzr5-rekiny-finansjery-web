@@ -16,7 +16,7 @@
 <main>
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-10 col-sm-8 col-md-6 col-lg-4 col-xl-3" style="margin-top: 15%;">
+            <div class="col-10 col-sm-8 col-md-6 col-lg-4 col-xl-3" style="margin-top: 5%;">
                 <!--/*@thymesVar id="user" type="org.infoshare.rekinyfinansjeryweb.dto.user.CreateUserFormDTO"*/-->
                 <form id="form" th:action="@{/signup}" th:object="${user}" method="post">
                     <label for="name" th:text="#{signup.name}"></label>
@@ -58,6 +58,7 @@
                         <input class="btn btn-sm m-1 btn-primary" type="submit" th:value="#{signup}"/>
                     </div>
                 </form>
+                <div th:insert="fragments/google :: button"></div>
             </div>
         </div>
     </div>

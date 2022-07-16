@@ -1,5 +1,6 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
+import org.infoshare.rekinyfinansjeryweb.entity.user.CustomOAuth2User;
 import org.infoshare.rekinyfinansjeryweb.dto.ExchangeRateDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.SaveOfFiltrationSettingsDTO;
@@ -58,12 +59,6 @@ public class UserService implements UserDetailsService {
     }
     public EditUserDataFormDTO getEditUserData() {
         EditUserDataFormDTO editUser = modelMapper.map(getUser(), EditUserDataFormDTO.class);
-        //todo del
-//        editUser.setRepeatPassword(editUser.getPassword());
-//        System.out.println("PASS: " + editUser.getPassword());
-//        System.out.println("PASS2: " + editUser.getRepeatPassword());
-        System.out.println("email: " + editUser.getEmail());
-        System.out.println("Name: " + editUser.getName());
         return editUser;
     }
 
@@ -79,13 +74,21 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public Boolean addUser(CreateUserFormDTO createUserFormDTO){
+    public Boolean addUser(CreateUserFormDTO createUserFormDTO, AuthenticationProvider provider){
         User user = modelMapper.map(createUserFormDTO, User.class);
         user.setPassword(encoder.encode(user.getPassword()));
         user.setRole(Set.of(UserEnum.ROLE_USER));
+        user.setAuthProvider(provider);
         user.setCreatedAt(LocalDateTime.now());
         user.setEnabled(true);
-
+        return userRepository.save(user) != null;
+    }
+    public Boolean addUserOAuth2(CreateUserFormDTO createUserFormDTO, AuthenticationProvider provider){
+        User user = modelMapper.map(createUserFormDTO, User.class);
+        user.setRole(Set.of(UserEnum.ROLE_USER));
+        user.setAuthProvider(provider);
+        user.setCreatedAt(LocalDateTime.now());
+        user.setEnabled(true);
         return userRepository.save(user) != null;
     }
 
@@ -292,7 +295,15 @@ public class UserService implements UserDetailsService {
 
     private MyUserPrincipal getUserPrincipal(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (MyUserPrincipal) authentication.getPrincipal();
+        Object principal = authentication.getPrincipal();
+        User user = null;
+        if (principal instanceof CustomOAuth2User) {
+            String email = ((CustomOAuth2User) principal).getEmail();
+            user = userRepository.findByEmail(email);
+        } else if (principal instanceof MyUserPrincipal) {
+            user = ((MyUserPrincipal) principal).getUser();
+        }
+        return new MyUserPrincipal(user);
     }
 
     private BigDecimal convertStringToBigDecimal(String s) {
