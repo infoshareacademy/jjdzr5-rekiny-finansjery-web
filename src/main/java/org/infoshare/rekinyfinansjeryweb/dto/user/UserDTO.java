@@ -11,5 +11,5 @@ public class UserDTO {
     private String email;
     private String name;
     private String lastname;
-    private double billingCurrency;
+    private String billingCurrency;
 }

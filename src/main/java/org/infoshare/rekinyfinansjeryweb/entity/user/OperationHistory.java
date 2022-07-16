@@ -30,7 +30,7 @@ public class OperationHistory {
     private double exchangeRate;
 
     @Column(name = COLUMN_PREFIX + "amount")
-    private double amount;
+    private String amount;
 
     @ManyToOne
     @JoinColumn(name = User.COLUMN_PREFIX + "id")
@@ -43,7 +43,7 @@ public class OperationHistory {
     public OperationHistory() {
     }
 
-    public OperationHistory(LocalDateTime dateOpreation, OperationEnum operation, double exchangeRate, double amount) {
+    public OperationHistory(LocalDateTime dateOpreation, OperationEnum operation, double exchangeRate, String amount) {
         this.dateOperation = dateOpreation;
         this.operation = operation;
         this.exchangeRate = exchangeRate;
@@ -82,11 +82,11 @@ public class OperationHistory {
         this.exchangeRate = exchangeRate;
     }
 
-    public double getAmount() {
+    public String getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(String amount) {
         this.amount = amount;
     }
 
@@ -114,22 +114,27 @@ public class OperationHistory {
         OperationHistory that = (OperationHistory) o;
 
         if (Double.compare(that.exchangeRate, exchangeRate) != 0) return false;
-        if (Double.compare(that.amount, amount) != 0) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (dateOperation != null ? !dateOperation.equals(that.dateOperation) : that.dateOperation != null)
             return false;
-        return operation == that.operation;
+        if (operation != that.operation) return false;
+        if (amount != null ? !amount.equals(that.amount) : that.amount != null) return false;
+        if (user != null ? !user.equals(that.user) : that.user != null) return false;
+        return userCurrency != null ? userCurrency.equals(that.userCurrency) : that.userCurrency == null;
     }
 
     @Override
     public int hashCode() {
         int result;
         long temp;
-        result = dateOperation != null ? dateOperation.hashCode() : 0;
+        result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (dateOperation != null ? dateOperation.hashCode() : 0);
         result = 31 * result + (operation != null ? operation.hashCode() : 0);
         temp = Double.doubleToLongBits(exchangeRate);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(amount);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (amount != null ? amount.hashCode() : 0);
+        result = 31 * result + (user != null ? user.hashCode() : 0);
+        result = 31 * result + (userCurrency != null ? userCurrency.hashCode() : 0);
         return result;
     }
 

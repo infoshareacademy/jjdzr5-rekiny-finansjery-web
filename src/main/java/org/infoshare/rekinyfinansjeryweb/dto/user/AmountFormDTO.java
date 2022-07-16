@@ -5,16 +5,16 @@ import javax.validation.constraints.Min;
 public class AmountFormDTO {
 
     @Min(value = 1, message ="{validation.amount.min}")
-    private double amount;
+    private String amount;
 
     public AmountFormDTO() {
     }
 
-    public double getAmount() {
+    public String getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(String amount) {
         this.amount = amount;
     }
 
@@ -25,13 +25,11 @@ public class AmountFormDTO {
 
         AmountFormDTO that = (AmountFormDTO) o;
 
-        return Double.compare(that.amount, amount) == 0;
+        return amount != null ? amount.equals(that.amount) : that.amount == null;
     }
 
     @Override
     public int hashCode() {
-        long temp = Double.doubleToLongBits(amount);
-        return (int) (temp ^ (temp >>> 32));
+        return amount != null ? amount.hashCode() : 0;
     }
-
 }

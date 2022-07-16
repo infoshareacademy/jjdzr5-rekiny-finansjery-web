@@ -4,6 +4,8 @@ import com.infoshareacademy.services.NBPApiManager;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.infoshare.rekinyfinansjeryweb.dto.CurrencyTypeBucket;
+import org.infoshare.rekinyfinansjeryweb.dto.PossibleCurrency;
 import org.infoshare.rekinyfinansjeryweb.entity.Currency;
 import org.infoshare.rekinyfinansjeryweb.repository.CurrencyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,34 +21,24 @@ public class UsedCurrenciesService {
     private CurrencyRepository currencyRepository;
     public List<PossibleCurrency> getShortNamesOfCurrencies(NBPApiManager nbpApiManager, List<String> selectedCurrencies){
         List<Currency> currencies = currencyRepository.findAll();
-        return currencies.stream().map(rate -> new PossibleCurrency(rate.getCode(), selectedCurrencies.contains(rate.getCode())))
+        return currencies.stream().map(rate -> new PossibleCurrency(rate.getCode(), rate.getCategory(), selectedCurrencies.contains(rate.getCode())))
                 .collect(Collectors.toList());
+    }
+
+    public List<CurrencyTypeBucket> getShortNamesOfCurrenciesSplitByCategory(NBPApiManager nbpApiManager, List<String> selectedCurrencies){
+        List<Currency> currencies = currencyRepository.findAll();
+        Map<String, CurrencyTypeBucket> categoryBuckets = new HashMap<>();
+        currencies.stream().map(rate -> new PossibleCurrency(rate.getCode(), rate.getCategory(), selectedCurrencies.contains(rate.getCode())))
+                .forEach(currency -> {
+                    categoryBuckets.putIfAbsent(currency.getCategory(), new CurrencyTypeBucket(currency.getCategory(), new ArrayList<>()));
+                    categoryBuckets.get(currency.getCategory()).getPossibleCurrencies().add(currency);
+                });
+        return categoryBuckets.values().stream().toList();
     }
 
     public List<String> getShortNamesOfCurrenciesForStats(){
         List<Currency> currencies = currencyRepository.findAll();
         return currencies.stream().map(Currency::getCode)
                 .collect(Collectors.toList());
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public class PossibleCurrency{
-        private String code;
-        private boolean checked;
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            PossibleCurrency that = (PossibleCurrency) o;
-            return checked == that.checked && Objects.equals(code, that.code);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(code, checked);
-        }
     }
 }

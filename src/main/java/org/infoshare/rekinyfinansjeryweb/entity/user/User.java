@@ -50,7 +50,7 @@ public class User {
     private boolean enabled;
 
     @Column(name = COLUMN_PREFIX + "billing_currency")
-    private double billingCurrency;
+    private String billingCurrency = "0";
 
     @OneToMany(mappedBy = "user",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<OperationHistory> historyList = new ArrayList<>();
@@ -129,11 +129,11 @@ public class User {
         this.enabled = enabled;
     }
 
-    public double getBillingCurrency() {
+    public String getBillingCurrency() {
         return billingCurrency;
     }
 
-    public void setBillingCurrency(double billingCurrency) {
+    public void setBillingCurrency(String billingCurrency) {
         this.billingCurrency = billingCurrency;
     }
 
@@ -185,13 +185,14 @@ public class User {
         User user = (User) o;
 
         if (enabled != user.enabled) return false;
-        if (Double.compare(user.billingCurrency, billingCurrency) != 0) return false;
         if (id != null ? !id.equals(user.id) : user.id != null) return false;
         if (email != null ? !email.equals(user.email) : user.email != null) return false;
         if (password != null ? !password.equals(user.password) : user.password != null) return false;
         if (role != null ? !role.equals(user.role) : user.role != null) return false;
         if (name != null ? !name.equals(user.name) : user.name != null) return false;
         if (lastname != null ? !lastname.equals(user.lastname) : user.lastname != null) return false;
+        if (billingCurrency != null ? !billingCurrency.equals(user.billingCurrency) : user.billingCurrency != null)
+            return false;
         if (historyList != null ? !historyList.equals(user.historyList) : user.historyList != null) return false;
         if (myCurrencies != null ? !myCurrencies.equals(user.myCurrencies) : user.myCurrencies != null) return false;
         if (savedFiltrationSettings != null ? !savedFiltrationSettings.equals(user.savedFiltrationSettings) : user.savedFiltrationSettings != null)
@@ -202,17 +203,14 @@ public class User {
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        result = id != null ? id.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (role != null ? role.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (lastname != null ? lastname.hashCode() : 0);
         result = 31 * result + (enabled ? 1 : 0);
-        temp = Double.doubleToLongBits(billingCurrency);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (billingCurrency != null ? billingCurrency.hashCode() : 0);
         result = 31 * result + (historyList != null ? historyList.hashCode() : 0);
         result = 31 * result + (myCurrencies != null ? myCurrencies.hashCode() : 0);
         result = 31 * result + (savedFiltrationSettings != null ? savedFiltrationSettings.hashCode() : 0);

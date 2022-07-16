@@ -33,7 +33,7 @@ public class CreateUserService {
         user.setRole(Set.of(UserEnum.ROLE_ADMIN, UserEnum.ROLE_USER));
         user.setName("REKINY");
         user.setLastname("FINANSJERY");
-        user.setBillingCurrency(155222.86);
+        user.setBillingCurrency("155222.86");
         user.setEnabled(true);
         user.setCreatedAt(LocalDateTime.now());
         userRepository.save(user);

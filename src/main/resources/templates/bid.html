@@ -14,7 +14,7 @@
 
 <section class="bg-primary text-light p-5 text-center">
     <div class="container">
-        <h1 th:text="#{user.sell.currency.title}"></h1>
+        <h1 th:text="#{user.wallet.title}"></h1>
     </div>
 </section>
 <!-- ======= Main ======= -->
@@ -24,7 +24,14 @@
             <div class="col-12 col-md-3">
                 <div th:insert="fragments/user :: menu"></div>
             </div>
-            <div class="col-12 col-md-3 offset-md-3" style="margin-top: 6%;">
+            <div class="col-12 col-md-9">
+                <div class="text-start">
+                    <div class="h3 text-secondary ms-3 mb-3">
+                        <i class="bi bi-grid-3x2-gap-fill"></i>
+                        <span th:text="#{user.sell.currency.title}"></span>
+                    </div>
+                </div>
+            <div class="col-12 col-md-4 offset-md-4" style="margin-top: 6%;">
                 <form id="form" th:action="@{/user/sellcurrency/{code}(code=${rate.code})}"  th:object="${amount}" method="post">
                     <table class="table align-middle">
                         <tr>
@@ -56,6 +63,7 @@
                     </div>
                 </form>
             </div>
+        </div>
         </div>
     </div>
 </main>
