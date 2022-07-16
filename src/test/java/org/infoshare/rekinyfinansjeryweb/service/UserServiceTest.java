@@ -155,7 +155,8 @@ class UserServiceTest {
         loginUser();
         given(userRepository.findById(id)).willReturn(user);
         ExchangeRateDTO exchangeRateDTO = new ExchangeRateDTO(4.5524, 4.4622, "USD", "Dolar", "currency");
-        Currency currency = new Currency(UUID.randomUUID(), "USD", "dolar", "currency");
+
+        Currency currency = new Currency(UUID.randomUUID(), "USD", "dolar", "currency", List.of(), "");
         when(currencyRepository.findByCode(Mockito.anyString())).thenReturn(currency);
         when(currentRatesService.getCurrencyOfLastExchangeRates(Mockito.anyString())).thenReturn(exchangeRateDTO);
         when(userService.updateUser(user)).thenReturn(user);
@@ -176,7 +177,7 @@ class UserServiceTest {
         loginUser();
         given(userRepository.findById(id)).willReturn(user);
         ExchangeRateDTO exchangeRateDTO = new ExchangeRateDTO(4.5524, 4.4622, "USD", "Dolar", "currency");
-        Currency currency = new Currency(UUID.randomUUID(), "USD", "dolar", "currency");
+        Currency currency = new Currency(UUID.randomUUID(), "USD", "dolar", "currency", List.of(), "");
         when(currencyRepository.findByCode(Mockito.anyString())).thenReturn(currency);
         when(currentRatesService.getCurrencyOfLastExchangeRates(Mockito.anyString())).thenReturn(exchangeRateDTO);
         when(userService.updateUser(user)).thenReturn(user);
@@ -197,7 +198,7 @@ class UserServiceTest {
         loginUser();
         given(userRepository.findById(id)).willReturn(user);
         ExchangeRateDTO exchangeRateDTO = new ExchangeRateDTO(4.5524, 4.4622, "USD", "Dolar", "currency");
-        Currency currency = new Currency(UUID.randomUUID(), "USD", "dolar", "currency");
+        Currency currency = new Currency(UUID.randomUUID(), "USD", "dolar", "currency", List.of(), "");
         when(currencyRepository.findByCode(Mockito.anyString())).thenReturn(currency);
         when(currentRatesService.getCurrencyOfLastExchangeRates(Mockito.anyString())).thenReturn(exchangeRateDTO);
         when(userService.updateUser(user)).thenReturn(user);
@@ -265,7 +266,7 @@ class UserServiceTest {
         loginUser();
         given(userRepository.findById(id)).willReturn(user);
         ExchangeRateDTO exchangeRateDTO = new ExchangeRateDTO(4.5524, 4.4622, "USD", "Dolar", "currency");
-        Currency currency = new Currency(UUID.randomUUID(), "USD", "dolar", "currency");
+        Currency currency = new Currency(UUID.randomUUID(), "USD", "dolar", "currency", List.of(), "");
         when(currencyRepository.findByCode(Mockito.anyString())).thenReturn(currency);
         when(currentRatesService.getCurrencyOfLastExchangeRates(Mockito.anyString())).thenReturn(exchangeRateDTO);
         when(userService.updateUser(user)).thenReturn(user);
@@ -283,7 +284,7 @@ class UserServiceTest {
         loginUser();
         given(userRepository.findById(id)).willReturn(user);
         ExchangeRateDTO exchangeRateDTO = new ExchangeRateDTO(4.5524, 4.4622, "USD", "Dolar", "currency");
-        Currency currency = new Currency(UUID.randomUUID(), "USD", "dolar", "currency");
+        Currency currency = new Currency(UUID.randomUUID(), "USD", "dolar", "currency", List.of(), "");
         when(currencyRepository.findByCode(Mockito.anyString())).thenReturn(currency);
         when(currentRatesService.getCurrencyOfLastExchangeRates(Mockito.anyString())).thenReturn(exchangeRateDTO);
         when(userService.updateUser(user)).thenReturn(user);

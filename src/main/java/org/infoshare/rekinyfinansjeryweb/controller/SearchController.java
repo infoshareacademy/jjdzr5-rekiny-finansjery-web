@@ -10,6 +10,7 @@ import org.infoshare.rekinyfinansjeryweb.dto.PageDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.SearchSettingsDTO;
 import org.infoshare.rekinyfinansjeryweb.service.SearchAndFiltrationService;
 import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
+import org.infoshare.rekinyfinansjeryweb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,6 +35,9 @@ public class SearchController {
     SearchAndFiltrationService searchAndFiltrationService;
     @Autowired
     UsedCurrenciesService usedCurrenciesService;
+    @Autowired
+    UserService userService;
+
 
     @GetMapping
     public String displayTables(@ModelAttribute SearchSettingsDTO settings,
@@ -46,12 +50,12 @@ public class SearchController {
 
         ListToPagesSplitter.splitIntoPages(collection, model, pageable);
         model.addAttribute("filtrationSettings", settings);
-        model.addAttribute("possibleCurrencies", usedCurrenciesService.getShortNamesOfCurrencies(NBPApiManager.getInstance(), settings.getCurrency()));
+        model.addAttribute("possibleCurrencies", usedCurrenciesService.getShortNamesOfCurrenciesSplitByCategory(settings.getCurrency()));
         model.addAttribute("newDailyTable", new DailyTableFormDTO());
         model.addAttribute("newCurrency", new ExchangeRateFormDTO());
 
         if(principal != null) {
-            model.addAttribute("listOfPreferences", new ArrayList<>(principal.getUser().getSavedFiltrationSettings().keySet()));
+            model.addAttribute("listOfPreferences", new ArrayList<>(userService.getSavedFiltrationSettings().keySet()));
         }
         return "search";
     }

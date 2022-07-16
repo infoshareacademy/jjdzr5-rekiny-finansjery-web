@@ -1,11 +1,16 @@
 package org.infoshare.rekinyfinansjeryweb.controller;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.coyote.Response;
 import org.infoshare.rekinyfinansjeryweb.dto.SearchSettingsDTO;
 import org.infoshare.rekinyfinansjeryweb.service.CurrencyStatisticsClientService;
 import org.infoshare.rekinyfinansjeryweb.service.CurrencyStatisticsPieChartService;
 import org.infoshare.rekinyfinansjeryweb.service.UsedCurrenciesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -70,4 +75,20 @@ public class CurrencyStatisticsController {
         model.addAttribute("results", currencyStatisticsClientService.increaseCount(List.of(code)));
         return "chart_stats";
     }
+
+    @ControllerAdvice
+    public class ControllerExceptionHandler {
+        @ExceptionHandler(Exception.class)
+        public ResponseEntity<ErrorCause> handle(Exception e) {
+            return ResponseEntity.internalServerError().body(new ErrorCause(e.getMessage()));
+        }
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public class ErrorCause {
+        private String cause;
+    }
+
 }

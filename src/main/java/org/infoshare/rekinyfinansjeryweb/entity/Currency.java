@@ -32,4 +32,6 @@ public class Currency {
     String category;
     @OneToMany(mappedBy = "currency")
     List<ExchangeRate> currencies;
+    @Column(name = COLUMN_PREFIX + "tags", columnDefinition = "varchar(255) default ''")
+    String tags;
 }

@@ -5,8 +5,10 @@ import org.infoshare.rekinyfinansjeryweb.entity.Currency;
 import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRate;
 import org.infoshare.rekinyfinansjeryweb.entity.LastUpdate;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ApiRequestResult;
+import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.CurrencyTagGenerator;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.ExternalApiDataSourceInterface;
 import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.coinGecko.dto.CoinData;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -24,14 +26,17 @@ public abstract class CoinGeckoAdapter implements ExternalApiDataSourceInterface
 
     RestTemplate restTemplate;
 
+    CurrencyTagGenerator currencyTagGenerator;
+
     private final String id;
 
     private final String name;
     private static final String URL_COIN_HISTORY = "https://api.coingecko.com/api/v3/coins/{id}/history?date={date}&localization=false";
     private static  final Integer LIMIT_DAYS = 90;
 
-    public CoinGeckoAdapter(RestTemplate restTemplate, String id, String name) {
+    public CoinGeckoAdapter(RestTemplate restTemplate, CurrencyTagGenerator currencyTagGenerator, String id, String name) {
         this.restTemplate = restTemplate;
+        this.currencyTagGenerator = currencyTagGenerator;
         this.id = id;
         this.name = name;
     }
@@ -89,7 +94,8 @@ public abstract class CoinGeckoAdapter implements ExternalApiDataSourceInterface
             Optional<Currency> currency = Optional.ofNullable(currenciesMap.get(data.getSymbol().toUpperCase()));
             if(currency.isEmpty()){
                 Currency newCurrency = new Currency(null, data.getSymbol().toUpperCase(),
-                        data.getName(), "cryptocurrency", new ArrayList<>());
+                        data.getName(), "cryptocurrency", new ArrayList<>(),
+                        currencyTagGenerator.createTag(data.getSymbol().toUpperCase(), data.getName()));
                 currenciesMap.put(newCurrency.getCode().toUpperCase(), newCurrency);
                 result.getCurrencies().add(newCurrency);
                 currency = Optional.of(newCurrency);
