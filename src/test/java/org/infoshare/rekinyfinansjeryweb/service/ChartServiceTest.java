@@ -37,7 +37,7 @@ class ChartServiceTest {
         double askPrice = 7.3635;
         double bidPrice = 6.987;
 
-        Currency currencyUSD = new Currency(UUID.randomUUID(), code, code, category, List.of());
+        Currency currencyUSD = new Currency(UUID.randomUUID(), code, code, category, List.of(), "");
 
         List<ExchangeRate> rates = new ArrayList<>();
         ExchangeRate rate = new ExchangeRate(UUID.randomUUID(), currencyUSD, LocalDate.now(), askPrice, bidPrice);

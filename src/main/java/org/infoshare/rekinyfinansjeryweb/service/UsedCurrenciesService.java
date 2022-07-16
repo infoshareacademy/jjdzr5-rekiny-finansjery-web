@@ -17,15 +17,19 @@ import java.util.stream.Collectors;
 @Service
 public class UsedCurrenciesService {
 
-    @Autowired
     private CurrencyRepository currencyRepository;
-    public List<PossibleCurrency> getShortNamesOfCurrencies(NBPApiManager nbpApiManager, List<String> selectedCurrencies){
+
+    public UsedCurrenciesService(CurrencyRepository currencyRepository) {
+        this.currencyRepository = currencyRepository;
+    }
+
+    public List<PossibleCurrency> getShortNamesOfCurrencies(List<String> selectedCurrencies){
         List<Currency> currencies = currencyRepository.findAll();
         return currencies.stream().map(rate -> new PossibleCurrency(rate.getCode(), rate.getCategory(), selectedCurrencies.contains(rate.getCode())))
                 .collect(Collectors.toList());
     }
 
-    public List<CurrencyTypeBucket> getShortNamesOfCurrenciesSplitByCategory(NBPApiManager nbpApiManager, List<String> selectedCurrencies){
+    public List<CurrencyTypeBucket> getShortNamesOfCurrenciesSplitByCategory(List<String> selectedCurrencies){
         List<Currency> currencies = currencyRepository.findAll();
         Map<String, CurrencyTypeBucket> categoryBuckets = new HashMap<>();
         currencies.stream().map(rate -> new PossibleCurrency(rate.getCode(), rate.getCategory(), selectedCurrencies.contains(rate.getCode())))

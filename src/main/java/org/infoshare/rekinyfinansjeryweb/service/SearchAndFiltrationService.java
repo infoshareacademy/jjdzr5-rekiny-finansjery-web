@@ -49,6 +49,7 @@ public class SearchAndFiltrationService {
         if(settings.getSearchPhrase()==null || settings.getSearchPhrase().isEmpty()){
             return new PageDTO(0, 0, List.of());
         }
+        settings.setSearchPhrase(settings.getSearchPhrase().replace(";", " "));
         List<Currency> currencies = currencyRepository.findAllCurrencyByCodeIn(settings);
         Long totalResultsOfFilter = exchangeRateRepository.countDatesBySearchSettings(settings, currencies);
         List<LocalDate> dates = exchangeRateRepository.findDatesFromPageBySearchSettings(settings, pageable, currencies);
