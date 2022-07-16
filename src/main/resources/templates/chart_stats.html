@@ -11,8 +11,19 @@
 <body>
 <header th:insert="fragments/general :: menu"></header>
 <main>
+
+    <section class="bg-primary text-light p-5 text-center">
+        <div class="container">
+            <h1 th:text="${#messages.msgOrNull('currency.' + #strings.toString(results.get(0).code)) != null} ? #{'currency.'+${results.get(0).code}} : ${results.get(0).code}"></h1>
+        </div>
+    </section>
+
     <div class="container p-5">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+        <a class="btn btn-sm m-1 btn-primary" href="/stats" th:text="#{chart.back}"
+           style="margin: 8px; position: auto; right: 10%"></a>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <canvas id="myChart" style="width:100%"></canvas>
 
         <script th:inline="javascript">
@@ -32,17 +43,38 @@
                         fill: false
                     }]
                 },
-                options: {}
+                options: {
+                    scales: {
+                        x: {
+                            ticks: {
+                                callback: function (val, index) {
+                                    return index % 2 === 0 ? this.getLabelForValue(val) : '';
+                                }
+                            }
+                        }
+                    },
+                    legend: {display: true}
+                }
             });
         </script>
     </div>
+
     <div class=" container p-5">
-        <div th:each="result:${results}">
-            <p th:text="${result.code}"></p>
-            <p th:text="${result.date}"></p>
-            <p th:text="${result.counter}"></p>
-        </div>
-        <a href="/stats" th:text="#{chart.back}" style="text-align: right; padding: 50px"></a>
+        <table class="table table-striped table-sm">
+            <thead>
+            <tr>
+                <th scope="col" th:text="#{chart.stats.date}"></th>
+                <th scope="col" th:text="#{chart.stats.counter}">Ask Price</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="result:${results}">
+                <td th:text="${result.date}"></td>
+                <td th:text="${result.counter}"></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </main>
 
