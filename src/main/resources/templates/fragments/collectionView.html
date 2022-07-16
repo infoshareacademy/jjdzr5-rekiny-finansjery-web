@@ -40,6 +40,7 @@
         <tr th:each="rate : ${exchangeRates.getRates()}">
             <th class="align-middle" scope="row" th:if="${rate.category=='currency'}"><i class="bi bi-currency-dollar"></i></th>
             <th class="align-middle" scope="row" th:if="${rate.category=='cryptocurrency'}"><i class="bi bi-currency-bitcoin"></i></th>
+            <th class="align-middle" scope="row" th:if="${rate.category!='cryptocurrency' && rate.category!='currency'}"></th>
             <th class="align-middle" scope="row" th:text="${rate.code}"></th>
             <td class="align-middle"
                 th:text="${#messages.msgOrNull('currency.' + #strings.toString(rate.code)) != null} ? #{'currency.'+${rate.code}} : ${rate.name}"></td>

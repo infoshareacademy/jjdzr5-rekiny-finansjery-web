@@ -32,7 +32,7 @@ public abstract class CoinGeckoAdapter implements ExternalApiDataSourceInterface
 
     private final String name;
     private static final String URL_COIN_HISTORY = "https://api.coingecko.com/api/v3/coins/{id}/history?date={date}&localization=false";
-    private static  final Integer LIMIT_DAYS =2;
+    private static  final Integer LIMIT_DAYS = 90;
 
     public CoinGeckoAdapter(RestTemplate restTemplate, CurrencyTagGenerator currencyTagGenerator, String id, String name) {
         this.restTemplate = restTemplate;
@@ -94,7 +94,8 @@ public abstract class CoinGeckoAdapter implements ExternalApiDataSourceInterface
             Optional<Currency> currency = Optional.ofNullable(currenciesMap.get(data.getSymbol().toUpperCase()));
             if(currency.isEmpty()){
                 Currency newCurrency = new Currency(null, data.getSymbol().toUpperCase(),
-                        data.getName(), "cryptocurrency", new ArrayList<>(), currencyTagGenerator.createTag(data.getSymbol().toUpperCase()));
+                        data.getName(), "cryptocurrency", new ArrayList<>(),
+                        currencyTagGenerator.createTag(data.getSymbol().toUpperCase(), data.getName()));
                 currenciesMap.put(newCurrency.getCode().toUpperCase(), newCurrency);
                 result.getCurrencies().add(newCurrency);
                 currency = Optional.of(newCurrency);

@@ -17,10 +17,10 @@ public class CurrencyTagGenerator {
         locales = List.of(Locale.ENGLISH, new Locale("pl_PL"));
     }
 
-    public String createTag(String code){
+    public String createTag(String code, String currency){
         String tag = locales.stream()
-                .map(locale -> messageSource.getMessage("currency."+code, new Object[0], locale).toLowerCase(Locale.ROOT)+";")
-                .reduce("", String::concat);
+                .map(locale -> messageSource.getMessage("currency."+code, new Object[0], currency, locale).toLowerCase(Locale.ROOT)+";")
+                .reduce(";", String::concat);
         return tag;
     }
 }

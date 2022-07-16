@@ -56,7 +56,8 @@ public class CurrencyRepositoryExtensionImpl implements CurrencyRepositoryExtens
 
     private Predicate createPredicateForSearchedPhrases(SearchSettingsDTO searchSettings, CurrencyQuery query){
         List<Predicate> searchedPhrases = new ArrayList<>();
-        List<String> phrases = Arrays.stream(searchSettings.getSearchPhrase().split(" ")).map(str -> "%"+str+"%").toList();
+        List<String> phrases = Arrays.stream(searchSettings.getSearchPhrase().split(" "))
+                .filter(phrase -> phrase.length()>1).map(str -> "%"+str+"%").toList();
         phrases.forEach(phrase ->{
             searchedPhrases.add(query.getCriteriaBuilder().like(query.getRoot().get("code"), phrase));
             searchedPhrases.add(query.getCriteriaBuilder().like(query.getRoot().get("name"), phrase));

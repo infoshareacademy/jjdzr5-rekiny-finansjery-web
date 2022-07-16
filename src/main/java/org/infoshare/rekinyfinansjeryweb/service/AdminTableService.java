@@ -5,6 +5,7 @@ import org.infoshare.rekinyfinansjeryweb.repository.CurrencyRepository;
 import org.infoshare.rekinyfinansjeryweb.repository.ExchangeRateRepository;
 import org.infoshare.rekinyfinansjeryweb.entity.Currency;
 import org.infoshare.rekinyfinansjeryweb.entity.ExchangeRate;
+import org.infoshare.rekinyfinansjeryweb.service.extrernalApi.CurrencyTagGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,9 @@ public class AdminTableService {
 
     @Autowired
     CurrencyRepository currencyRepository;
+
+    @Autowired
+    CurrencyTagGenerator currencyTagGenerator;
 
     public void deleteTable(LocalDate date) {
         List<ExchangeRate> exchangeRates = exchangeRateRepository.findExchangeRatesByDate(date);
@@ -65,7 +69,7 @@ public class AdminTableService {
         currency.setCode(exchangeRateForm.getCode());
         currency.setName(exchangeRateForm.getCurrency());
         currency.setCategory(exchangeRateForm.getCategory());
-        currency.setTags(exchangeRateForm.getCurrency()+";");
+        currency.setTags(currencyTagGenerator.createTag(exchangeRateForm.getCode(), exchangeRateForm.getCurrency()));
         currencyRepository.save(currency);
         return currency;
     }
