@@ -71,8 +71,8 @@
                 <div class="p-3" th:each="record : ${chartsData}" th:id="'small_chart_'+${record.code}"
                      th:class="${chartsData.get(0).code == record.code ? 'chart_transition_visible' : 'chart_transition_hidden'}">
                     <h5 th:text="${record.code} + ' - ' + #{chart.title}">Title</h5>
-                    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-                    <canvas th:id="'myChart' + ${record.code}" style="width:100%"></canvas>
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                    <canvas th:id="'myChart' + ${record.code}" style="width: 612px; height: 306px;"></canvas>
                     <script th:inline="javascript">
                         currencies.set([[${record.code}]], [[${record.chartsData}]]);
 
@@ -81,16 +81,28 @@
                             data: {
                                 labels: currencies.get([[${record.code}]]).map(currency => currency.date),
                                 datasets: [{
+                                    label: [[#{user.history.BID}]],
                                     data: currencies.get([[${record.code}]]).map(currency => currency.bidPrice),
                                     borderColor: "red",
                                     fill: false
                                 }, {
+                                    label: [[#{user.history.ASK}]],
                                     data: currencies.get([[${record.code}]]).map(currency => currency.askPrice),
                                     borderColor: "blue",
                                     fill: false
                                 }]
                             },
                             options: {
+                                responsive: false,
+                                scales: {
+                                    x: {
+                                        ticks: {
+                                            callback: function (val, index) {
+                                                return index % 2 === 0 ? this.getLabelForValue(val) : '';
+                                            }
+                                        }
+                                    }
+                                },
                                 legend: {display: false}
                             }
                         });
