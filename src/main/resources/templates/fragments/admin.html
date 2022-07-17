@@ -10,11 +10,12 @@
     </div>
 </div>
 
-<div th:fragment="table_admin_modals" th:if="${exchangeRates != null}" >
+<div th:fragment="table_admin_modals" th:if="${exchangeRates != null}">
     <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:insert="fragments/admin :: edit_table_modal"></div>
-    <div th:if="${exchangeRates != null}" >
+    <div th:if="${exchangeRates != null}">
         <div th:each="rate : ${exchangeRates.getRates()}">
-            <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:replace="fragments/admin :: edit_currency_modal"></div>
+            <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')"
+                 th:replace="fragments/admin :: edit_currency_modal"></div>
         </div>
     </div>
     <div sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:insert="fragments/admin :: add_currency_modal"></div>
@@ -66,19 +67,24 @@
                                    th:field="*{code}" required maxlength="3">
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <label for="category" class="col-form-label w-50" th:text="#{collection.view.category}">Category</label>
-                            <input type="text" class="form-control rounded-4" id="category"
-                                   th:field="*{category}" required maxlength="20">
+                            <label for="currencyCategory" class="w-50"
+                                   th:text="#{collection.view.category}">Category</label>
+                            <select id="currencyCategory" class="form-select w-100 pt-2" th:field="*{category}">
+                                <option value="currency" th:text="#{currency.category.currency}">Currency</option>
+                                <option value="cryptocurrency" th:text="#{currency.category.cryptocurrency}">
+                                    Cryptocurrency
+                                </option>
+                            </select>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <label for="bid" class="col-form-label w-50" th:text="#{collection.view.bid}">Bid</label>
                             <input type="number" class="form-control rounded-4" id="bid"
-                                   value="0" step="any" th:field="*{bid}" required max="100">
+                                   value="0" step="any" th:field="*{bid}" required>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <label for="ask" class="col-form-label w-50" th:text="#{collection.view.ask}">Ask</label>
                             <input type="number" class="form-control rounded-4" id="ask"
-                                   value="0" step="any" th:field="*{ask}" required max="100">
+                                   value="0" step="any" th:field="*{ask}" required>
                         </div>
                         <button class="btn btn-lg my-2 mx-1 rounded-4 btn-secondary" style="width: 170px" type="button"
                                 th:text="#{cancel.button}" data-bs-dismiss="modal">
@@ -99,7 +105,8 @@
 <div th:fragment="edit_table_buttons" id="edit_table">
     <div class="text-end">
         <!-- Delete Table -->
-        <button th:with="date=${exchangeRates.getDate()}" class="btn my-2 mx-1 rounded-4 btn-danger" style="width: 120px"
+        <button th:with="date=${exchangeRates.getDate()}" class="btn my-2 mx-1 rounded-4 btn-danger"
+                style="width: 120px"
                 th:data-bs-toggle="modal"
                 th:data-bs-target="'#delete' + ${#strings.replace(date,'/','_')}">
             <i class="bi bi-x-lg"></i> <span th:text="#{delete.button}">Delete Table</span>
@@ -107,7 +114,8 @@
     </div>
 </div>
 <div th:fragment="edit_table_modal" id="edit_table_modal_fragment">
-    <div th:if="${exchangeRates!=null}" th:with="date=${exchangeRates.getDate()}" class="modal modal-alert fade py-5" tabindex="-1" role="dialog"
+    <div th:if="${exchangeRates!=null}" th:with="date=${exchangeRates.getDate()}" class="modal modal-alert fade py-5"
+         tabindex="-1" role="dialog"
          th:id="'delete' + ${#strings.replace(date,'/','_')}">
         <div class="modal-dialog" role="document">
             <div class="modal-content rounded-5 shadow">
@@ -188,19 +196,24 @@
                                    th:field="*{code}" required maxlength="3">
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <label for="category" class="col-form-label w-50" th:text="#{collection.view.category}">Category</label>
-                            <input type="text" class="form-control rounded-4" id="category"
-                                   th:field="*{category}" required maxlength="20">
+                            <label for="addCurrencyCategory" class="w-50"
+                                   th:text="#{collection.view.category}">Category</label>
+                            <select id="addCurrencyCategory" class="form-select w-100 pt-2" th:field="*{category}">
+                                <option value="currency" th:text="#{currency.category.currency}">Currency</option>
+                                <option value="cryptocurrency" th:text="#{currency.category.cryptocurrency}">
+                                    Cryptocurrency
+                                </option>
+                            </select>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <label for="bid" class="col-form-label w-50" th:text="#{collection.view.bid}">Bid</label>
                             <input type="number" class="form-control rounded-4" id="bid"
-                                   value="0" step="any" th:field="*{bid}" required max="100">
+                                   value="0" step="any" th:field="*{bid}" required>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <label for="ask" class="col-form-label w-50" th:text="#{collection.view.ask}">Ask</label>
                             <input type="number" class="form-control rounded-4" id="ask"
-                                   value="0" step="any" th:field="*{ask}" required max="100">
+                                   value="0" step="any" th:field="*{ask}" required>
                         </div>
                         <button class="btn btn-lg my-2 mx-1 rounded-4 btn-secondary" style="width: 170px" type="button"
                                 th:text="#{cancel.button}" data-bs-dismiss="modal">
@@ -232,7 +245,8 @@
     </button>
 </div>
 <div th:fragment="edit_currency_modal" id="edit_currency_modal_fragment" class="d-inline">
-    <div th:with="date=${exchangeRates.getDate()}, code=${rate.code}" class="modal fade py-5" tabindex="-1" role="dialog"
+    <div th:with="date=${exchangeRates.getDate()}, code=${rate.code}" class="modal fade py-5" tabindex="-1"
+         role="dialog"
          th:id="'editCurrency' + ${#strings.replace(date,'/','_')} + ${code}">
         <div class="modal-dialog" role="document">
             <div class="modal-content rounded-5 shadow">
@@ -272,21 +286,26 @@
                                    th:value="${rate.code}" name="code" required maxlength="3">
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <label for="category" class="col-form-label w-50" th:text="#{collection.view.category}">Category</label>
-                            <input type="text" class="form-control rounded-4" id="category"
-                                   th:value="${rate.category}" name="category" required maxlength="20">
+                            <label for="editCurrencyCategory" class="w-50"
+                                   th:text="#{collection.view.category}">Category</label>
+                            <select id="editCurrencyCategory" class="form-select w-100 pt-2" name="category">
+                                <option value="currency" th:text="#{currency.category.currency}">Currency</option>
+                                <option value="cryptocurrency" th:text="#{currency.category.cryptocurrency}">
+                                    Cryptocurrency
+                                </option>
+                            </select>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <label for="editCurrencyBid" class="col-form-label w-50"
                                    th:text="#{collection.view.bid}">Bid</label>
                             <input type="number" class="form-control rounded-4" id="editCurrencyBid"
-                                   th:value="${rate.bidPrice}" step="any" name="bid" required max="100">
+                                   th:value="${rate.bidPrice}" step="any" name="bid" required>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <label for="editCurrencyAsk" class="col-form-label w-50"
                                    th:text="#{collection.view.ask}">Ask</label>
                             <input type="number" class="form-control rounded-4" id="editCurrencyAsk"
-                                   th:value="${rate.askPrice}" step="any" name="ask" required max="100">
+                                   th:value="${rate.askPrice}" step="any" name="ask" required>
                         </div>
                         <button class="btn btn-lg my-2 mx-1 rounded-4 btn-secondary" style="width: 150px" type="button"
                                 th:text="#{cancel.button}" data-bs-dismiss="modal">

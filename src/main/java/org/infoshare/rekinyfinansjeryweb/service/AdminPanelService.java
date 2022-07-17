@@ -53,7 +53,7 @@ public class AdminPanelService {
         UUID uuid = UUID.fromString(id);
         User user = userRepository.findByEmail(email);
         if (user != null) {
-            return userExists(uuid) && uuid == user.getId();
+            return userExists(uuid) && !uuid.toString().equals(user.getId().toString());
         }
         return false;
     }

@@ -209,6 +209,24 @@ button.bg-primary:focus {
 
 .btn-outline-dark:hover {
     color: #fff;
+    border-color: #426180;
+    background-color: #426180;
+}
+
+.btn-outline-dark:active {
+    color: #fff;
     border-color: #48729a;
     background-color: #48729a;
+}
+
+.btn-check:checked+.btn-outline-dark {
+    color: #fff;
+    border-color: #48729a;
+    background-color: #48729a;
+}
+
+.btn-check:checked+.btn-outline-dark:hover{
+    color: #fff;
+    border-color: #426180;
+    background-color: #426180;
 }
