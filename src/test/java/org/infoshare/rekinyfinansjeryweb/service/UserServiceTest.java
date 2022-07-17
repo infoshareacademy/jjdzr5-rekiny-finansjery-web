@@ -126,7 +126,7 @@ class UserServiceTest {
         newUser.setEnabled(true);
         // when
         when(userRepository.save(Mockito.any(User.class))).thenReturn(newUser);
-        Boolean addUser = userService.addUser(createUserFormDTO);
+        Boolean addUser = userService.addUser(createUserFormDTO, AuthenticationProvider.LOCAL);
         // then
         assertThat(addUser).isTrue();
         assertThat(newUser.getName()).isEqualTo(createUserFormDTO.getName());

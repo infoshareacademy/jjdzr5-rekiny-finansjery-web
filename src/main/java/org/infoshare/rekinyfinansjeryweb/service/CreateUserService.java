@@ -1,5 +1,6 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
+import org.infoshare.rekinyfinansjeryweb.entity.user.AuthenticationProvider;
 import org.infoshare.rekinyfinansjeryweb.entity.user.User;
 import org.infoshare.rekinyfinansjeryweb.entity.user.UserEnum;
 import org.infoshare.rekinyfinansjeryweb.repository.UserRepository;
@@ -36,6 +37,7 @@ public class CreateUserService {
         user.setBillingCurrency("155222.86");
         user.setEnabled(true);
         user.setCreatedAt(LocalDateTime.now());
+        user.setAuthProvider(AuthenticationProvider.LOCAL);
         userRepository.save(user);
     }
 
@@ -48,6 +50,7 @@ public class CreateUserService {
         user.setLastname("Nowak");
         user.setEnabled(true);
         user.setCreatedAt(LocalDateTime.now());
+        user.setAuthProvider(AuthenticationProvider.LOCAL);
         userRepository.save(user);
     }
 }

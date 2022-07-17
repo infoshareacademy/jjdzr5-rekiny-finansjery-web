@@ -1,5 +1,6 @@
 package org.infoshare.rekinyfinansjeryweb.service;
 
+import org.infoshare.rekinyfinansjeryweb.entity.user.CustomOAuth2User;
 import org.infoshare.rekinyfinansjeryweb.dto.ExchangeRateDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.FiltrationSettingsDTO;
 import org.infoshare.rekinyfinansjeryweb.dto.SaveOfFiltrationSettingsDTO;
@@ -58,12 +59,6 @@ public class UserService implements UserDetailsService {
     }
     public EditUserDataFormDTO getEditUserData() {
         EditUserDataFormDTO editUser = modelMapper.map(getUser(), EditUserDataFormDTO.class);
-        //todo del
-//        editUser.setRepeatPassword(editUser.getPassword());
-//        System.out.println("PASS: " + editUser.getPassword());
-//        System.out.println("PASS2: " + editUser.getRepeatPassword());
-        System.out.println("email: " + editUser.getEmail());
-        System.out.println("Name: " + editUser.getName());
         return editUser;
     }
 
@@ -79,13 +74,21 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public Boolean addUser(CreateUserFormDTO createUserFormDTO){
+    public Boolean addUser(CreateUserFormDTO createUserFormDTO, AuthenticationProvider provider){
         User user = modelMapper.map(createUserFormDTO, User.class);
         user.setPassword(encoder.encode(user.getPassword()));
         user.setRole(Set.of(UserEnum.ROLE_USER));
+        user.setAuthProvider(provider);
         user.setCreatedAt(LocalDateTime.now());
         user.setEnabled(true);
-
+        return userRepository.save(user) != null;
+    }
+    public Boolean addUserOAuth2(CreateUserFormDTO createUserFormDTO, AuthenticationProvider provider){
+        User user = modelMapper.map(createUserFormDTO, User.class);
+        user.setRole(Set.of(UserEnum.ROLE_USER));
+        user.setAuthProvider(provider);
+        user.setCreatedAt(LocalDateTime.now());
+        user.setEnabled(true);
         return userRepository.save(user) != null;
     }
 
@@ -105,7 +108,8 @@ public class UserService implements UserDetailsService {
         User user = getUser();
         return user.getMyCurrencies()
                 .stream().map(e ->  modelMapper.map(e, UserCurrencyDTO.class))
-                .collect(Collectors.toSet());
+                .sorted(Comparator.comparing(o -> o.getCurrency().getCode()))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public boolean bidCurrency(String currency, String amount){
@@ -121,7 +125,6 @@ public class UserService implements UserDetailsService {
 
     private boolean addToBillingCurrency(User user, ExchangeRateDTO exchangeRate, String amount) {
         BigDecimal billingCurrency = multiplyAmount(exchangeRate.getBidPrice(), amount,  OperationEnum.BID);
-        //todo dodaj czy ma walute
         user.setBillingCurrency(addAmount(user.getBillingCurrency(), billingCurrency,  OperationEnum.BID).toString());
         return true;
     }
@@ -139,8 +142,6 @@ public class UserService implements UserDetailsService {
 
     private boolean subtractFromBillingCurrency(User user, ExchangeRateDTO exchangeRate, String amount) {
         BigDecimal billingCurrency = multiplyAmount(exchangeRate.getAskPrice(), amount, OperationEnum.ASK);
-//        BigDecimal billingCurrency = new BigDecimal(exchangeRate.getAskPrice()).multiply(new BigDecimal(amount));
-        //todo spr
         BigDecimal userBillingCurrency = convertStringToBigDecimal(user.getBillingCurrency());
         if (userBillingCurrency.compareTo(billingCurrency) < 0) return false;
         user.setBillingCurrency(roundAmount(userBillingCurrency.subtract(billingCurrency), OperationEnum.ASK).toString());
@@ -150,7 +151,6 @@ public class UserService implements UserDetailsService {
     private boolean addCurrencyHistory(User user, String currency, String amount, double exchangeRate, OperationEnum operationEnum) {
         Currency code = currencyRepository.findByCode(currency);
         UserCurrency userCurrency = getUserCurrency(user, code);
-        //todo spr
         BigDecimal amountDecimal = convertStringToBigDecimal(amount);
         BigDecimal amountUserCurrency = convertStringToBigDecimal(userCurrency.getAmount());
         if (operationEnum == OperationEnum.ASK) {
@@ -182,7 +182,6 @@ public class UserService implements UserDetailsService {
     public boolean paymentToWallet(String amount) {
         User user = getUser();
         user.setBillingCurrency(addAmount(user.getBillingCurrency(), amount, OperationEnum.PAYMENT).toString());
-//        user.setBillingCurrency(new BigDecimal(user.getBillingCurrency()).add(new BigDecimal(amount)).toString());
         addOperationHistory(amount,1,OperationEnum.PAYMENT, user);
         return updateUser(user) != null;
     }
@@ -190,7 +189,6 @@ public class UserService implements UserDetailsService {
     public boolean withdrawalFromWallet(String amount){
         User user = getUser();
         BigDecimal balance = subtractAmount(user.getBillingCurrency(),amount, OperationEnum.PAYCHECK);
-//        BigDecimal balance = new BigDecimal(user.getBillingCurrency()).subtract(new BigDecimal(amount));
         if (balance.compareTo(new BigDecimal("0")) < 0) return false;
         user.setBillingCurrency(balance.toString());
         addOperationHistory(amount,1,OperationEnum.PAYCHECK, user);
@@ -292,7 +290,15 @@ public class UserService implements UserDetailsService {
 
     private MyUserPrincipal getUserPrincipal(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (MyUserPrincipal) authentication.getPrincipal();
+        Object principal = authentication.getPrincipal();
+        User user = null;
+        if (principal instanceof CustomOAuth2User) {
+            String email = ((CustomOAuth2User) principal).getEmail();
+            user = userRepository.findByEmail(email);
+        } else if (principal instanceof MyUserPrincipal) {
+            user = ((MyUserPrincipal) principal).getUser();
+        }
+        return new MyUserPrincipal(user);
     }
 
     private BigDecimal convertStringToBigDecimal(String s) {
@@ -328,10 +334,22 @@ public class UserService implements UserDetailsService {
     public boolean changePassword(ChangeUserPasswordFormDTO newPassword) {
         User user = getUser();
         boolean result = false;
-        if (encoder.matches(newPassword.getOldPassword(), user.getPassword())){
+        if (checkPassword(user.getPassword(), newPassword.getOldPassword(), user.getAuthProvider())){
+
             user.setPassword(encoder.encode(newPassword.getNewPassword()));
             result = updateUser(user) != null;
         }
         return result;
+    }
+
+    private boolean checkPassword(String userPassword, String enteredPassword, AuthenticationProvider provider) {
+        if (userPassword == null && !provider.equals(AuthenticationProvider.LOCAL)) {
+            return true;
+        }
+        return encoder.matches(enteredPassword, userPassword);
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }

@@ -27,7 +27,6 @@ public class User {
     @Column(name = COLUMN_PREFIX + "email")
     private String email;
 
-    @Size(min = 8, max = 255, message = "{validation.password}")
     @Column(name = COLUMN_PREFIX + "password")
     private String password;
 
@@ -69,6 +68,10 @@ public class User {
 
     @Column(name = COLUMN_PREFIX + "last_login")
     private LocalDateTime lastLogin;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = COLUMN_PREFIX + "auth_provider")
+    private AuthenticationProvider authProvider;
 
     public User() {
     }
@@ -177,6 +180,14 @@ public class User {
         this.lastLogin = lastLogin;
     }
 
+    public AuthenticationProvider getAuthProvider() {
+        return authProvider;
+    }
+
+    public void setAuthProvider(AuthenticationProvider authProvider) {
+        this.authProvider = authProvider;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -198,7 +209,8 @@ public class User {
         if (savedFiltrationSettings != null ? !savedFiltrationSettings.equals(user.savedFiltrationSettings) : user.savedFiltrationSettings != null)
             return false;
         if (createdAt != null ? !createdAt.equals(user.createdAt) : user.createdAt != null) return false;
-        return lastLogin != null ? lastLogin.equals(user.lastLogin) : user.lastLogin == null;
+        if (lastLogin != null ? !lastLogin.equals(user.lastLogin) : user.lastLogin != null) return false;
+        return authProvider == user.authProvider;
     }
 
     @Override
@@ -216,6 +228,7 @@ public class User {
         result = 31 * result + (savedFiltrationSettings != null ? savedFiltrationSettings.hashCode() : 0);
         result = 31 * result + (createdAt != null ? createdAt.hashCode() : 0);
         result = 31 * result + (lastLogin != null ? lastLogin.hashCode() : 0);
+        result = 31 * result + (authProvider != null ? authProvider.hashCode() : 0);
         return result;
     }
 
@@ -229,12 +242,13 @@ public class User {
                 ", name='" + name + '\'' +
                 ", lastname='" + lastname + '\'' +
                 ", enabled=" + enabled +
-                ", billingCurrency=" + billingCurrency +
+                ", billingCurrency='" + billingCurrency + '\'' +
                 ", historyList=" + historyList +
                 ", myCurrencies=" + myCurrencies +
                 ", savedFiltrationSettings=" + savedFiltrationSettings +
                 ", createdAt=" + createdAt +
                 ", lastLogin=" + lastLogin +
+                ", authProvider=" + authProvider +
                 '}';
     }
 }

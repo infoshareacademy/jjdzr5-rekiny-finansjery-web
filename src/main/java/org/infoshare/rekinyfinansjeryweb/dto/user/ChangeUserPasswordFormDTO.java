@@ -11,7 +11,6 @@ import javax.validation.constraints.Size;
 @Data
 public class ChangeUserPasswordFormDTO {
 
-    @NotEmpty
     private String oldPassword;
     @Size(min = 8, max = 32, message = "{validation.password}")
     private String newPassword;

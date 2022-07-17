@@ -1,6 +1,7 @@
 package org.infoshare.rekinyfinansjeryweb.controller;
 
 import org.infoshare.rekinyfinansjeryweb.dto.user.CreateUserFormDTO;
+import org.infoshare.rekinyfinansjeryweb.entity.user.AuthenticationProvider;
 import org.infoshare.rekinyfinansjeryweb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,7 +36,7 @@ public class SignupController {
             result.rejectValue("repeatPassword", "validation.repeat.password");
             return "signup";
         }
-        if (usersService.addUser(user)) {
+        if (usersService.addUser(user, AuthenticationProvider.LOCAL)) {
             model.addAttribute("successMessage", "msg.success.signup");
         } else {
             model.addAttribute("errorMessage", "msg.error.signup");
