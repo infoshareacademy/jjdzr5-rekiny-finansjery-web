@@ -108,7 +108,8 @@ public class UserService implements UserDetailsService {
         User user = getUser();
         return user.getMyCurrencies()
                 .stream().map(e ->  modelMapper.map(e, UserCurrencyDTO.class))
-                .collect(Collectors.toSet());
+                .sorted(Comparator.comparing(o -> o.getCurrency().getCode()))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public boolean bidCurrency(String currency, String amount){
