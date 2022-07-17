@@ -333,12 +333,21 @@ public class UserService implements UserDetailsService {
     public boolean changePassword(ChangeUserPasswordFormDTO newPassword) {
         User user = getUser();
         boolean result = false;
-        if (encoder.matches(newPassword.getOldPassword(), user.getPassword())){
+        if (checkPassword(user.getPassword(), newPassword.getOldPassword(), user.getAuthProvider())){
+
             user.setPassword(encoder.encode(newPassword.getNewPassword()));
             result = updateUser(user) != null;
         }
         return result;
     }
+
+    private boolean checkPassword(String userPassword, String enteredPassword, AuthenticationProvider provider) {
+        if (userPassword == null && !provider.equals(AuthenticationProvider.LOCAL)) {
+            return true;
+        }
+        return encoder.matches(enteredPassword, userPassword);
+    }
+
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
